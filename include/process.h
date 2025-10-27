@@ -8,6 +8,7 @@
 #define PROCESS_MAX_USERNAME 255
 
 typedef struct Process_List;
+typdef struct Resource_List;
 
 typedef enum Process_State {
     EXECUTING,
