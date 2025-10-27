@@ -35,7 +35,7 @@ typedef struct Process {
 	uint8_t current_step;
 	Process_State process_state;
 	// function to be called with with process
-	int8_t (*execute)(struct Process*);
+	int8_t (*execute)(struct Process* self);
 } Process;
 
 // must have all the arguments required
