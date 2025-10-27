@@ -4,8 +4,8 @@
 #include "process.h"
 #include "element_list.h"
 
-typdef struct Resource_Element {
-    int8_t return;
+typedef struct Resource_Element {
+    int8_t returnable;
     Process* sender;
     Process* receiver;
     Element_List* friend_list;

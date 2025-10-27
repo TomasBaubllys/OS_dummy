@@ -3,7 +3,7 @@
 
 #include "resource.h"
 
-typdef struct Resource_List {
+typedef struct Resource_List {
     Resource* resource_list;
     uint32_t size;
     Kernel* kernel;
