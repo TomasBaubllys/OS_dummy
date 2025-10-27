@@ -8,7 +8,7 @@
 #define PROCESS_MAX_USERNAME 255
 
 typedef struct Process_List;
-typdef struct Resource_List;
+typedef struct Resource_List;
 
 typedef enum Process_State {
     EXECUTING,
@@ -24,12 +24,13 @@ typedef struct Process {
     uint32_t unique_id;
     Kernel* kernel;
     CPU* cpu;
-    struct Process* parent_process;
+    Process* parent_process;
     uint8_t priority;
-    struct Process_List* children_process;
-    struct Process_List* friend_process;
+    Process_List* children_process;
+    Process_List* friend_process;
     Resource_List* owned_resources;
     Resource_List* created_resources;
+    Resource_List* needed_resources;
     const char* username[PROCESS_MAX_USERNAME];
 	uint8_t current_step;
 } Process;
