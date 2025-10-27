@@ -25,10 +25,10 @@ typedef struct Process {
     CPU* cpu;
     struct Process* parent_process;
     uint8_t priority;
-    Process_List children_process;
-    Process_List* friend_process;
+    struct Process_List* children_process;
+    struct Process_List* friend_process;
     Resource_List* owned_resources;
-    Resource_List created_resources;
+    Resource_List* created_resources;
     const char* username[PROCESS_MAX_USERNAME];
 } Process;
 
