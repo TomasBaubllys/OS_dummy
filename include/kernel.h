@@ -15,7 +15,6 @@ typedef struct Kernel {
 	struct Process_List* running_processes;
 	struct Process_List* ready_processes;
 	struct Resource_List* resources;
-
 } Kernel;
 
 

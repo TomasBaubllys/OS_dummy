@@ -17,20 +17,26 @@
 #define RB_CODE 0x7262
 #define RC_CODE 0x7263
 
-#define CPU_PI_INVALID_ADDRESS 1
-#define CPU_PI_INVALID_OPCODE 2
-#define CPU_PI_INVALID_ASSIGNMENT 3
-#define CPU_PI_OVERFLOW 4
-#define CPU_PI_DIVISION_BY_ZERO 5
+typedef enum Cpu_Pi_Type {
+	CPU_PI_NONE,
+	CPU_PI_INVALID_ADDRESS,
+	CPU_PI_INVALID_OPCODE,
+	CPU_PI_INVALID_ASSIGNMENT,
+	CPU_PI_OVERFLOW,
+	CPU_PI_DIVISION_BY_ZERO
+} Cpu_Pi_Type;
 
-#define CPU_SI_GEDA 1
-#define CPU_SI_PUTA 2
-#define CPU_SI_PSTR 3
-#define CPU_SI_LW 4
-#define CPU_SI_SW 5
-#define CPU_SI_BP 6
-#define CPU_SI_BG 7
-#define CPU_SI_STOP 8
+typedef enum Cpu_Si_Type {
+	CPU_SI_NONE,
+	CPU_SI_GEDA,
+	CPU_SI_PUTA,
+	CPU_SI_PSTR,
+	CPU_SI_LW,
+	CPU_SI_SW,
+	CPU_SI_BP,
+	CPU_SI_BG,
+	CPU_SI_STOP
+} Cpu_Si_Type;
 
 #define CPU_MSG_INVALID_ADDRESS "Invalid address \n"
 #define CPU_MSG_INVALID_OPCODE "Invalid opcode\n"
