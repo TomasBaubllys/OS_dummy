@@ -12,7 +12,8 @@ typedef struct Resource_List;
 typedef struct Kernel {
 	Real_machine* real_machine;
 	struct Process_List* processes;
-	struct Process_List* read_processes;
+	struct Process_List* running_processes;
+	struct Process_List* ready_processes;
 	struct Resource_List* resources;
 } Kernel;
 
