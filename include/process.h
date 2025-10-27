@@ -34,9 +34,15 @@ typedef struct Process {
     const char* username[PROCESS_MAX_USERNAME];
 	uint8_t current_step;
 	Process_State process_state;
+	// function to be called with with process
+	int8_t (*execute)(struct Process*);
 } Process;
 
+// must have all the arguments required
+Process* create_process();
 
+// deletes the process and frees the memory
+int8_t destroy_process(Process* process);
 
 
 

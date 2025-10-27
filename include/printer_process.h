@@ -17,8 +17,8 @@ typedef struct Printer_Process{
 
 } Printer_Process;
 
-int8_t init_printer_process();
+Process* init_printer_process(Process* process);
 
-int8_t execute(Printer_Process* printer);
+int8_t printer_process_execute(Process* printer);
 
 #endif // PROCESS_PRINTER_H_INCLUDED

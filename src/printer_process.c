@@ -1,11 +1,18 @@
 #include "../include/printer_process.h"
 
-int8_t init_printer_process() {
+// turns a regular process into a printer process
+// kind of like poilymorphism
+Process* init_printer_process(Process* process) {	
+	if(!process) {
+		return NULL;
+	}
 
-	return 0;
+	process -> execute = &printer_process_execute;
+
+	return process;
 }
 
-int8_t execute(Printer_Process* printer) {
+int8_t printer_process_execute(Process* process) {
 	if(!printer) {
 		return -1;
 	}
