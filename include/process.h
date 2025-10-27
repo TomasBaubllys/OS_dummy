@@ -31,6 +31,7 @@ typedef struct Process {
     Resource_List* owned_resources;
     Resource_List* created_resources;
     const char* username[PROCESS_MAX_USERNAME];
+	uint8_t current_step;
 } Process;
 
 
