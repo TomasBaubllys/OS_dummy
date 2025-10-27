@@ -33,6 +33,7 @@ typedef struct Process {
     Resource_List* needed_resources;
     const char* username[PROCESS_MAX_USERNAME];
 	uint8_t current_step;
+	Process_State process_state;
 } Process;
 
 
