@@ -11,12 +11,6 @@ typedef enum Printer_Process_Steps {
 
 } Printer_Process_Steps;
 
-typedef struct Printer_Process{
-    Process process;
-    
-
-} Printer_Process;
-
 Process* init_printer_process(Process* process);
 
 int8_t printer_process_execute(Process* printer);
