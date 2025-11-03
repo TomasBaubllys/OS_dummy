@@ -133,6 +133,8 @@ int xchg(Channel_device* channel_device) {
 					break;
 			}
 			break;
+		case MSG_IN_MEMORY:
+			
 		default:
 			break;
 	}

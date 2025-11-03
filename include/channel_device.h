@@ -24,7 +24,8 @@ enum Object_numbers {
 	SHARED_MEM,
 	RA_REG,
 	SUPER_MEM,
-	HD_DISK
+	HD_DISK,
+	MSG_IN_MEMORY
 };
 
 // initializes channel device
@@ -35,5 +36,9 @@ void reset_channel_device(Channel_device* channel_device);
 
 // calls channel device
 int xchg(Channel_device* channel_device);
+
+const char* get_string_in_memory();
+
+void set_string_in_memory(const char* msg, uint16_t length);
 
 #endif // CHANNEL_DEVICE_H_INCLUDED
