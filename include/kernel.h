@@ -2,11 +2,11 @@
 #define KERNEL_H_INCLUDED
 
 #include <stdint.h>
-#include <real_machine.h>
+#include "real_machine.h"
 
 // forward declaration
-typedef struct Process_List;
-typedef struct Resource_List;
+typedef struct Process_List Process_List;
+typedef struct Resource_List Resource_List;
 
 
 typedef struct Kernel {

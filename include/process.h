@@ -7,15 +7,14 @@
 
 #define PROCESS_MAX_USERNAME 255
 
-typedef struct Process_List;
-typedef struct Resource_List;
+typedef struct Process_List Process_List;
+typedef struct Resource_List Resource_List;
 
 typedef enum Process_State {
     EXECUTING,
     READY,
     BLOCKED,
     BLOCKED_STOPPED,
-    READY,
     READY_STOPPED
 } Process_State;
 

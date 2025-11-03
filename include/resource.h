@@ -5,9 +5,9 @@
 #include "process.h"
 #include "kernel.h"
 
-typedef struct Process_List;
-typedef struct Resource_List;
-typedef struct Element_List;
+typedef struct Process_List Process_List;
+typedef struct Resource_List Resource_List;
+typedef struct Element_List Element_List;
 
 typedef enum Resource_Type {
 	MOS_END,

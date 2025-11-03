@@ -2,7 +2,8 @@
 #define RESOURCE_ELEMENT_H_INCLUDED
 
 #include "process.h"
-#include "element_list.h"
+
+typedef struct Element_List Element_List;
 
 typedef struct Resource_Element {
     int8_t returnable;
