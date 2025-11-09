@@ -5,16 +5,23 @@
 #include "real_machine.h"
 
 // forward declaration
-typedef struct Process_List Process_List;
-typedef struct Resource_List Resource_List;
+//typedef struct Process_List Process_List;
+//typedef struct Resource_List Resource_List;
+
+class Process;
+class Resource;
 
 
 typedef struct Kernel {
 	Real_machine* real_machine;
-	struct Process_List* processes;
-	struct Process_List* running_processes;
-	struct Process_List* ready_processes;
-	struct Resource_List* resources;
+	std::vector<Process*> processes;
+	std::vector<Process*> running_processes;
+	std::vector<Process*> ready_processes;
+	std::vector<Resource*> resources;
+		//struct Process_List* processes;
+		//struct Process_List* running_processes;
+		//struct Process_List* ready_processes;
+		//struct Resource_List* resources;
 } Kernel;
 
 

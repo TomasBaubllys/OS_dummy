@@ -1,7 +1,11 @@
 #include "../include/printer_process.h"
 #include "../include/resource.h"
 
-// turns a regular process into a printer process
+
+
+
+/*
+//8 turns a regular process into a printer process
 // kind of like poilymorphism
 Process* init_printer_process(Process* process) {	
 	if(!process) {
@@ -59,3 +63,4 @@ int8_t printer_process_execute(Process* printer) {
 
 	return 0;
 }
+/*
