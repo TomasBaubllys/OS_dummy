@@ -11,7 +11,7 @@ typedef enum Start_Stop_Process_Steps{
     START_STOP_PROCESS_KILL_SYSTEM_RESOURCES
 } Start_Stop_Process_Steps;
 
-class Start_Stop_Process: public Process{
+class Start_Stop_Process: public Process {
     private:
         Start_Stop_Process_Steps steps;
 
@@ -19,7 +19,7 @@ class Start_Stop_Process: public Process{
         Start_Stop_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Start_Stop_Process();
 
-        virtual int8_t execute() override;
+        int8_t execute() override;
 };
 
 

@@ -21,7 +21,7 @@ typedef enum Process_State {
 } Process_State;
 
 class Process {
-    private:
+    protected:
         Saved_Registers saved_registers;
         uint32_t unique_id;
         uint8_t current_step;
@@ -50,6 +50,7 @@ class Process {
         virtual ~Process();
         virtual int8_t execute();
 
+        void set_state(Process_State process_state);
         uint32_t get_unique_id();
         uint8_t get_current_step();
         Process_State get_process_state();

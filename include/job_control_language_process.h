@@ -3,7 +3,7 @@
 
 #include "process.h"
 
-typedef enum Job_Control_Language_Process_Steps{
+enum class Job_Control_Language_Process_Steps{
     JOB_CONTROL_LANGUAGE_PROCESS_BLOCKED_WAIT_FOR_TASK_IN_SUPERVISOR,
     JOB_CONTROL_LANGUAGE_PROCESS_INITIALIZE_PROGRAM_LIST,
     JOB_CONTROL_LANGUAGE_PROCESS_TAKE_BLOCK_FROM_SUPERVISOR_MEMORY_1,
@@ -17,7 +17,7 @@ typedef enum Job_Control_Language_Process_Steps{
     JOB_CONTROL_LANGUAGE_PROCESS_FREE_RESOURCE_STRING_IN_MEMORY_WITH_INFO_BYE_NOT_FOUND,
     JOB_CONTROL_LANGUAGE_PROCESS_FREE_RESOURCE_STRING_IN_MEMORY_WITH_INFO_LOS_NOT_FOUND,
     JOB_CONTROL_LANGUAGE_PROCESS_FREE_RESOURCE_SYSTEM_COMMAND,
-} Job_Control_Language_Process_Steps; 
+}; 
 
 class Job_Control_Language_Process: public Process{
     private:

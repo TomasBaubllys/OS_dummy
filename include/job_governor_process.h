@@ -3,7 +3,7 @@
 
 #include "process.h"
 
-typedef enum Job_Governor_Process_Steps{
+enum class Job_Governor_Process_Steps{
     JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE,
     JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE,
     JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE,
@@ -28,7 +28,7 @@ typedef enum Job_Governor_Process_Steps{
     JOB_GOVERNOR_PROCESS_FREE_PIE_IN_THE_OVEN_RESOURCE,
     JOB_GOVERNOR_PROCESS_FREE_SYSTEM_COMMAND_RESOURCE,
     JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_NONEXISTANT_RESOURCE
-} Job_Governor_Process_Steps;
+};
 
 class Job_Governor_Process: public Process{
     private:

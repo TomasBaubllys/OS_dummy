@@ -3,12 +3,12 @@
 
 #include "process.h"
 
-typedef enum Printer_Process_Steps {
+enum class Printer_Process_Steps {
 	PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESORUCE,
 	PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE,
 	PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG,
 	PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE
-} Printer_Process_Steps;
+};
 
 class Printer_Process: public Process{
 	private:
@@ -18,7 +18,7 @@ class Printer_Process: public Process{
 		Printer_Process(Saved_Registers saved_registers, uint32_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
 		~Printer_Process();
 
-		virtual int8_t execute() override;
+		int8_t execute() override;
 };
 
 

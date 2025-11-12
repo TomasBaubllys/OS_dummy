@@ -14,7 +14,7 @@ typedef struct Element_List Element_List;
 
 static char message[RESOURCE_MEMORY_STRING_MAX_LENGTH];
 
-typedef enum Resource_Type {
+enum class Resource_Type : uint16_t {
 	RESOURCE_MOS_END,
 	RESOURCE_SYSTEM_COMMAND,
 	RESOURCE_HARD_DISK,
@@ -31,7 +31,7 @@ typedef enum Resource_Type {
 	RESOURCE_FROM_INTERRUPT,
 	RESOURCE_FROM_LOADER,
 	RESOURCE_FROM_USER_INTERFACE
-} Resource_Type;
+};
 
 class Resource {
 	private:
@@ -63,6 +63,7 @@ class Resource {
 	public:
 		Resource(uint32_t unique_id, Resource_Type type, Process* creator, Kernel* kernel, std::vector<Resource*> all_resources);
 
+		Resource_Type get_resource_type();
 };
 
 /*

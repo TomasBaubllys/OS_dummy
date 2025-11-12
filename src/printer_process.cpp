@@ -1,7 +1,20 @@
 #include "../include/printer_process.h"
 #include "../include/resource.h"
 
+Printer_Process::Printer_Process(Saved_Registers saved_registers, uint32_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
+	saved_registers(saved_registers),
+	unique_id(unique_id),
+{	
 
+}
+
+Printer_Process::~Printer_Process() {
+
+}
+
+int8_t Printer_Process::execute() {
+
+}
 
 
 /*
