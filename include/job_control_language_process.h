@@ -21,7 +21,7 @@ enum class Job_Control_Language_Process_Steps{
 
 class Job_Control_Language_Process: public Process{
     private:
-        Job_Control_Language_Process_Steps steps;
+        Job_Control_Language_Process_Steps current_step;
     public:
         Job_Control_Language_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Job_Control_Language_Process();

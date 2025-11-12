@@ -2,8 +2,7 @@
 #include "../include/resource.h"
 
 Printer_Process::Printer_Process(Saved_Registers saved_registers, uint32_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
-	saved_registers(saved_registers),
-	unique_id(unique_id),
+	Process(saved_registers, unique_id, kernel, cpu, parent_process, friend_processes, username)
 {	
 
 }
@@ -13,9 +12,20 @@ Printer_Process::~Printer_Process() {
 }
 
 int8_t Printer_Process::execute() {
+	switch (this -> current_step){
+		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESORUCE:
+			break;
+		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE:
+			break;
+		case Printer_Process_Steps::PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG:
+			break;
+		case Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE:
+			break;
+		default:
+			break;
+	}
 
 }
-
 
 /*
 //8 turns a regular process into a printer process
@@ -76,4 +86,4 @@ int8_t printer_process_execute(Process* printer) {
 
 	return 0;
 }
-/*
+*/

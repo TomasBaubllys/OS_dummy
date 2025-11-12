@@ -3,16 +3,16 @@
 
 #include "process.h"
 
-typedef enum Interrupt_Process_Steps{
+enum class Interrupt_Process_Steps{
     INTERRUPT_RPOCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE,
     INTERRUPT_RPOCESS_IDENTIFY_INTERRUPT,
     INTERRUPT_RPOCESS_RECOGNIZE_JOB_GOVERNOR_RESPONSIBLE_FOR_INTERRUPT,
     INTERRUPT_RPOCESS_FREE_FROM_INTERRUPT_RESOURCE
-} Interrupt_Process_Steps;
+};
 
 class Interrupt_Process: public Process{
     private:
-        Interrupt_Process_Steps steps;
+        Interrupt_Process_Steps current_step;
     public:
         Interrupt_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Interrupt_Process();

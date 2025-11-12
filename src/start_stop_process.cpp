@@ -13,26 +13,26 @@ Start_Stop_Process::~Start_Stop_Process() {
 int8_t Start_Stop_Process::execute() {
     switch (this -> current_step)
     {
-        case START_STOP_PROCESS_INITIALIZE_RESOURCES: {
+        case Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_RESOURCES: {
             
             break;
         }
 
-        case START_STOP_PROCESS_INITIALIZE_PERMANENT_RESOURCES: {
+        case Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_PERMANENT_RESOURCES: {
 
             break;
         }
 
-        case START_STOP_PROCESS_BLOCKED_WAITING_FOR_MOS_END : {
+        case Start_Stop_Process_Steps::START_STOP_PROCESS_BLOCKED_WAITING_FOR_MOS_END : {
 
             break;
         }
 
-        case START_STOP_PROCESS_KILL_SYSTEM_PROCESSES : {
+        case Start_Stop_Process_Steps::START_STOP_PROCESS_KILL_SYSTEM_PROCESSES : {
 
             break;
         }
-        case START_STOP_PROCESS_KILL_SYSTEM_RESOURCES : {
+        case Start_Stop_Process_Steps::START_STOP_PROCESS_KILL_SYSTEM_RESOURCES : {
 
             break;
         }
