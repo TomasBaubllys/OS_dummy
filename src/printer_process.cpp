@@ -12,78 +12,41 @@ Printer_Process::~Printer_Process() {
 }
 
 int8_t Printer_Process::execute() {
-	switch (this -> current_step){
-		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESORUCE:
-			break;
+	switch (this -> step){
+		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE:
+			if(this -> owns_resource(Resource_Type::RESOURCE_STRING_IN_MEMORY)) {
+				this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE;
+			}
+
+			return Process_State::BLOCKED;
 		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE:
-			break;
+			if(this -> owns_resource(Resource_Type::RESOURCE_CHANNEL_DEVICE)) {
+				this -> step = Printer_Process_Steps::PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG;
+			}
+
+			return Process_State::BLOCKED;
 		case Printer_Process_Steps::PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG:
-			break;
+			Channel_device* ch_dev = this -> cpu -> channel_device;
+			ch_dev -> st = MSG_IN_MEMORY;
+			ch_dev -> dt = IO_STREAM;
+			ch_dev -> sa = (uint32_t)(this -> kernel -> string_in_memory.c_str());
+			ch_dev -> cb = this -> kernel -> string_in_memory.size();
+			ch_dev -> of = 0;  
+
+			xchg(ch_dev);
+			this -> step = Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE; 
+			return Process_State::READY;
 		case Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE:
+			/**
+			 * 
+			 * NOT IMPLEMENTED YET
+			 * 
+			 */
+			this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE;
 			break;
 		default:
-			break;
-	}
-
-}
-
-/*
-//8 turns a regular process into a printer process
-// kind of like poilymorphism
-Process* init_printer_process(Process* process) {	
-	if(!process) {
-		return NULL;
-	}
-
-	process -> current_step = 0;
-
-	process -> execute = &printer_process_execute;
-
-	return process;
-}
-
-int8_t printer_process_execute(Process* printer) {
-	if(!printer) {
-		return -1;
-	}
-	
-	// switch the current step
-	switch(printer -> current_step) {
-		case PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY:
-			// tikrinti ar gautas resursas
-			// jei taip --> ++current_step;
-			if(printer -> owned_resources){
-				if(check_resource_owned(printer -> owned_resources, RESOURCE_STRING_IN_MEMORY)){
-					++(printer -> current_step);
-				}
-			}
-
-			break;
-		case PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE:
-			// tikrinti ar gautas resursas
-			// jei taip --> ++current_step
-			if(printer -> owned_resources){
-				if(check_resource_owned(printer -> owned_resources, RESOURCE_CHANNEL_DEVICE)){
-					++(printer -> current_step);
-				}
-			}
-			break;
-		case PRINTER_PROCESS_EXECUTING_XCHG:
-			printer -> cpu -> channel_device -> st = MSG_IN_MEMORY;
-			printer -> cpu -> channel_device -> dt = IO_STREAM;
-			xchg(printer -> cpu -> channel_device);
-
-			++(printer -> current_step);
-			break;	
-		case PRINTER_PROCESS_FREE_CHANNEL_DEVICE:
-			//huhuheuesfddskdslkfljasjkdf
-
-			break;
-		default:
-			break;
-	
+			return -1;
 	}
 
 	return 0;
 }
-*/

@@ -2,6 +2,7 @@
 #define PROCESS_H_INCLUDED
 
 #include "saved_registers.h"
+#include "resource.h"
 #include "kernel.h"
 #include "cpu.h"
 #include <vector>
@@ -55,6 +56,7 @@ class Process {
         uint8_t get_current_step();
         Process_State get_process_state();
         std::string get_username();
+        bool owns_resource(Resource_Type resource);
 };
 
 /*

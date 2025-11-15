@@ -45,3 +45,13 @@ std::string Process::get_username() {
 void Process::set_state(Process_State process_state) {
     this -> process_state = process_state;
 }
+
+bool Process::owns_resource(Resource_Type resource) {
+    for(const Resource* resc : this -> owned_resources) {
+        if(resource == resc -> get_resource_type()) {
+            return true;
+        }
+    }
+
+    return false;
+}

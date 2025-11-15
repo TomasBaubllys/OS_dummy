@@ -63,7 +63,7 @@ class Resource {
 	public:
 		Resource(uint32_t unique_id, Resource_Type type, Process* creator, Kernel* kernel, std::vector<Resource*> all_resources);
 
-		Resource_Type get_resource_type();
+		Resource_Type get_resource_type() const;
 };
 
 /*

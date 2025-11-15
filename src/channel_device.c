@@ -136,8 +136,8 @@ int xchg(Channel_device* channel_device) {
 		case MSG_IN_MEMORY:
 			switch (channel_device -> dt) {
 				case IO_STREAM:
-					const char* message = get_string_in_memory();
-					printf(message);
+						const char* p = (const char*) channel_device -> sa;
+						printf("%s", p);
 					break;
 				
 				default:

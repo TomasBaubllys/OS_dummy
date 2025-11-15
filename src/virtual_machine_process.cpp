@@ -10,7 +10,7 @@ Virtual_Machine_Process::~Virtual_Machine_Process(){
 }
 
 int8_t Virtual_Machine_Process::execute(){
-    switch (this -> current_step){
+    switch (this -> step){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE:
             break;
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM:

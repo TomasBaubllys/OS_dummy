@@ -11,7 +11,7 @@ typedef enum Virtual_Machine_Steps{
 
 class Virtual_Machine_Process: public Process{
     private:
-        Virtual_Machine_Steps steps;
+        Virtual_Machine_Steps step;
     public:
         Virtual_Machine_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Virtual_Machine_Process();

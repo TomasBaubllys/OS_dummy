@@ -9,6 +9,6 @@ Resource::Resource(uint32_t unique_id, Resource_Type type, Process* creator, Ker
 
 }
 
-Resource_Type Resource::get_resource_type() {
+Resource_Type Resource::get_resource_type() const {
     return this -> resource_type;
 }

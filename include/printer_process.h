@@ -3,8 +3,8 @@
 
 #include "process.h"
 
-enum class Printer_Process_Steps {
-	PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESORUCE,
+enum class Printer_Process_Steps : uint16_t {
+	PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE,
 	PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE,
 	PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG,
 	PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE
@@ -12,7 +12,7 @@ enum class Printer_Process_Steps {
 
 class Printer_Process: public Process{
 	private:
-		Printer_Process_Steps steps();
+		Printer_Process_Steps step;
 
 	public:
 		Printer_Process(Saved_Registers saved_registers, uint32_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);

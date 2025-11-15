@@ -12,16 +12,16 @@ class Process;
 class Resource;
 
 
-typedef struct Kernel {
+struct Kernel {
 	Real_machine* real_machine;
 	std::vector<Process*> processes;
 	std::vector<Process*> running_processes;
 	std::vector<Process*> ready_processes;
 	std::vector<Resource*> resources;
-		//struct Process_List* processes;
-		//struct Process_List* running_processes;
-		//struct Process_List* ready_processes;
-		//struct Resource_List* resources;
+
+	std::string string_in_memory;
+
+	void request_resource(Process* process, Resource_Type resource_t);
 } Kernel;
 
 
