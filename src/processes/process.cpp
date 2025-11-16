@@ -5,7 +5,6 @@ Process::Process(Kernel* kernel, Process* parent_process, std::vector<Process*> 
     process_state(process_state),
     kernel(kernel),
     parent_process(parent_process),
-    children_processes(children_processes),
     friend_processes(friend_processes),
     owned_resources(owned_resources),
     created_resources(created_resources),
