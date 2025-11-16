@@ -1,7 +1,7 @@
-#include "../include/main_process_process.h"
+#include "../../include/processes/main_process_process.h"
 
-Main_Process_Process::Main_Process_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
-    Process(saved_registers, unique_id, kernel, cpu, parent_process, friend_processes, username){
+Main_Process_Process::Main_Process_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
+    Process(kernel, parent_process, friend_processes, username, Process_Priorities::MAIN_PROCESS_PRIORITY){
 
 }
 
@@ -10,7 +10,7 @@ Main_Process_Process::~Main_Process_Process(){
 }
 
 int8_t Main_Process_Process::execute(){
-    switch (this -> current_step){
+    switch (this -> step){
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND:
             break;
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_IF_PIE_IN_THE_OVEN_FREE:

@@ -1,6 +1,6 @@
 #include "../include/cpu.h"
 
-int init_cpu(CPU* cpu, Memory* memory, Channel_device* channel_device) {
+int init_cpu(CPU* cpu, Memory* memory, Channel_Device* channel_device) {
 	if(!cpu || !channel_device || !memory) {
 		return -1;
 	}

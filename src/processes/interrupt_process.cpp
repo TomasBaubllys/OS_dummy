@@ -1,15 +1,15 @@
-#include "../include/interrupt_process.h"
+#include "../../include/processes/interrupt_process.h"
 
-Interrupt_Process::Interrupt_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
-    Process(saved_registers, unique_id, kernel, cpu, parent_process, friend_processes, username){
-
+Interrupt_Process::Interrupt_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
+    Process(kernel, parent_process, friend_processes, username, Process_Priorities::INTERRUPT_PRIORITY){
+    this -> saved_registers = {};
 }
 
 Interrupt_Process::~Interrupt_Process(){
 
 }
 
-int8_t Interrupt_Process::execute(){
+Process_State Interrupt_Process::execute(){
     switch (this -> current_step){
         case Interrupt_Process_Steps::INTERRUPT_RPOCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE:
             break;

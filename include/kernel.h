@@ -31,9 +31,21 @@ class Kernel {
 		void init_resource(Resource_Type resource_type);
 		void release_resource(Process* process, Resource_Type resource_type);
 
-		void add_process(Process* process);
-
 		void run();
+
+		void kill_processes_except(Process* process);
+
+		void destroy_resources();
+
+		Channel_Device* get_channel_device();
+		
+		template<typename T>
+		void create_process(Process* parent_process, std::vector<Process*> friend_processes, std::string username) {
+			Process* process = new T(this, parent_process, friend_processes, username);
+			process -> set_state(Process_State::READY);
+			this -> ready_queue.push(process);
+			this -> all_processes.push_back(process);
+		};
 };
 
 

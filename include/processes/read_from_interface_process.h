@@ -20,9 +20,9 @@ class Read_From_Interface_Process: public Process{
     private:
         Read_From_Interface_Process_Steps steps;
     public:
-        Read_From_Interface_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
+        Read_From_Interface_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Read_From_Interface_Process();
-        virtual int8_t execute() override;
+        Process_State execute() override;
 
 };
 

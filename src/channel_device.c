@@ -1,6 +1,6 @@
 #include "../include/channel_device.h"
 
-int init_channel_device(Channel_device* channel_device, Memory* memory, Hard_disk* hard_disk) {
+int init_channel_device(Channel_Device* channel_device, Memory* memory, Hard_disk* hard_disk) {
 	if(!channel_device || !memory) {
 		return -1;
 	}
@@ -18,7 +18,7 @@ int init_channel_device(Channel_device* channel_device, Memory* memory, Hard_dis
 	return 0;
 }
 
-void reset_channel_device(Channel_device* channel_device){
+void reset_channel_device(Channel_Device* channel_device){
 	if(!channel_device){
 		return;
 	}
@@ -35,7 +35,7 @@ void reset_channel_device(Channel_device* channel_device){
 }
 
 // page_table_index is used for pstr to translate address
-int xchg(Channel_device* channel_device) {
+int xchg(Channel_Device* channel_device) {
 	// "Performancas nesvarbu svarbu, svarbu, kad veiktu" - M. Grubliauskis 22/09/2025
 	if(!channel_device) {
 		return -1;

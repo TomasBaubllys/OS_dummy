@@ -5,7 +5,7 @@
 #include "hard_disk.h"
 #include "memory.h"
 
-typedef struct Channel_device {
+typedef struct Channel_Device {
 	uint16_t sb;			// number of the block to copy from
 	uint16_t db;			// number of the block to copy to
 	uint8_t st;				// number of the object which we are going to copy from
@@ -16,7 +16,7 @@ typedef struct Channel_device {
 
 	Memory* memory;			// bruh
 	Hard_disk* hard_disk;	// bruh
-} Channel_device;
+} Channel_Device;
 
 enum Object_numbers {
 	USER_MEM = 1,
@@ -29,13 +29,13 @@ enum Object_numbers {
 };
 
 // initializes channel device
-int init_channel_device(Channel_device* channel_dev, Memory* memory, Hard_disk* Hard_disk);
+int init_channel_device(Channel_Device* channel_dev, Memory* memory, Hard_disk* Hard_disk);
 
 // sets all registers to 0
-void reset_channel_device(Channel_device* channel_device);
+void reset_channel_device(Channel_Device* channel_device);
 
 // calls channel device
-int xchg(Channel_device* channel_device);
+int xchg(Channel_Device* channel_device);
 
 const char* get_string_in_memory();
 

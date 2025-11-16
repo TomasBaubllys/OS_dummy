@@ -1,7 +1,7 @@
 #include "../include/read_from_interface_process.h"
 
-Read_From_Interface_Process::Read_From_Interface_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username):
-    Process(saved_registers, unique_id, kernel, cpu, parent_process, friend_processes, username){
+Read_From_Interface_Process::Read_From_Interface_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username):
+    Process(kernel, parent_process, friend_processes, username){
 
 }
 

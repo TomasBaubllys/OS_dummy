@@ -28,6 +28,7 @@ typedef enum Process_Priorities : uint8_t {
     LOADER_PRIORITY = 60,
     READ_FROM_INTERFACE_PRIORITY = 70,
     JOB_GOVERNOR_PRIORITY = 90,
+    MAIN_PROCESS_PRIORITY = 150,
     START_STOP_PRIORITY = 240,
     INTERRUPT_PRIORITY = PROCESS_MAX_PRIORITY
 } Process_Priorities;
@@ -43,7 +44,7 @@ class Process {
         Kernel* kernel;
         Process* parent_process;
 
-        std::vector<Process*> children_processes;
+        // std::vector<Process*> children_processes;
         std::vector<Process*> friend_processes;
 
         std::vector<Resource*> owned_resources;

@@ -1,4 +1,4 @@
-#include "../include/printer_process.h"
+#include "../../include/processes/printer_process.h"
 #include "../include/resource.h"
 
 Printer_Process::Printer_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
@@ -28,7 +28,7 @@ Process_State Printer_Process::execute() {
 
 			return Process_State::BLOCKED;
 		case Printer_Process_Steps::PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG:
-			Channel_device* ch_dev = this -> cpu -> channel_device;
+			Channel_Device* ch_dev = this -> kernel -> get_channel_device();
 			ch_dev -> st = MSG_IN_MEMORY;
 			ch_dev -> dt = IO_STREAM;
 			ch_dev -> sa = (uint32_t)(this -> kernel -> string_in_memory.c_str());

@@ -1,9 +1,15 @@
-#include "../include/start_stop_process.h"
+#include "../../include/processes/start_stop_process.h"
+#include "../../include/processes/idle_process.h"
+#include "../../include/processes/interrupt_process.h"
+#include "../../include/processes/main_process_process.h"
+#include "../../include/processes/read_from_interface_process.h"
+#include "../../include/processes/printer_process.h"
+
 
 Start_Stop_Process::Start_Stop_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::START_STOP_PRIORITY), step(Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_RESOURCES)
 {
-
+    this -> saved_registers = {};
 }
 
 Start_Stop_Process::~Start_Stop_Process() {
@@ -31,7 +37,13 @@ Process_State Start_Stop_Process::execute() {
         }
 
         case Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_PERMANENT_RESOURCES: {
+            this -> kernel -> create_process<Idle_Process>(this, {}, SYSTEM_USERNAME);
+            this -> kernel -> create_process<Interrupt_Process>(this, {}, SYSTEM_USERNAME);
+            this -> kernel -> create_process<Main_Process_Process>(this, {}, SYSTEM_USERNAME);
+            this -> kernel -> create_process<Read_From_Interface_Process>(this, {}, SYSTEM_USERNAME);
+            this -> kernel -> create_process<Printer_Process>(this, {}, SYSTEM_USERNAME);
 
+            this -> step = Start_Stop_Process_Steps::START_STOP_PROCESS_BLOCKED_WAITING_FOR_MOS_END;
             return Process_State::READY;
         }
 
@@ -45,16 +57,20 @@ Process_State Start_Stop_Process::execute() {
         }
 
         case Start_Stop_Process_Steps::START_STOP_PROCESS_KILL_SYSTEM_PROCESSES : {
-
-            break;
+            this -> kernel -> kill_processes_except(this);
+            this -> step = Start_Stop_Process_Steps::START_STOP_PROCESS_KILL_SYSTEM_RESOURCES;
+            return Process_State::READY;
         }
         case Start_Stop_Process_Steps::START_STOP_PROCESS_KILL_SYSTEM_RESOURCES : {
-
-            break;
+            this -> kernel -> destroy_resources();
+            return Process_State::READY_STOPPED;
         }
     
         default: {
             break;
         }
     }
+
+    // should never get to here
+    return Process_State::BLOCKED_STOPPED;
 }

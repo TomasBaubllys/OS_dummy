@@ -23,7 +23,7 @@ typedef struct Real_Machine {
 	CPU cpu;
 	Memory mem;
 	Hard_disk hd;
-	Channel_device ch_dev; 
+	Channel_Device ch_dev; 
 	Virtual_machine* vm;
 } Real_Machine;
 

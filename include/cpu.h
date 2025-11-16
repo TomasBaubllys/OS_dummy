@@ -65,12 +65,12 @@ typedef struct CPU {
 	uint32_t rc;			// general purpose register, also used for loops
 	uint16_t ptr;
 
-	Channel_device* channel_device;
+	Channel_Device* channel_device;
 	Memory* memory;
 } CPU;
 
 // initializes cpu
-int init_cpu(CPU* cpu, Memory* memory, Channel_device* channel_device);
+int init_cpu(CPU* cpu, Memory* memory, Channel_Device* channel_device);
 
 // checks interrupts (PI and SI)
 int interrupt(CPU* cpu);
