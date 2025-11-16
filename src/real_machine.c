@@ -1,7 +1,7 @@
 #include "../include/real_machine.h"
 #include "../include/virtual_machine.h"
 
-int init_real_machine(Real_machine* real_machine) {
+int init_real_machine(Real_Machine* real_machine) {
 	if(!real_machine) {
 		return -1;
 	}
@@ -25,7 +25,7 @@ int init_real_machine(Real_machine* real_machine) {
 	return 0;
 };
 
-int add_virtual_machine(Real_machine* real_machine) {
+int add_virtual_machine(Real_Machine* real_machine) {
 	if(!real_machine) {
 		return -1;
 	} 
@@ -45,7 +45,7 @@ int add_virtual_machine(Real_machine* real_machine) {
 	return 0;
 }
 
-void remove_virtual_machine(Real_machine* real_machine) {
+void remove_virtual_machine(Real_Machine* real_machine) {
 	if(!real_machine) {
 		return;
 	}
@@ -59,7 +59,7 @@ void remove_virtual_machine(Real_machine* real_machine) {
 	real_machine -> vm = NULL;
 }
 
-int destroy_real_machine(Real_machine* real_machine) {
+int destroy_real_machine(Real_Machine* real_machine) {
 	if(!real_machine) {
 		return -1;
 	}	
@@ -73,7 +73,7 @@ int destroy_real_machine(Real_machine* real_machine) {
 	return 0;
 }
 
-void real_machine_run(Real_machine* real_machine, File_entry* file_entry) {
+void real_machine_run(Real_Machine* real_machine, File_entry* file_entry) {
 	if(!real_machine || !file_entry) {
 		return;
 	}
@@ -114,7 +114,7 @@ void real_machine_run(Real_machine* real_machine, File_entry* file_entry) {
 	remove_virtual_machine(real_machine);
 }
 
-int real_machine_validate_supervisor(Real_machine* real_machine, uint32_t expected_program_length) {
+int real_machine_validate_supervisor(Real_Machine* real_machine, uint32_t expected_program_length) {
 	uint32_t los_count = 0;
 	uint32_t offset = 0;
 
@@ -139,7 +139,7 @@ int real_machine_validate_supervisor(Real_machine* real_machine, uint32_t expect
 	return 0;
 }
 
-int load_program_supervisor(Real_machine* real_machine, File_entry* file_entry) {
+int load_program_supervisor(Real_Machine* real_machine, File_entry* file_entry) {
 	real_machine -> ch_dev.dt = SUPER_MEM;
 	real_machine -> ch_dev.db = MEM_SUPERVISOR_PAGE_BEGIN;
 	real_machine -> ch_dev.cb = (file_entry -> size < MEM_WORDS_SUPERVISOR_COUNT * MEM_WORD_SIZE? file_entry -> size : MEM_WORD_SIZE * MEM_WORDS_SUPERVISOR_COUNT);
@@ -149,7 +149,7 @@ int load_program_supervisor(Real_machine* real_machine, File_entry* file_entry) 
 	return xchg(&real_machine -> ch_dev);
 }
 
-int load_program_user(Real_machine* real_machine, uint32_t program_length) {
+int load_program_user(Real_Machine* real_machine, uint32_t program_length) {
 	for(uint32_t i = 0; i < MEM_SUPERVISOR_PAGE_COUNT; ++i) {
 		uint16_t r_page = translate_to_real_address(&real_machine -> mem, i * MEM_PAGE_BYTE_COUNT) / (MEM_PAGE_BYTE_COUNT);
 		real_machine -> ch_dev.dt = USER_MEM;

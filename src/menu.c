@@ -1,6 +1,6 @@
 #include "../include/menu.h"
 
-void menu(Real_machine* real_machine) {
+void menu(Real_Machine* real_machine) {
 	while(1){
 		if(!real_machine) {
 			fprintf(stderr, MENU_NULL_REAL_MACHINE_ERR);
@@ -91,7 +91,7 @@ void menu(Real_machine* real_machine) {
 	}
 }
 
-void dump_memory(Real_machine* real_machine) {
+void dump_memory(Real_Machine* real_machine) {
 	if(!real_machine) {
 		return;
 	}

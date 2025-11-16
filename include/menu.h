@@ -58,12 +58,12 @@
 #define MSG_STEPPING_LOGGING_INVALID_CHOICE "Invalid choice, please select 1 or 2 \n"
 
 // prints contents of memory
-void dump_memory(Real_machine* real_machine);
+void dump_memory(Real_Machine* real_machine);
 
 // displays the main menu options
 int display_menu();
 
 // main menu loop
-void menu(Real_machine* real_machine);
+void menu(Real_Machine* real_machine);
 
 #endif // MENU_H_INCLUDED

@@ -8,55 +8,66 @@
 #include <vector>
 #include <string>
 
-#define PROCESS_MAX_USERNAME 255
+#define PROCESS_MAX_PRIORITY UINT8_MAX
+#define PROCESS_MIN_PRIORITY 0
 
-//typedef struct Process_List Process_List;
-//typedef struct Resource_List Resource_List;
+uint32_t process_id_pool = 0;
 
-typedef enum Process_State {
+enum class Process_State : uint8_t {
     EXECUTING,
     READY,
     BLOCKED,
     BLOCKED_STOPPED,
     READY_STOPPED
-} Process_State;
+};
+
+typedef enum Process_Priorities : uint8_t {
+    IDLE_PRIORITY = PROCESS_MIN_PRIORITY,
+    VM_PRIORITY = 10,
+    PRINTER_PRIORITY = 40,
+    LOADER_PRIORITY = 60,
+    READ_FROM_INTERFACE_PRIORITY = 70,
+    JOB_GOVERNOR_PRIORITY = 90,
+    START_STOP_PRIORITY = 240,
+    INTERRUPT_PRIORITY = PROCESS_MAX_PRIORITY
+} Process_Priorities;
 
 class Process {
     protected:
         Saved_Registers saved_registers;
         uint32_t unique_id;
-        uint8_t current_step;
         Process_State process_state;
 
+        uint8_t priority;
+
         Kernel* kernel;
-        CPU* cpu;
         Process* parent_process;
 
         std::vector<Process*> children_processes;
-            //Process_List* children_processes;
         std::vector<Process*> friend_processes;
-            //Process_List* friend_processes;
 
         std::vector<Resource*> owned_resources;
         std::vector<Resource*> created_resources;
-        std::vector<Resource*> needed_resources;
-            //Resource_List* owned_resources;
-            //Resource_List* created_resources;
-            //Resource_List* needed_resources;
+        Resource_Type waiting_for;
 
         std::string username;
 
     public:
-        Process(Saved_Registers saved_registers, uint32_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
+        Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username, uint8_t priority);
         virtual ~Process();
-        virtual int8_t execute();
+        virtual Process_State execute();
 
         void set_state(Process_State process_state);
         uint32_t get_unique_id();
-        uint8_t get_current_step();
         Process_State get_process_state();
         std::string get_username();
         bool owns_resource(Resource_Type resource);
+
+        void on_resource_aquired();
+
+        void set_priority(uint8_t priority);
+
+        uint8_t get_priority() const;
 };
 
 /*

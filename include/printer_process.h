@@ -15,10 +15,10 @@ class Printer_Process: public Process{
 		Printer_Process_Steps step;
 
 	public:
-		Printer_Process(Saved_Registers saved_registers, uint32_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
+		Printer_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
 		~Printer_Process();
 
-		int8_t execute() override;
+		Process_State execute() override;
 };
 
 

@@ -19,34 +19,34 @@
 
 typedef struct Virtual_machine Virtual_machine;
 
-typedef struct Real_machine {
+typedef struct Real_Machine {
 	CPU cpu;
 	Memory mem;
 	Hard_disk hd;
 	Channel_device ch_dev; 
 	Virtual_machine* vm;
-} Real_machine;
+} Real_Machine;
 
 // initializes real machine
-int init_real_machine(Real_machine* real_machine); 
+int init_real_machine(Real_Machine* real_machine); 
 
-int add_virtual_machine(Real_machine* real_machine);
+int add_virtual_machine(Real_Machine* real_machine);
 
 // destroys real machine
-int destroy_real_machine(Real_machine* real_machine);
+int destroy_real_machine(Real_Machine* real_machine);
 
 // loads a program and gives virtual machine to execute it
-void real_machine_run(Real_machine* real_machine, File_entry* file_entry);
+void real_machine_run(Real_Machine* real_machine, File_entry* file_entry);
 
 // validates if a code snippet in the supervisor memory looks valid
-int real_machine_validate_supervisor(Real_machine* real_machine, uint32_t expected_program_length);
+int real_machine_validate_supervisor(Real_Machine* real_machine, uint32_t expected_program_length);
 
 // loads program from hard disk to supervisor memory
-int load_program_supervisor(Real_machine* real_machine, File_entry* file_entry);
+int load_program_supervisor(Real_Machine* real_machine, File_entry* file_entry);
 
 // loads program from supervisor memory to user memory
-int load_program_user(Real_machine* real_machine, uint32_t program_length);
+int load_program_user(Real_Machine* real_machine, uint32_t program_length);
 
-void remove_virtual_machine(Real_machine* real_machine);
+void remove_virtual_machine(Real_Machine* real_machine);
 
 #endif // REAL_MACHINE_H_INCLUDED

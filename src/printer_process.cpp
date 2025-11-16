@@ -1,8 +1,8 @@
 #include "../include/printer_process.h"
 #include "../include/resource.h"
 
-Printer_Process::Printer_Process(Saved_Registers saved_registers, uint32_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
-	Process(saved_registers, unique_id, kernel, cpu, parent_process, friend_processes, username)
+Printer_Process::Printer_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
+	Process(kernel, parent_process, friend_processes, username, Process_Priorities::PRINTER_PRIORITY)
 {	
 
 }
@@ -11,17 +11,19 @@ Printer_Process::~Printer_Process() {
 
 }
 
-int8_t Printer_Process::execute() {
+Process_State Printer_Process::execute() {
 	switch (this -> step){
 		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE:
-			if(this -> owns_resource(Resource_Type::RESOURCE_STRING_IN_MEMORY)) {
+			if(this -> owns_resource(Resource_Type::STRING_IN_MEMORY)) {
 				this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE;
+				return Process_State::READY;
 			}
 
 			return Process_State::BLOCKED;
 		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE:
-			if(this -> owns_resource(Resource_Type::RESOURCE_CHANNEL_DEVICE)) {
+			if(this -> owns_resource(Resource_Type::CHANNEL_DEVICE)) {
 				this -> step = Printer_Process_Steps::PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG;
+				return Process_State::READY;
 			}
 
 			return Process_State::BLOCKED;
@@ -45,8 +47,8 @@ int8_t Printer_Process::execute() {
 			this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE;
 			break;
 		default:
-			return -1;
+			return Process_State::BLOCKED_STOPPED;
 	}
 
-	return 0;
+	return Process_State::BLOCKED_STOPPED;
 }

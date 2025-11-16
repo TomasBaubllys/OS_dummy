@@ -13,13 +13,13 @@ enum class Start_Stop_Process_Steps{
 
 class Start_Stop_Process: public Process {
     private:
-        Start_Stop_Process_Steps current_step;
+        Start_Stop_Process_Steps step;
 
     public:
-        Start_Stop_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
+        Start_Stop_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Start_Stop_Process();
 
-        int8_t execute() override;
+        Process_State execute() override;
 };
 
 
