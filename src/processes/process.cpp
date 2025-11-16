@@ -1,4 +1,4 @@
-#include "../include/process.h"
+#include "../../include/processes/process.h"
 
 Process::Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username, uint8_t priority) :
     unique_id(process_id_pool++),
@@ -17,7 +17,13 @@ Process::Process(Kernel* kernel, Process* parent_process, std::vector<Process*> 
 }
 
 Process::~Process() {
+    // destroy all owned resources
+    for(Resource* resc : this -> created_resources) {
+        delete resc;
+        resc = nullptr;
+    }
 
+    this -> created_resources.clear();
 }
 
 Process_State Process::execute() {

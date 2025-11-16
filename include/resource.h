@@ -9,6 +9,32 @@
 
 static uint32_t resource_id_pool = 0;
 
+// System resources:
+// these resources are "singletons" and can only be accessed one at a time
+/*
+	MOS_END,
+	SYSTEM_COMMAND,
+	HARD_DISK,
+	USER_MEMORY,
+	SUPERVISOR_MEMORY,
+	TASK_IN_SUPERVISOR,
+	STRING_IN_MEMORY,
+	PIE_IN_THE_OVEN,
+	NON_EXISTANT,
+	CHANNEL_DEVICE,
+	INTERRUPT,
+	FROM_USER_INTERFACE,
+*/
+
+// Dynamic resources:
+// these resources can be "created by a process"
+/*
+	LOADER_PACKAGE,
+	USER_INPUT,
+	FROM_LOADER,
+	FROM_INTERRUPT,
+*/
+
 enum class Resource_Type : uint16_t {
 	MOS_END,
 	SYSTEM_COMMAND,

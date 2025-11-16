@@ -32,11 +32,13 @@ enum class Job_Governor_Process_Steps{
 
 class Job_Governor_Process: public Process{
     private:
-        Job_Governor_Process_Steps steps;
+        Job_Governor_Process_Steps step;
+        Resource* vm_input;
+
     public:
-        Job_Governor_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
+        Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Job_Governor_Process();
-        virtual int8_t execute() override;
+        Process_State execute() override;
 };
 
 

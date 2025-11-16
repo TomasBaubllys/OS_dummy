@@ -9,6 +9,8 @@
 
 #define SYSTEM_USERNAME "system"
 
+class Job_Governor_Process;
+
 class Process;
 
 class Kernel {
@@ -19,17 +21,29 @@ class Kernel {
 		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> ready_queue;
 		std::vector<Process*> running;
 		std::vector<Process*> all_processes;
-		std::unordered_map<Resource_Type, Resource*> resources;
+		std::unordered_map<Resource_Type, Resource*> system_resources;
 
 	public:
 		std::string string_in_memory;
+		Job_Governor_Process* current_console_holder;
+
 		
 		Kernel(Real_Machine* real_machine);
 		
+		// for system resources
 		void request_resource(Process* process, Resource_Type resource_type);
+
+		// for dynamic resources
+		void request_resource(Process* process, Resource* resource);
+
 		Resource* get_resource(Resource_Type resource_type);
 		void init_resource(Resource_Type resource_type);
-		void release_resource(Process* process, Resource_Type resource_type);
+
+		// used for system resources
+		void release_resource(Resource_Type resource_type);
+
+		// used for dynamic resources
+		void release_resource(Resource* resource);
 
 		void run();
 

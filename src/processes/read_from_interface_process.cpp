@@ -1,4 +1,5 @@
 #include "../../include/processes/read_from_interface_process.h"
+#include "../../include/processes/job_governor_process.h"
 #include <iostream>
 
 Read_From_Interface_Process::Read_From_Interface_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username):
@@ -43,6 +44,14 @@ Process_State Read_From_Interface_Process::execute(){
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_INPUT_STARTS_WITH_$:
             if(this -> buffer.rfind(RMI_SYS_COMMAND, 0)) {
 
+            }
+            else {
+                Job_Governor_Process* jg = this -> kernel -> current_console_holder; 
+
+                // its a vm command
+                this -> kernel -> release_resource(jg -> vm_input);
+
+                // copy the buffer to kernels user_input buffer
             }
             break;
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_SYSTEM_COMMAND:
