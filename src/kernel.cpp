@@ -1,6 +1,7 @@
 #include "../include/kernel.h"
 #include "../../include/processes/process.h"
 #include "../../include/processes/start_stop_process.h"
+#include "../include/io.h"
 #include <algorithm>
 
 struct Kernel::Process_Comparator {
@@ -61,6 +62,10 @@ void release_resource(Process* process, Resource_Type resource_type) {
 
 void Kernel::run() {
     while(true) {
+        if(line_ready()) {
+            this -> init_resource(Resource_Type::FROM_USER_INTERFACE);
+        }
+
         if(this -> ready_queue.empty()) {
             // should never be empty...
             exit(-1);
@@ -101,13 +106,32 @@ void Kernel::kill_processes_except(Process* survivor) {
         }
     }
 
-    // clean ready queue except survivor
+    // clean ready queue (start stop shoudnt be in the queue)
+    bool survivor_is_in_q = false;
+    while(!this -> ready_queue.empty()) {
+        Process* proc = this -> ready_queue.top();
+        if(proc == survivor) {
+            survivor_is_in_q = true;
+        }
+        this -> ready_queue.pop();
+    }
+
+    if(survivor_is_in_q) {
+        this -> ready_queue.push(survivor);
+    }
 
     this -> all_processes.erase(std::remove_if(this -> all_processes.begin(), this -> all_processes.end(),
     [survivor](Process* proc) {
         return survivor != proc;
     }), this -> all_processes.end());
 
+}
 
+void Kernel::destroy_resources() {
+    for(std::pair<Resource_Type, Resource*> resc : this -> resources) {
+        delete resc.second;
+        resc.second = nullptr;
+    }
 
+    this -> resources.clear();
 }

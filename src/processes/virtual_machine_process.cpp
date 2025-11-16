@@ -1,7 +1,7 @@
 #include "../../include/processes/virtual_machine_process.h"
 
-Virtual_Machine_Process::Virtual_Machine_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
-    Process(kernel, cpu, parent_process, friend_processes, username){
+Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
+    Process(kernel, parent_process, friend_processes, username) {
     this -> saved_registers = {};
 }
 

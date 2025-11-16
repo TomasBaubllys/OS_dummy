@@ -3,6 +3,9 @@
 
 #include "process.h"
 
+#define RMI_FILE_INPUT "F$" 
+#define RMI_SYS_COMMAND "$"
+
 typedef enum Read_From_Interface_Process_Steps{
     READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE,
     READ_FROM_INTERFACE_CHECK_IF_INPUT_STARTS_WITH_F$,
@@ -18,7 +21,9 @@ typedef enum Read_From_Interface_Process_Steps{
 
 class Read_From_Interface_Process: public Process{
     private:
-        Read_From_Interface_Process_Steps steps;
+        Read_From_Interface_Process_Steps step;
+
+        std::string buffer;
     public:
         Read_From_Interface_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Read_From_Interface_Process();
