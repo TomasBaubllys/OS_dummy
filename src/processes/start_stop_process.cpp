@@ -25,6 +25,7 @@ Process_State Start_Stop_Process::execute() {
             this -> kernel -> init_resource(Resource_Type::USER_MEMORY);
             this -> kernel -> init_resource(Resource_Type::SUPERVISOR_MEMORY);
             this -> kernel -> init_resource(Resource_Type::STRING_IN_MEMORY);
+            this -> kernel -> init_resource(Resource_Type::CONSOLE);
             this -> kernel -> init_resource(Resource_Type::PIE_IN_THE_OVEN);
             this -> kernel -> init_resource(Resource_Type::NON_EXISTANT);
             this -> kernel -> init_resource(Resource_Type::CHANNEL_DEVICE);
