@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "util.h"
 #include "channel_device.h"
+#include "saved_registers.h"
 
 #define CPU_DEFAULT_TIMER_VALUE 10
 #define CPU_USER_MODE 0
@@ -80,5 +81,9 @@ uint8_t check(CPU* cpu);
 
 // sets all registers to 0
 int reset_cpu(CPU* cpu);
+
+Saved_Registers cpu_save_regs(CPU* cpu);
+
+void cpu_load_regs(CPU* cpu, Saved_Registers saved_regs);
 
 #endif // CPU_H_INCLUDED
