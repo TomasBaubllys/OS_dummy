@@ -9,15 +9,20 @@ Interrupt_Process::~Interrupt_Process(){
 
 }
 
+// NEED A WAY TO TRACK WHICH JOB GOVERNOR IS CURRENTLY INTWRRRUPTING!
 Process_State Interrupt_Process::execute(){
-    switch (this -> current_step){
-        case Interrupt_Process_Steps::INTERRUPT_RPOCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE:
+    switch (this -> step){
+        case Interrupt_Process_Steps::INTERRUPT_PROCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE:
+            if(this -> owns_resource(Resource_Type::INTERRUPT)) {
+                this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_IDENTIFY_INTERRUPT;
+                return Process_State::READY;
+            }
+            return Process_State::BLOCKED;
+        case Interrupt_Process_Steps::INTERRUPT_PROCESS_IDENTIFY_INTERRUPT:
             break;
-        case Interrupt_Process_Steps::INTERRUPT_RPOCESS_IDENTIFY_INTERRUPT:
+        case Interrupt_Process_Steps::INTERRUPT_PROCESS_RECOGNIZE_JOB_GOVERNOR_RESPONSIBLE_FOR_INTERRUPT:
             break;
-        case Interrupt_Process_Steps::INTERRUPT_RPOCESS_RECOGNIZE_JOB_GOVERNOR_RESPONSIBLE_FOR_INTERRUPT:
-            break;
-        case Interrupt_Process_Steps::INTERRUPT_RPOCESS_FREE_FROM_INTERRUPT_RESOURCE:
+        case Interrupt_Process_Steps::INTERRUPT_PROCESS_FREE_FROM_INTERRUPT_RESOURCE:
             break;
         
         default:

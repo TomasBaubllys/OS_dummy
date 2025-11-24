@@ -39,13 +39,10 @@ Process_State Printer_Process::execute() {
 			this -> step = Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE; 
 			return Process_State::READY;
 		case Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE:
-			/**
-			 * 
-			 * NOT IMPLEMENTED YET
-			 * 
-			 */
+			this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);	
+
 			this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE;
-			break;
+			return Process_State::READY;
 		default:
 			return Process_State::BLOCKED_STOPPED;
 	}

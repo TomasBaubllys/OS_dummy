@@ -21,10 +21,13 @@ class Kernel {
 		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> ready_queue;
 		std::vector<Process*> running;
 		std::vector<Process*> all_processes;
-		std::unordered_map<Resource_Type, Resource*> system_resources;
+		// all resources in one map by id
+		// std::unordered_map<Resource_Type, Resource*> system_resources;
+		std::queue<Resource*> resources; 
 
 	public:
 		std::string string_in_memory;
+		std::string system_command;
 		Job_Governor_Process* current_console_holder;
 
 		

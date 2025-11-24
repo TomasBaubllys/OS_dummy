@@ -61,9 +61,12 @@ class Resource {
 	private:
 		uint32_t unique_id;
 
+		std::string buffer;
+
 		Process* owner;
+		Process* user;
 		Resource_Type resource_type;
-		std::queue<Process*> waiting;
+		// std::queue<Process*> waiting;
 
 	public:
 		Resource(uint32_t unique_id, Resource_Type type, Process* owner = nullptr);

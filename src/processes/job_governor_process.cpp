@@ -9,11 +9,16 @@ Job_Governor_Process::~Job_Governor_Process(){
 
 }
 
-int8_t Job_Governor_Process::execute(){
-    switch (this -> current_step)
+Process_State Job_Governor_Process::execute(){
+    switch (this -> step)
     {
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE:
-        break;
+        if(this -> owns_resource(Resource_Type::USER_MEMORY)) {
+            this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
+            return Process_State::READY;
+        }
+
+        return Process_State::BLOCKED;
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE:
         break;
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE:

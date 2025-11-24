@@ -92,7 +92,7 @@ void Kernel::run() {
 
         switch(result) {
             case Process_State::READY: {
-
+                this -> ready_queue.push(curr_p);
             }
             case Process_State::BLOCKED: {
 

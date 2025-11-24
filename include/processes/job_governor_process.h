@@ -30,15 +30,15 @@ enum class Job_Governor_Process_Steps{
     JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_NONEXISTANT_RESOURCE
 };
 
-class Job_Governor_Process: public Process{
+class Job_Governor_Process: public Process {
     private:
         Job_Governor_Process_Steps step;
-        Resource* vm_input;
 
     public:
         Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Job_Governor_Process();
         Process_State execute() override;
+        Resource* vm_input;
 };
 
 
