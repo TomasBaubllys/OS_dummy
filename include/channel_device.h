@@ -13,6 +13,7 @@ typedef struct Channel_Device {
 	uint16_t of;			// stores the offset value
 	uint8_t dt;				// number of the object to copy to
 	uint32_t sa;			// symbol register
+	char* _sa_ptr;
 
 	Memory* memory;			// bruh
 	Hard_disk* hard_disk;	// bruh

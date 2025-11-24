@@ -66,7 +66,6 @@ class Resource {
 		Process* owner;
 		Process* user;
 		Resource_Type resource_type;
-		// std::queue<Process*> waiting;
 
 	public:
 		Resource(uint32_t unique_id, Resource_Type type, Process* owner = nullptr);
@@ -81,7 +80,9 @@ class Resource {
 
 		void assign(Process* process);
 
-		Process* next_waiting();
+		std::string get_buffer();
+
+		size_t get_buffer_size();
 };
 
 #endif // RESOURCE_H_INCLUDED

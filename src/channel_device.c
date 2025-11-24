@@ -12,6 +12,7 @@ int init_channel_device(Channel_Device* channel_device, Memory* memory, Hard_dis
 	channel_device -> of = 0;
 	channel_device -> dt = 0;
 	channel_device -> sa = 0;
+	channel_device -> _sa_ptr = 0;
 	channel_device -> memory = memory;
 	channel_device -> hard_disk = hard_disk;
 
@@ -30,6 +31,7 @@ void reset_channel_device(Channel_Device* channel_device){
 	channel_device -> of = 0;
 	channel_device -> dt = 0;
 	channel_device -> sa = 0;
+	channel_device -> _sa_ptr = 0;
 
 	return;
 }
@@ -136,8 +138,7 @@ int xchg(Channel_Device* channel_device) {
 		case MSG_IN_MEMORY:
 			switch (channel_device -> dt) {
 				case IO_STREAM:
-						const char* p = (const char*) channel_device -> sa;
-						printf("%s", p);
+						printf("%s", channel_device -> _sa_ptr);
 					break;
 				
 				default:

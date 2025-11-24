@@ -50,7 +50,10 @@ class Process {
 
         std::vector<Resource*> owned_resources;
         std::vector<Resource*> created_resources;
+        // for static
         Resource_Type waiting_for;
+        // for dynamic
+        Resource* waiting_for_ptr;
 
         std::string username;
 
@@ -63,46 +66,25 @@ class Process {
         uint32_t get_unique_id();
         Process_State get_process_state();
         std::string get_username();
-        bool owns_resource(Resource_Type resource);
+        bool owns_resource(Resource_Type resource_type);
+
+        void set_waiting_resource_type(Resource_Type resource_type);
+
+        void set_waiting_resource(Resource* resource);
 
         void on_resource_aquired();
 
         void set_priority(uint8_t priority);
 
         uint8_t get_priority() const;
+
+        Resource_Type get_waiting_resource_type();
+
+        Resource* get_waiting_resource();
+
+        Resource* get_owned_resource(Resource_Type resource_type);
+
+        void add_owned_resource(Resource* resource);
 };
-
-/*
-typedef struct Process {
-    Saved_Registers saved_registers;
-    uint32_t unique_id;
-    Kernel* kernel;
-    CPU* cpu;
-    Process* parent_process;
-    uint8_t priority;
-    Process_List* children_process;
-    Process_List* friend_process;
-    Resource_List* owned_resources;
-    Resource_List* created_resources;
-    Resource_List* needed_resources;
-    const char* username[PROCESS_MAX_USERNAME];
-	uint8_t current_step;
-	Process_State process_state;
-	// function to be called with with process
-	int8_t (*execute)(struct Process* self);
-} Process;
-
-// must have all the arguments required
-Process* create_process();
-
-// deletes the process and frees the memory
-int8_t destroy_process(Process* process);
-
-void remove_from
-
-*/
-
-
-
 
 #endif // PROCESS_H_INCLUDED

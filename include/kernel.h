@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <string>
 #include "../include/resource.h"
+#include <list>
 
 #define SYSTEM_USERNAME "system"
 
@@ -19,15 +20,14 @@ class Kernel {
 
 		Real_Machine* real_machine;
 		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> ready_queue;
+		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> blocked_queue;
+		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> ready_stopped_queue;
+		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> blocked_stopped_queue;
 		std::vector<Process*> running;
 		std::vector<Process*> all_processes;
-		// all resources in one map by id
-		// std::unordered_map<Resource_Type, Resource*> system_resources;
-		std::queue<Resource*> resources; 
+		std::list<Resource*> resources; 
 
 	public:
-		std::string string_in_memory;
-		std::string system_command;
 		Job_Governor_Process* current_console_holder;
 
 		
@@ -39,7 +39,7 @@ class Kernel {
 		// for dynamic resources
 		void request_resource(Process* process, Resource* resource);
 
-		Resource* get_resource(Resource_Type resource_type);
+		Resource* get_resource(Process* process, Resource_Type resource_type);
 		void init_resource(Resource_Type resource_type);
 
 		// used for system resources
@@ -47,6 +47,9 @@ class Kernel {
 
 		// used for dynamic resources
 		void release_resource(Resource* resource);
+
+		// used for system resources
+		Resource* get_resource_by_type(Resource_Type resource_type);
 
 		void run();
 

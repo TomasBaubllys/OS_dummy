@@ -12,7 +12,7 @@ Printer_Process::~Printer_Process() {
 }
 
 Process_State Printer_Process::execute() {
-	switch (this -> step){
+	switch(this -> step){
 		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE:
 			if(this -> owns_resource(Resource_Type::STRING_IN_MEMORY)) {
 				this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE;
@@ -27,17 +27,22 @@ Process_State Printer_Process::execute() {
 			}
 
 			return Process_State::BLOCKED;
-		case Printer_Process_Steps::PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG:
+		case Printer_Process_Steps::PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG: {
 			Channel_Device* ch_dev = this -> kernel -> get_channel_device();
 			ch_dev -> st = MSG_IN_MEMORY;
 			ch_dev -> dt = IO_STREAM;
-			ch_dev -> sa = (uint32_t)(this -> kernel -> string_in_memory.c_str());
-			ch_dev -> cb = this -> kernel -> string_in_memory.size();
+			
+			Resource* resc_str_mem = this -> get_owned_resource(Resource_Type::STRING_IN_MEMORY);
+			std::string buffer = resc_str_mem -> get_buffer();
+			
+			ch_dev -> _sa_ptr = buffer.data();
+			ch_dev -> cb = buffer.size();
 			ch_dev -> of = 0;  
-
 			xchg(ch_dev);
+
 			this -> step = Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE; 
 			return Process_State::READY;
+		}
 		case Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE:
 			this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);	
 

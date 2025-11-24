@@ -1,8 +1,10 @@
 #include "../include/kernel.h"
 #include "../../include/processes/process.h"
+#include "../../include/processes/job_governor_process.h" // Assuming this exists based on forward decl
 #include "../../include/processes/start_stop_process.h"
 #include "../include/io.h"
 #include <algorithm>
+#include <vector>
 
 struct Kernel::Process_Comparator {
     bool operator()(const Process* a, const Process* b) const {
@@ -11,65 +13,146 @@ struct Kernel::Process_Comparator {
 };
 
 Kernel::Kernel(Real_Machine* real_machine) : real_machine(real_machine) {
+    this -> current_console_holder = nullptr;
+
     Process* start_stop = new Start_Stop_Process(this, nullptr, {}, SYSTEM_USERNAME);
     start_stop -> set_state(Process_State::READY);
 
     this -> all_processes.push_back(start_stop);
-
     this -> ready_queue.push(start_stop);
 }
 
 void Kernel::request_resource(Process* process, Resource_Type resource_type) {
-    Resource* resource = this -> system_resources[resource_type];
+    if (!process) return;
 
-    // try again later...
-    if(resource == nullptr) {
+    Resource* res = this -> get_resource_by_type(resource_type);
+
+    if (!res) {
         return;
     }
 
-    if(resource -> is_free()) {
-        resource -> assign(process);
-        process -> on_resource_aquired();
-        this -> ready_queue.push(process);
-    }
+    if (res -> is_free()) {
+        process -> add_owned_resource(res);
+        // res -> assign(process);
+    } 
     else {
-        resource -> enqueue(process);
+        process -> set_waiting_resource_type(resource_type);
         process -> set_state(Process_State::BLOCKED);
+        
+        // Note: The process is added to blocked_queue in the run() loop
+        // to avoid duplication, as run() handles the state transition.
     }
-}
-
-Resource* Kernel::get_resource(Resource_Type resource_type) {
-    auto it = this -> system_resources.find(resource_type);
-    if(it == this -> system_resources.end()) {
-        return nullptr;
-    }
-
-    return it -> second;
-}
-
-void Kernel::init_resource(Resource_Type resource_type) {
-    if(this -> system_resources.find(resource_type) != this -> system_resources.end()) {
-        return;
-    }
-
-    this -> system_resources[resource_type] = new Resource(resource_id_pool++, resource_type);
 }
 
 void Kernel::release_resource(Resource_Type resource_type) {
-    Resource* resc = this -> system_resources[resource_type];
-    if(!resc) {
-        return;
+    Resource* res = this -> get_resource_by_type(resource_type);
+
+    if (!res) return;
+
+    // 1. Mark resource as free
+    res -> free_resource();
+
+    // 2. Search blocked_queue for a waiter.
+    // Since blocked_queue is a priority_queue, we must pop everything to search, 
+    // then push back the ones we didn't wake up.
+    std::vector<Process*> temp_container;
+    bool found = false;
+
+    while (!this -> blocked_queue.empty()) {
+        Process* proc = this -> blocked_queue.top();
+        this -> blocked_queue.pop();
+
+        if (!found && proc -> get_waiting_resource_type() == resource_type) {
+            res -> assign(proc);
+            
+            proc -> set_state(Process_State::READY);
+            proc -> set_waiting_resource_type(Resource_Type::NONE); // Clear wait reason
+
+            this -> ready_queue.push(proc);
+            found = true;
+        } 
+        else {
+            temp_container.push_back(proc);
+        }
     }
 
-    Process* proc = resc -> next_waiting();
+    for (Process* p : temp_container) {
+        this -> blocked_queue.push(p);
+    }
+}
 
-    if(proc) {
-        resc -> assign(proc);
-        proc -> set_state(Process_State::READY);
-        this -> ready_queue.push(proc);
-    }   
+Resource* Kernel::get_resource(Process* process, Resource_Type resource_type) {
+    Resource* res = this -> get_resource_by_type(resource_type);
+
+    if (res && res -> is_free()) {
+        res -> assign(process);
+        return res;
+    }
+    return nullptr;
+}
+
+Resource* Kernel::get_resource_by_type(Resource_Type resource_type) {
+    for (Resource* res : this -> resources) {
+        if (res -> get_resource_type() == resource_type) {
+            return res;
+        }
+    }
+    return nullptr;
+}
+
+void Kernel::init_resource(Resource_Type resource_type) {
+    // Using resources.size() as a simple unique ID generator since resource_id_pool isn't in header
+    uint32_t new_id = (uint32_t)this -> resources.size(); 
+    Resource* new_resc = new Resource(new_id, resource_type);
+    this -> resources.push_back(new_resc);
+}
+
+// -------------------------------------------------------
+// DYNAMIC RESOURCES (POINTER BASED)
+// -------------------------------------------------------
+
+void Kernel::request_resource(Process* process, Resource* resource) {
+    if (!process || !resource) return;
+
+    if (resource -> is_free()) {
+        resource -> assign(process);
+        process -> on_resource_aquired(); // Assuming this method exists in Process
+    }
     else {
-        this -> system_resources[resource_type] -> free_resource();
+        process -> set_waiting_resource(resource);
+        process -> set_state(Process_State::BLOCKED);
+        // Will be pushed to blocked_queue in run() loop
+    }
+}
+
+void Kernel::release_resource(Resource* resource) {
+    if (!resource) return;
+
+    resource -> free_resource();
+
+    std::vector<Process*> temp_container;
+    bool found = false;
+
+    while (!this -> blocked_queue.empty()) {
+        Process* proc = this -> blocked_queue.top();
+        this -> blocked_queue.pop();
+
+        if (!found && proc -> get_waiting_resource() == resource) {
+            resource -> assign(proc);
+            
+            proc -> set_state(Process_State::READY);
+            proc -> set_waiting_resource(nullptr);
+
+            this -> ready_queue.push(proc);
+            found = true;
+        } 
+        else {
+            temp_container.push_back(proc);
+        }
+    }
+
+    for (Process* p : temp_container) {
+        this -> blocked_queue.push(p);
     }
 }
 
@@ -80,30 +163,41 @@ void Kernel::run() {
         }
 
         if(this -> ready_queue.empty()) {
-            // should never be empty...
             exit(-1);
         }
 
         Process* curr_p = this -> ready_queue.top();
         this -> ready_queue.pop();
+        
         curr_p -> set_state(Process_State::EXECUTING);
         
         Process_State result = curr_p -> execute();
-
+        
         switch(result) {
-            case Process_State::READY: {
+            case Process_State::READY:
                 this -> ready_queue.push(curr_p);
-            }
-            case Process_State::BLOCKED: {
-
-            }
-            // etc...
-            default: {
                 break;
                 
-            }
-        }
+            case Process_State::BLOCKED: 
+                this -> blocked_queue.push(curr_p); 
+                break;
+                
+            case Process_State::READY_STOPPED:
+                this -> ready_stopped_queue.push(curr_p);
+                break;
+                
+            case Process_State::BLOCKED_STOPPED:
+                this -> blocked_stopped_queue.push(curr_p);
+                break;
+                
+            case Process_State::EXECUTING:
+                curr_p -> set_state(Process_State::READY);
+                this -> ready_queue.push(curr_p);
+                break;
 
+            default:
+                break;
+        }
     }
 }
 
@@ -119,65 +213,40 @@ void Kernel::kill_processes_except(Process* survivor) {
         }
     }
 
-    // clean ready queue (start stop shoudnt be in the queue)
-    bool survivor_is_in_q = false;
+    std::vector<Process*> kept_ready;
     while(!this -> ready_queue.empty()) {
-        Process* proc = this -> ready_queue.top();
-        if(proc == survivor) {
-            survivor_is_in_q = true;
-        }
+        Process* p = this -> ready_queue.top();
         this -> ready_queue.pop();
+        if(p == survivor) {
+            kept_ready.push_back(p);
+        }
+    }
+    for(Process* p : kept_ready) {
+        this -> ready_queue.push(p);
     }
 
-    if(survivor_is_in_q) {
-        this -> ready_queue.push(survivor);
+    while(!this -> blocked_queue.empty()) {
+        this -> blocked_queue.pop();
     }
 
-    this -> all_processes.erase(std::remove_if(this -> all_processes.begin(), this -> all_processes.end(),
-    [survivor](Process* proc) {
-        return survivor != proc;
-    }), this -> all_processes.end());
+    while(!this -> ready_stopped_queue.empty()) {
+        this -> ready_stopped_queue.pop();
+    }
 
+    while(!this -> blocked_stopped_queue.empty()) {
+        this -> blocked_stopped_queue.pop();
+    }
+
+    // 3. Remove nulls from main list
+    this -> all_processes.erase(
+        std::remove(this -> all_processes.begin(), this -> all_processes.end(), nullptr), 
+        this -> all_processes.end()
+    );
 }
 
 void Kernel::destroy_resources() {
-    for(std::pair<Resource_Type, Resource*> resc : this -> system_resources) {
-        delete resc.second;
-        resc.second = nullptr;
+    for (Resource* res : this -> resources) {
+        delete res;
     }
-
-    this -> system_resources.clear();
-}
-
-void Kernel::release_resource(Resource* resource) {
-    if(!resource) {
-        return;
-    }
-
-    Process* proc = resource -> next_waiting();
-
-    if(proc) {
-        resource -> assign(proc);
-        proc -> set_state(Process_State::READY);
-        this -> ready_queue.push(proc);
-    }   
-    else {
-        resource -> assign(nullptr);
-    }
-}
-
-void Kernel::request_resource(Process* process, Resource* resource) {
-    if(!process || !resource) {
-        return;
-    }
-
-    if(resource -> is_free()) {
-        resource -> assign(process);
-        process -> on_resource_aquired();
-        this -> ready_queue.push(process);
-    }
-    else {
-        resource -> enqueue(process);
-        process -> set_state(Process_State::BLOCKED);
-    }
+    this -> resources.clear();
 }

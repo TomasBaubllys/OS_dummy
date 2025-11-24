@@ -2,13 +2,12 @@
 
 Process::Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username, uint8_t priority) :
     unique_id(process_id_pool++),
-    process_state(process_state),
+    process_state(Process_State::READY),
     kernel(kernel),
     parent_process(parent_process),
     friend_processes(friend_processes),
-    owned_resources(owned_resources),
-    created_resources(created_resources),
     waiting_for(Resource_Type::NONE),
+    waiting_for_ptr(nullptr),
     username(username),
     priority(priority)
 {
@@ -16,17 +15,15 @@ Process::Process(Kernel* kernel, Process* parent_process, std::vector<Process*> 
 }
 
 Process::~Process() {
-    // destroy all owned resources
-    for(Resource* resc : this -> created_resources) {
-        delete resc;
-        resc = nullptr;
-    }
-
-    this -> created_resources.clear();
+    this -> created_resources.clear(); 
+    this -> owned_resources.clear();
 }
 
 Process_State Process::execute() {
-
+    // 4. Must return something. 
+    // Usually this is virtual and implemented by children, 
+    // but if not abstract, return a default state.
+    return Process_State::EXECUTING; 
 }
 
 uint32_t Process::get_unique_id() {
@@ -34,7 +31,7 @@ uint32_t Process::get_unique_id() {
 }
 
 Process_State Process::get_process_state() {
-    this -> process_state;
+    return this -> process_state; // 5. Added missing return
 }
 
 std::string Process::get_username() {
@@ -46,6 +43,7 @@ void Process::set_state(Process_State process_state) {
 }
 
 bool Process::owns_resource(Resource_Type resource) {
+    // This logic is correct
     for(const Resource* resc : this -> owned_resources) {
         if(resource == resc -> get_resource_type()) {
             return true;
@@ -56,7 +54,7 @@ bool Process::owns_resource(Resource_Type resource) {
 }
 
 void Process::on_resource_aquired() {
-
+    // Logic can be added here later if needed
 }
 
 void Process::set_priority(uint8_t priority) {
@@ -67,3 +65,34 @@ uint8_t Process::get_priority() const {
     return this -> priority;
 }
 
+void Process::set_waiting_resource_type(Resource_Type resource) {
+    this -> waiting_for = resource;
+}
+
+void Process::set_waiting_resource(Resource* resource) {
+    this -> waiting_for_ptr = resource;
+}
+
+Resource_Type Process::get_waiting_resource_type() {
+    return this -> waiting_for;
+}
+
+Resource* Process::get_waiting_resource() {
+    return this -> waiting_for_ptr;
+}
+
+Resource* Process::get_owned_resource(Resource_Type resource_type) {
+    auto it = this -> owned_resources.begin();
+    while(it != this -> owned_resources.end()) {
+        if((*it) -> get_resource_type() == resource_type) {
+            return (*it);
+        }
+    }
+
+    return nullptr;
+}
+
+void Process::add_owned_resource(Resource* resource) {
+    resource -> assign(this);
+    this -> owned_resources.push_back(resource);
+}
