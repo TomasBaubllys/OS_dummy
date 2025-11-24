@@ -21,11 +21,11 @@ enum class Job_Control_Language_Process_Steps{
 
 class Job_Control_Language_Process: public Process{
     private:
-        Job_Control_Language_Process_Steps current_step;
+        Job_Control_Language_Process_Steps step;
     public:
-        Job_Control_Language_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
+        Job_Control_Language_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Job_Control_Language_Process();
-        virtual int8_t execute() override; 
+        Process_State execute() override; 
 };
 
 

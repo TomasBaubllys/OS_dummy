@@ -14,9 +14,9 @@ enum class Loader_Process_Steps{
 
 class Loader_Process: public Process{
     private:
-        Loader_Process_Steps steps;
+        Loader_Process_Steps step;
     public:
-        Loader_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
+        Loader_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Loader_Process();
         Process_State execute() override;
 };

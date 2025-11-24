@@ -1,7 +1,7 @@
-#include "../include/job_control_language_process.h"
+#include "../../include/processes/job_control_language_process.h"
 
-Job_Control_Language_Process::Job_Control_Language_Process(Saved_Registers saved_registers, uint16_t unique_id, Kernel* kernel, CPU* cpu, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
-    Process(saved_registers, unique_id, kernel, cpu, parent_process, friend_processes, username){
+Job_Control_Language_Process::Job_Control_Language_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
+    Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_CONTROL_LANGUAGE_PRIORITY){
 
 } 
 
@@ -9,8 +9,8 @@ Job_Control_Language_Process::~Job_Control_Language_Process(){
 
 }
 
-int8_t Job_Control_Language_Process::execute(){
-    switch (this -> current_step){
+Process_State Job_Control_Language_Process::execute(){
+    switch (this -> step){
         case Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_BLOCKED_WAIT_FOR_TASK_IN_SUPERVISOR:
             /* code */
             break;
