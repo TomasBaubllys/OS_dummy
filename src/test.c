@@ -2,10 +2,10 @@
 #include <assert.h>
 
 int main_TEST(int argc, char* argv[]) {
-	Hard_disk hd;
+	Hard_Disk hd;
 	init_hard_disk(&hd);
 
-	File_entry* flarr;
+	File_Entry* flarr;
 
 	int size = read_file_entries(&hd, &flarr);
 

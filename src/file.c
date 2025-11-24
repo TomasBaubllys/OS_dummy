@@ -1,7 +1,7 @@
 #include "../include/file.h"
 
 
-/*uint32_t read_file_entries(Hard_disk* hard_disk, File_entry* files) {
+/*uint32_t read_file_entries(Hard_Disk* hard_disk, File_Entry* files) {
 	if(!hard_disk || !files) {
 		return 0;
 	}
@@ -56,8 +56,8 @@
 	return file_count;
 }
 
-File_entry print_files(Hard_disk* hard_disk){
-	File_entry files[MAX_FILES];
+File_Entry print_files(Hard_Disk* hard_disk){
+	File_Entry files[MAX_FILES];
 	uint32_t file_count = read_file_entries(hard_disk, files);
 	int choice  = 0;
 
@@ -80,7 +80,7 @@ File_entry print_files(Hard_disk* hard_disk){
 
 }
 
-uint32_t* read_program(Hard_disk* hard_disk, File_entry* file_entry, uint32_t* return_size) {
+uint32_t* read_program(Hard_Disk* hard_disk, File_Entry* file_entry, uint32_t* return_size) {
 	if(!hard_disk || !file_entry || !return_size) {
 		return NULL;
 	}

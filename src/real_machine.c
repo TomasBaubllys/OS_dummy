@@ -30,7 +30,7 @@ int add_virtual_machine(Real_Machine* real_machine) {
 		return -1;
 	} 
 
-	Virtual_machine* vm = calloc(1, sizeof(Virtual_machine));
+	Virtual_Machine* vm = calloc(1, sizeof(Virtual_Machine));
 	if(!vm) {
 		return -1;
 	}
@@ -73,7 +73,7 @@ int destroy_real_machine(Real_Machine* real_machine) {
 	return 0;
 }
 
-void real_machine_run(Real_Machine* real_machine, File_entry* file_entry) {
+void real_machine_run(Real_Machine* real_machine, File_Entry* file_entry) {
 	if(!real_machine || !file_entry) {
 		return;
 	}
@@ -139,7 +139,7 @@ int real_machine_validate_supervisor(Real_Machine* real_machine, uint32_t expect
 	return 0;
 }
 
-int load_program_supervisor(Real_Machine* real_machine, File_entry* file_entry) {
+int load_program_supervisor(Real_Machine* real_machine, File_Entry* file_entry) {
 	real_machine -> ch_dev.dt = SUPER_MEM;
 	real_machine -> ch_dev.db = MEM_SUPERVISOR_PAGE_BEGIN;
 	real_machine -> ch_dev.cb = (file_entry -> size < MEM_WORDS_SUPERVISOR_COUNT * MEM_WORD_SIZE? file_entry -> size : MEM_WORD_SIZE * MEM_WORDS_SUPERVISOR_COUNT);

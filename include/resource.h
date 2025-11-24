@@ -54,6 +54,7 @@ enum class Resource_Type : uint16_t {
 	FROM_INTERRUPT,
 	FROM_LOADER,
 	FROM_USER_INTERFACE,
+	DYNAMIC,
 	NONE
 };
 
@@ -83,6 +84,8 @@ class Resource {
 		std::string get_buffer();
 
 		size_t get_buffer_size();
+
+		void set_buffer(std::string buffer);
 };
 
 #endif // RESOURCE_H_INCLUDED

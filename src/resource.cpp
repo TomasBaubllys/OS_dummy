@@ -31,3 +31,7 @@ std::string Resource::get_buffer() {
 size_t Resource::get_buffer_size() {
     return this -> buffer.size();
 }
+
+void Resource::set_buffer(std::string buffer) {
+    this -> buffer = buffer;
+}

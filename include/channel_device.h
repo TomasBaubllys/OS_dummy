@@ -16,7 +16,7 @@ typedef struct Channel_Device {
 	char* _sa_ptr;
 
 	Memory* memory;			// bruh
-	Hard_disk* hard_disk;	// bruh
+	Hard_Disk* hard_disk;	// bruh
 } Channel_Device;
 
 enum Object_numbers {
@@ -30,7 +30,7 @@ enum Object_numbers {
 };
 
 // initializes channel device
-int init_channel_device(Channel_Device* channel_dev, Memory* memory, Hard_disk* Hard_disk);
+int init_channel_device(Channel_Device* channel_dev, Memory* memory, Hard_Disk* Hard_Disk);
 
 // sets all registers to 0
 void reset_channel_device(Channel_Device* channel_device);

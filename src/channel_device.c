@@ -1,6 +1,6 @@
 #include "../include/channel_device.h"
 
-int init_channel_device(Channel_Device* channel_device, Memory* memory, Hard_disk* hard_disk) {
+int init_channel_device(Channel_Device* channel_device, Memory* memory, Hard_Disk* hard_disk) {
 	if(!channel_device || !memory) {
 		return -1;
 	}

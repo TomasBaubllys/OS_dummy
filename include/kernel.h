@@ -30,7 +30,6 @@ class Kernel {
 	public:
 		Job_Governor_Process* current_console_holder;
 
-		
 		Kernel(Real_Machine* real_machine);
 		
 		// for system resources
@@ -40,10 +39,13 @@ class Kernel {
 		void request_resource(Process* process, Resource* resource);
 
 		Resource* get_resource(Process* process, Resource_Type resource_type);
-		void init_resource(Resource_Type resource_type);
+
+		void init_resource(Resource_Type resource_type, Process* owner);
+
+		void init_resource(Resource_Type resource_type, Process* owner, std::string buffer);
 
 		// used for system resources
-		void release_resource(Resource_Type resource_type);
+		void release_resource(Resource_Type resource_type, std::string updated_buffer = "");
 
 		// used for dynamic resources
 		void release_resource(Resource* resource);
@@ -58,6 +60,10 @@ class Kernel {
 		void destroy_resources();
 
 		Channel_Device* get_channel_device();
+
+		Hard_Disk* get_hard_disk();
+
+		CPU* get_cpu();
 		
 		template<typename T>
 		void create_process(Process* parent_process, std::vector<Process*> friend_processes, std::string username) {

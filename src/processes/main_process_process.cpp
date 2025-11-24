@@ -17,6 +17,7 @@ Process_State Main_Process_Process::execute(){
                 return Process_State::READY; 
             }
             
+            this -> kernel -> request_resource(this, Resource_Type::SYSTEM_COMMAND);
             return Process_State::BLOCKED;
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_IF_PIE_IN_THE_OVEN_FREE:
             break;

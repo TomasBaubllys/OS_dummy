@@ -1,6 +1,6 @@
 #include "../include/virtual_machine.h"
 
-int init_virtual_machine(Virtual_machine* virtual_machine, CPU* cpu, Memory* memory) {
+int init_virtual_machine(Virtual_Machine* virtual_machine, CPU* cpu, Memory* memory) {
 	if(!virtual_machine || !cpu || !memory) {
 		return -1;
 	}
@@ -40,7 +40,7 @@ int init_virtual_machine(Virtual_machine* virtual_machine, CPU* cpu, Memory* mem
 }
 
 // return all the pages	
-int destroy_virtual_machine(Virtual_machine* virtual_machine) {
+int destroy_virtual_machine(Virtual_Machine* virtual_machine) {
 	if(!virtual_machine) {
 		return -1;
 	}
@@ -58,7 +58,7 @@ int destroy_virtual_machine(Virtual_machine* virtual_machine) {
 	return 0;
 }
 
-void virtual_machine_execute(Virtual_machine* virtual_machine) {
+void virtual_machine_execute(Virtual_Machine* virtual_machine) {
 	if(!virtual_machine) {
 		fprintf(stderr, VM_EXEC_FAILED_NULL_ERR);
 		return;

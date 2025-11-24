@@ -18,13 +18,19 @@ Process_State Job_Governor_Process::execute(){
             return Process_State::READY;
         }
 
+        this -> kernel -> request_resource(this, Resource_Type::USER_MEMORY);
         return Process_State::BLOCKED;
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE:
         break;
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE:
         break;
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_FOR_PAGING_TABLE: 
-        break;
+        if(this -> owns_resource(Resource_Type::USER_MEMORY)) {
+
+        }    
+
+        this -> kernel -> request_resource();
+        ;
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE: 
         break;
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE: 

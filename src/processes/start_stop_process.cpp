@@ -19,24 +19,24 @@ Process_State Start_Stop_Process::execute() {
     switch (this -> step)
     {
         case Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_RESOURCES: {
-            this -> kernel -> init_resource(Resource_Type::SYSTEM_COMMAND);
-            this -> kernel -> init_resource(Resource_Type::HARD_DISK);
-            this -> kernel -> init_resource(Resource_Type::USER_MEMORY);
-            this -> kernel -> init_resource(Resource_Type::SUPERVISOR_MEMORY);
-            this -> kernel -> init_resource(Resource_Type::STRING_IN_MEMORY);
-            this -> kernel -> init_resource(Resource_Type::CONSOLE);
-            this -> kernel -> init_resource(Resource_Type::PIE_IN_THE_OVEN);
-            this -> kernel -> init_resource(Resource_Type::NON_EXISTANT);
-            this -> kernel -> init_resource(Resource_Type::CHANNEL_DEVICE);
-            this -> kernel -> init_resource(Resource_Type::USER_INPUT);
-            this -> kernel -> init_resource(Resource_Type::INTERRUPT);
-            this -> kernel -> init_resource(Resource_Type::FROM_USER_INTERFACE);
-            this -> step = Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_PERMANENT_RESOURCES;
+            this -> kernel -> init_resource(Resource_Type::SYSTEM_COMMAND, this);
+            this -> kernel -> init_resource(Resource_Type::HARD_DISK, this);
+            this -> kernel -> init_resource(Resource_Type::USER_MEMORY, this);
+            this -> kernel -> init_resource(Resource_Type::SUPERVISOR_MEMORY, this);
+            this -> kernel -> init_resource(Resource_Type::STRING_IN_MEMORY, this);
+            this -> kernel -> init_resource(Resource_Type::CONSOLE, this);
+            this -> kernel -> init_resource(Resource_Type::PIE_IN_THE_OVEN, this);
+            this -> kernel -> init_resource(Resource_Type::NON_EXISTANT, this);
+            this -> kernel -> init_resource(Resource_Type::CHANNEL_DEVICE, this);
+            this -> kernel -> init_resource(Resource_Type::USER_INPUT, this);
+            this -> kernel -> init_resource(Resource_Type::INTERRUPT, this);
+            this -> kernel -> init_resource(Resource_Type::FROM_USER_INTERFACE, this);
+            this -> step = Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_SYSTEM_PROCESSES;
 
             return Process_State::READY;
         }
 
-        case Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_PERMANENT_RESOURCES: {
+        case Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_SYSTEM_PROCESSES: {
             this -> kernel -> create_process<Idle_Process>(this, {}, SYSTEM_USERNAME);
             this -> kernel -> create_process<Interrupt_Process>(this, {}, SYSTEM_USERNAME);
             this -> kernel -> create_process<Main_Process_Process>(this, {}, SYSTEM_USERNAME);
@@ -53,6 +53,7 @@ Process_State Start_Stop_Process::execute() {
                 return Process_State::READY;
             }
 
+            this -> kernel -> request_resource(this, Resource_Type::MOS_END);
             return Process_State::BLOCKED;
         }
 
@@ -71,6 +72,5 @@ Process_State Start_Stop_Process::execute() {
         }
     }
 
-    // should never get to here
     return Process_State::BLOCKED_STOPPED;
 }

@@ -17,14 +17,14 @@
 #define RM_MSG_BAD_PROGRAM "Invalid program encountered exiting...\n"
 #define RM_MSG_NULL_VM "Internal error while creating the virtual machine\n"
 
-typedef struct Virtual_machine Virtual_machine;
+typedef struct Virtual_Machine Virtual_Machine;
 
 typedef struct Real_Machine {
 	CPU cpu;
 	Memory mem;
-	Hard_disk hd;
+	Hard_Disk hd;
 	Channel_Device ch_dev; 
-	Virtual_machine* vm;
+	Virtual_Machine* vm;
 } Real_Machine;
 
 // initializes real machine
@@ -36,13 +36,13 @@ int add_virtual_machine(Real_Machine* real_machine);
 int destroy_real_machine(Real_Machine* real_machine);
 
 // loads a program and gives virtual machine to execute it
-void real_machine_run(Real_Machine* real_machine, File_entry* file_entry);
+void real_machine_run(Real_Machine* real_machine, File_Entry* file_entry);
 
 // validates if a code snippet in the supervisor memory looks valid
 int real_machine_validate_supervisor(Real_Machine* real_machine, uint32_t expected_program_length);
 
 // loads program from hard disk to supervisor memory
-int load_program_supervisor(Real_Machine* real_machine, File_entry* file_entry);
+int load_program_supervisor(Real_Machine* real_machine, File_Entry* file_entry);
 
 // loads program from supervisor memory to user memory
 int load_program_user(Real_Machine* real_machine, uint32_t program_length);

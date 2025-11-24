@@ -1,6 +1,6 @@
 #include "../include/hard_disk.h"
 
-int read_write_arg_check_hard_disk(Hard_disk* hard_disk, uint16_t address) {
+int read_write_arg_check_hard_disk(Hard_Disk* hard_disk, uint16_t address) {
 	if(!hard_disk) {
 		return -1;
 	}
@@ -16,7 +16,7 @@ int read_write_arg_check_hard_disk(Hard_disk* hard_disk, uint16_t address) {
 	return 0;
 }
 
-int init_hard_disk(Hard_disk* hard_disk) {
+int init_hard_disk(Hard_Disk* hard_disk) {
 	if(!hard_disk) {
 		return -1;
 	}
@@ -46,7 +46,7 @@ int init_hard_disk(Hard_disk* hard_disk) {
 	return 0;
 }
 
-uint32_t read_word_hard_disk(Hard_disk* hard_disk, uint16_t address) {
+uint32_t read_word_hard_disk(Hard_Disk* hard_disk, uint16_t address) {
 	if(!hard_disk) {
 		return 0;
 	}
@@ -79,7 +79,7 @@ uint32_t read_word_hard_disk(Hard_disk* hard_disk, uint16_t address) {
 	return value;
 }
 
-uint8_t* read_stream_hard_disk(Hard_disk* hard_disk, uint16_t address, uint16_t bytes_to_read) {
+uint8_t* read_stream_hard_disk(Hard_Disk* hard_disk, uint16_t address, uint16_t bytes_to_read) {
 	if(read_write_arg_check_hard_disk(hard_disk, address) != 0) {
 		return NULL;
 	}
@@ -110,7 +110,7 @@ uint8_t* read_stream_hard_disk(Hard_disk* hard_disk, uint16_t address, uint16_t 
 	return stream;
 }
 
-uint32_t read_file_entries(Hard_disk* hard_disk, File_entry** files) {
+uint32_t read_file_entries(Hard_Disk* hard_disk, File_Entry** files) {
 	if(!hard_disk) {
 		return 0;
 	}
@@ -130,7 +130,7 @@ uint32_t read_file_entries(Hard_disk* hard_disk, File_entry** files) {
 		return 0;
 	}
 
-	*files = malloc(sizeof(File_entry) * file_count);	
+	*files = malloc(sizeof(File_Entry) * file_count);	
 
 	if(!*files) {
 		perror("malloc: ");
@@ -169,13 +169,13 @@ uint32_t read_file_entries(Hard_disk* hard_disk, File_entry** files) {
 	return file_count;
 }
 
-File_entry print_files(Hard_disk* hard_disk) {
-	File_entry* fearr;
+File_Entry print_files(Hard_Disk* hard_disk) {
+	File_Entry* fearr;
 
 	uint32_t file_count = read_file_entries(hard_disk, &fearr);
 
 	if(file_count == 0) {
-		File_entry f_entry;
+		File_Entry f_entry;
 		f_entry.size = 0;
 		return f_entry;
 	}
@@ -196,7 +196,7 @@ File_entry print_files(Hard_disk* hard_disk) {
 
 	} while(choice > file_count);
 
-	File_entry f_entry = fearr[choice];
+	File_Entry f_entry = fearr[choice];
 
 	free(fearr);
 

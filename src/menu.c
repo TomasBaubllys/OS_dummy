@@ -15,7 +15,7 @@ void menu(Real_Machine* real_machine) {
 		switch(choice) {
 			case RUN_VM:
 				// Select a file to run
-				File_entry file_choice = print_files(&(real_machine -> hd));
+				File_Entry file_choice = print_files(&(real_machine -> hd));
 				real_machine_run(real_machine, &file_choice);
 				break;
 

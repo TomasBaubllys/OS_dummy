@@ -37,24 +37,19 @@ void Kernel::request_resource(Process* process, Resource_Type resource_type) {
     } 
     else {
         process -> set_waiting_resource_type(resource_type);
+        process -> set_waiting_resource(nullptr);
         process -> set_state(Process_State::BLOCKED);
-        
-        // Note: The process is added to blocked_queue in the run() loop
-        // to avoid duplication, as run() handles the state transition.
     }
 }
 
-void Kernel::release_resource(Resource_Type resource_type) {
+void Kernel::release_resource(Resource_Type resource_type, std::string updated_buffer) {
     Resource* res = this -> get_resource_by_type(resource_type);
 
     if (!res) return;
 
-    // 1. Mark resource as free
     res -> free_resource();
+    res -> set_buffer(updated_buffer);
 
-    // 2. Search blocked_queue for a waiter.
-    // Since blocked_queue is a priority_queue, we must pop everything to search, 
-    // then push back the ones we didn't wake up.
     std::vector<Process*> temp_container;
     bool found = false;
 
@@ -81,6 +76,7 @@ void Kernel::release_resource(Resource_Type resource_type) {
     }
 }
 
+
 Resource* Kernel::get_resource(Process* process, Resource_Type resource_type) {
     Resource* res = this -> get_resource_by_type(resource_type);
 
@@ -100,26 +96,22 @@ Resource* Kernel::get_resource_by_type(Resource_Type resource_type) {
     return nullptr;
 }
 
-void Kernel::init_resource(Resource_Type resource_type) {
+void Kernel::init_resource(Resource_Type resource_type, Process* owner) {
     // Using resources.size() as a simple unique ID generator since resource_id_pool isn't in header
     uint32_t new_id = (uint32_t)this -> resources.size(); 
     Resource* new_resc = new Resource(new_id, resource_type);
     this -> resources.push_back(new_resc);
 }
 
-// -------------------------------------------------------
-// DYNAMIC RESOURCES (POINTER BASED)
-// -------------------------------------------------------
-
 void Kernel::request_resource(Process* process, Resource* resource) {
     if (!process || !resource) return;
 
     if (resource -> is_free()) {
-        resource -> assign(process);
-        process -> on_resource_aquired(); // Assuming this method exists in Process
+        process -> add_owned_resource(resource);
     }
     else {
         process -> set_waiting_resource(resource);
+        process -> set_waiting_resource_type(Resource_Type::DYNAMIC);
         process -> set_state(Process_State::BLOCKED);
         // Will be pushed to blocked_queue in run() loop
     }
@@ -159,7 +151,7 @@ void Kernel::release_resource(Resource* resource) {
 void Kernel::run() {
     while(true) {
         if(line_ready()) {
-            this -> init_resource(Resource_Type::FROM_USER_INTERFACE);
+            this -> init_resource(Resource_Type::FROM_USER_INTERFACE, nullptr);
         }
 
         if(this -> ready_queue.empty()) {
@@ -249,4 +241,23 @@ void Kernel::destroy_resources() {
         delete res;
     }
     this -> resources.clear();
+}
+
+void Kernel::init_resource(Resource_Type resource_type, Process* owner, std::string buffer) {
+    // Using resources.size() as a simple unique ID generator since resource_id_pool isn't in header
+    uint32_t new_id = (uint32_t)this -> resources.size(); 
+    Resource* new_resc = new Resource(new_id, resource_type);
+    this -> resources.push_back(new_resc);
+}
+
+void Kernel::release_resource(Resource_Type resource_type, std::string buffer) {
+
+}
+
+Hard_Disk* Kernel::get_hard_disk() {
+    return &this -> real_machine -> hd;
+}
+
+CPU* Kernel::get_cpu() {
+    return &this -> real_machine -> cpu;
 }

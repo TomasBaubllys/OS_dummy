@@ -19,26 +19,26 @@
 #define HD_OPEN_ERR "Hard disk could not be openned\n"
 #define HD_CORUPTION_ERR "Hard disk was corrupted\n"
 
-typedef struct Hard_disk {
+typedef struct Hard_Disk {
 	FILE *fptr;
-} Hard_disk;
+} Hard_Disk;
 
 // checks arguments for most of the hard disk functions
-int read_write_arg_check_hard_disk(Hard_disk* hard_disk, uint16_t address);
+int read_write_arg_check_hard_disk(Hard_Disk* hard_disk, uint16_t address);
 
 // initializes hard disk
-int init_hard_disk(Hard_disk* hard_disk);
+int init_hard_disk(Hard_Disk* hard_disk);
 
 // returns a word from hard disk specific address
-uint32_t read_word_hard_disk(Hard_disk* hard_disk, uint16_t address);
+uint32_t read_word_hard_disk(Hard_Disk* hard_disk, uint16_t address);
 
 // returns a stream from hard disk specific address
-uint8_t* read_stream_hard_disk(Hard_disk* hard_disk, uint16_t address, uint16_t bytes_to_read);
+uint8_t* read_stream_hard_disk(Hard_Disk* hard_disk, uint16_t address, uint16_t bytes_to_read);
 
 // reads all file entries from hard disk and returns the count
-uint32_t read_file_entries(Hard_disk* hard_disk, File_entry** files);
+uint32_t read_file_entries(Hard_Disk* hard_disk, File_Entry** files);
 
 // prints file info
-File_entry print_files(Hard_disk* hard_disk);
+File_Entry print_files(Hard_Disk* hard_disk);
 
 #endif // HARD_DISK_H_INCLUDED
