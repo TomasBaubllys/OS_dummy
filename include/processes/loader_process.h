@@ -15,13 +15,12 @@ enum class Loader_Process_Steps{
 class Loader_Process: public Process{
     private:
         Loader_Process_Steps step;
+        uint32_t current_program_len;
+        
     public:
         Loader_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Loader_Process();
         Process_State execute() override;
 };
-
-
-
 
 #endif // LOADER_PROCESS_H_INCLUDED

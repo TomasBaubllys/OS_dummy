@@ -9,6 +9,7 @@
 #include <list>
 
 #define SYSTEM_USERNAME "system"
+#define SHUTDOWN_COMMAND "SHUTDOWN"
 
 class Job_Governor_Process;
 
@@ -64,6 +65,11 @@ class Kernel {
 		Hard_Disk* get_hard_disk();
 
 		CPU* get_cpu();
+
+		// used when asking for channel devices, for campatability
+		Real_Machine* get_real_machine();
+
+		Memory* get_memory();
 		
 		template<typename T>
 		void create_process(Process* parent_process, std::vector<Process*> friend_processes, std::string username) {

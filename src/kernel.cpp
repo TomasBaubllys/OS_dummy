@@ -261,3 +261,11 @@ Hard_Disk* Kernel::get_hard_disk() {
 CPU* Kernel::get_cpu() {
     return &this -> real_machine -> cpu;
 }
+
+Real_Machine* Kernel::get_real_machine() {
+    return this -> real_machine;
+}
+
+Memory* Kernel::get_memory() {
+    return &this -> real_machine -> mem;
+}
