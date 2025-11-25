@@ -1,4 +1,5 @@
 #include "../../include/processes/job_governor_process.h"
+#include "../../include/virtual_machine.h"
 
 Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username): 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_GOVERNOR_PRIORITY){
@@ -14,24 +15,28 @@ Process_State Job_Governor_Process::execute(){
     {
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE:
         if(this -> owns_resource(Resource_Type::USER_MEMORY)) {
-            this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
+            this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE;
             return Process_State::READY;
         }
 
         this -> kernel -> request_resource(this, Resource_Type::USER_MEMORY);
         return Process_State::BLOCKED;
-    case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE:
-        break;
-    case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE:
-        break;
-    case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_FOR_PAGING_TABLE: 
+    /* NO NEED FOR THIS SINCE WE DONT DIFERENTIATE BETWEEN THIS AND THE FIRST STEP case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_FOR_PAGING_TABLE: 
         if(this -> owns_resource(Resource_Type::USER_MEMORY)) {
 
         }    
 
         this -> kernel -> request_resource();
-        ;
+        ;*/
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE: 
+        // create the virtual machine
+        Virtual_Machine* vm = (Virtual_Machine*)malloc(sizeof(Virtual_Machine));
+
+
+        break;
+    case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE:
+        break;
+    case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE:
         break;
     case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE: 
         break;
