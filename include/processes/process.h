@@ -38,6 +38,7 @@ class Process {
     protected:
         Saved_Registers saved_registers;
         uint32_t unique_id;
+        uint32_t u_id_buffer; // used for dynamic resources, to know to who to return the resource to
         Process_State process_state;
 
         uint8_t priority;

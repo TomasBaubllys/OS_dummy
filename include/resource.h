@@ -6,6 +6,7 @@
 #include <queue>
 
 #define RESOURCE_MEMORY_STRING_MAX_LENGTH 256
+#define NOT_DEDICATED_VAL 0
 
 static uint32_t resource_id_pool = 0;
 
@@ -68,6 +69,9 @@ class Resource {
 		Process* user;
 		Resource_Type resource_type;
 
+		// process id to which is dedicated.... (if empty, it means its free for grabs)
+		uint32_t dedicated_to;
+
 	public:
 		Resource(uint32_t unique_id, Resource_Type type, Process* owner = nullptr);
 
@@ -86,6 +90,12 @@ class Resource {
 		size_t get_buffer_size();
 
 		void set_buffer(std::string buffer);
+
+		bool is_dedicated();
+
+		uint32_t get_dedicated();
+
+		void set_dedicated(uint32_t pid);
 };
 
 #endif // RESOURCE_H_INCLUDED

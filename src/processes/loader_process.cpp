@@ -19,12 +19,7 @@ Process_State Loader_Process::execute(){
                 std::string buffer = resc -> get_buffer();
                 
                 std::stringstream ss(buffer);
-                uint32_t program_len = 0;
-                uint32_t ptr = 0;
-
-                ss >> program_len >> ptr;
-                this -> current_program_len = program_len;
-                this -> saved_registers.ptr = ptr;
+                ss >> this -> u_id_buffer >> this -> current_program_len >> this -> saved_registers.ptr;
 
                 this -> step = Loader_Process_Steps::LOADER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE;
                 return Process_State::READY;
@@ -76,10 +71,16 @@ Process_State Loader_Process::execute(){
             this -> step = Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_FROM_LOADER_FOR_JOB_GOVERNER;
             return Process_State::READY;
 
-        case Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_FROM_LOADER_FOR_JOB_GOVERNER:
-            
-            break;
+        case Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_FROM_LOADER_FOR_JOB_GOVERNER: {
+            std::stringstream ss;
+            ss << this -> u_id_buffer;
+            this -> kernel -> release_resource(Resource_Type::FROM_LOADER, ss.str());
+            this -> step = Loader_Process_Steps::LOADER_PROCESS_BLOCKED_WAITING_FOR_LOADER_PACKAGE_RESOURCE;
+            return Process_State::READY;
+        }
         default:
             break;
     }
+
+    return Process_State::BLOCKED_STOPPED;
 }

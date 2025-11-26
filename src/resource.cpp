@@ -3,7 +3,8 @@
 Resource::Resource(uint32_t unique_id, Resource_Type type, Process* owner) :
     unique_id(unique_id),
     resource_type(type),
-    owner(owner)
+    owner(owner),
+    user(owner) // by default the owner is the user, so the resource is not released!
 {
 
 }
@@ -34,4 +35,16 @@ size_t Resource::get_buffer_size() {
 
 void Resource::set_buffer(std::string buffer) {
     this -> buffer = buffer;
+}
+
+bool Resource::is_dedicated() {
+    return this -> dedicated_to == 0;
+}
+
+uint32_t Resource::get_dedicated() {
+    return this -> dedicated_to;
+}
+
+void Resource::set_dedicated(uint32_t pid) {
+    this -> dedicated_to = pid;
 }
