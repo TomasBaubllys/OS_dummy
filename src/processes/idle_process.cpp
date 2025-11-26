@@ -13,6 +13,5 @@ Idle_Process::~Idle_Process() {
 
 Process_State Idle_Process::execute() {
     ++this -> do_nothing_counter;
-
     return Process_State::READY;
 }

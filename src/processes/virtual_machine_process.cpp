@@ -7,13 +7,18 @@ Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent
 }
 
 Virtual_Machine_Process::~Virtual_Machine_Process(){
-    init_virtual_machine(this -> vm, this -> kernel -> get_cpu(), nullptr);
+    destroy_virtual_machine(this -> vm);
 }
 
 Process_State Virtual_Machine_Process::execute(){
     switch (this -> step){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE:
-            break;
+            CPU* cpu = this -> kernel -> get_cpu();
+            cpu -> mr = CPU_USER_MODE;
+            this -> saved_registers = cpu_save_regs(cpu);
+
+            this -> step = Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM;
+            return Process_State::READY;
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM:
             cpu_load_regs(this -> kernel -> get_cpu(), this -> saved_registers);
             

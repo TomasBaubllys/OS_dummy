@@ -1,4 +1,5 @@
 #include "../../include/processes/interrupt_process.h"
+#include <sstream>
 
 Interrupt_Process::Interrupt_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::INTERRUPT_PRIORITY){
@@ -14,17 +15,31 @@ Process_State Interrupt_Process::execute(){
     switch (this -> step){
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE:
             if(this -> owns_resource(Resource_Type::INTERRUPT)) {
+                /**
+                    extract the pid of the process who sent it 
+                 */
+
+                std::stringstream ss(this -> get_owned_resource(Resource_Type::INTERRUPT) -> get_buffer());
+                ss >> this -> u_id_buffer;
+
                 this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_IDENTIFY_INTERRUPT;
                 return Process_State::READY;
             }
             return Process_State::BLOCKED;
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_IDENTIFY_INTERRUPT:
-            break;
+            interrupt(this -> kernel -> get_cpu());
+            this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_RECOGNIZE_JOB_GOVERNOR_RESPONSIBLE_FOR_INTERRUPT;
+            return Process_State::READY;
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_RECOGNIZE_JOB_GOVERNOR_RESPONSIBLE_FOR_INTERRUPT:
-            break;
+            /*
+                We already have the id
+            */
+            this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_FREE_FROM_INTERRUPT_RESOURCE;
+            return Process_State::READY;
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_FREE_FROM_INTERRUPT_RESOURCE:
-            break;
-        
+            this -> kernel -> release_resource_for(Resource_Type::FROM_INTERRUPT, this -> u_id_buffer);
+            this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE;
+            return Process_State::READY;
         default:
             break;
     }

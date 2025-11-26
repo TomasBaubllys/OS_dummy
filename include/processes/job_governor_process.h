@@ -39,7 +39,7 @@ class Job_Governor_Process: public Process {
         Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Job_Governor_Process();
         Process_State execute() override;
-        Resource* vm_input;
+        // Resource* vm_input;
 };
 
 

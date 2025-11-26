@@ -88,8 +88,11 @@ Process_State Read_From_Interface_Process::execute(){
 
                     return Process_State::READY;
                 }
-                jg -> vm_input -> set_buffer(this -> buffer);
-                this -> kernel -> release_resource(jg -> vm_input);
+                
+                this -> kernel -> release_resource_for(Resource_Type::USER_INPUT, jg -> get_unique_id(), this -> buffer);
+                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
+                // jg -> vm_input -> set_buffer(this -> buffer);
+                // this -> kernel -> release_resource(jg -> vm_input);
             }
             return Process_State::READY; 
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_SYSTEM_COMMAND:

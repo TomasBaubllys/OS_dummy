@@ -66,15 +66,14 @@ Process_State Loader_Process::execute(){
             this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);
             this -> step = Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_SUPERVISOR_MEMORY;
             return Process_State::READY;
+
         case Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_SUPERVISOR_MEMORY:
             this -> kernel -> release_resource(Resource_Type::SUPERVISOR_MEMORY);
             this -> step = Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_FROM_LOADER_FOR_JOB_GOVERNER;
             return Process_State::READY;
 
         case Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_FROM_LOADER_FOR_JOB_GOVERNER: {
-            std::stringstream ss;
-            ss << this -> u_id_buffer;
-            this -> kernel -> release_resource(Resource_Type::FROM_LOADER, ss.str());
+            this -> kernel -> release_resource_for(Resource_Type::FROM_LOADER, this -> u_id_buffer);
             this -> step = Loader_Process_Steps::LOADER_PROCESS_BLOCKED_WAITING_FOR_LOADER_PACKAGE_RESOURCE;
             return Process_State::READY;
         }

@@ -13,6 +13,7 @@ enum class Interrupt_Process_Steps{
 class Interrupt_Process: public Process{
     private:
         Interrupt_Process_Steps step;
+        
     public:
         Interrupt_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Interrupt_Process();

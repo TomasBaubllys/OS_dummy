@@ -24,7 +24,7 @@ class Kernel {
 		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> blocked_queue;
 		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> ready_stopped_queue;
 		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> blocked_stopped_queue;
-		std::vector<Process*> running;
+		// std::vector<Process*> running;
 		std::vector<Process*> all_processes;
 		std::list<Resource*> resources; 
 
@@ -42,14 +42,16 @@ class Kernel {
 		Resource* get_resource(Process* process, Resource_Type resource_type);
 
 		void init_resource(Resource_Type resource_type, Process* owner);
-
 		void init_resource(Resource_Type resource_type, Process* owner, std::string buffer);
 
 		// used for system resources
 		void release_resource(Resource_Type resource_type, std::string updated_buffer = "");
+		
+		// used for dynamic resources, like "from loader" or "from interrupt"
+		void release_resource_for(Resource_Type resource_type, uint32_t for_pid, std::string updated_buffer = "");
 
 		// used for dynamic resources
-		void release_resource(Resource* resource);
+		// void release_resource(Resource* resource);
 
 		// used for system resources
 		Resource* get_resource_by_type(Resource_Type resource_type);
@@ -61,14 +63,8 @@ class Kernel {
 		void destroy_resources();
 
 		Channel_Device* get_channel_device();
-
 		Hard_Disk* get_hard_disk();
-
 		CPU* get_cpu();
-
-		// used when asking for channel devices, for campatability
-		Real_Machine* get_real_machine();
-
 		Memory* get_memory();
 		
 		template<typename T>

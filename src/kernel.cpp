@@ -251,7 +251,11 @@ void Kernel::init_resource(Resource_Type resource_type, Process* owner, std::str
 }
 
 void Kernel::release_resource(Resource_Type resource_type, std::string buffer) {
+    throw 1;
+}
 
+void release_resource_for(Resource_Type resource_type, uint32_t for_pid) {
+    throw 1;
 }
 
 Hard_Disk* Kernel::get_hard_disk() {
@@ -262,10 +266,12 @@ CPU* Kernel::get_cpu() {
     return &this -> real_machine -> cpu;
 }
 
-Real_Machine* Kernel::get_real_machine() {
-    return this -> real_machine;
-}
-
 Memory* Kernel::get_memory() {
     return &this -> real_machine -> mem;
 }
+
+void release_resource_for(Resource_Type resource_type, uint32_t for_pid, std::string updated_buffer) {
+
+}
+
+
