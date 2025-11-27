@@ -17,12 +17,6 @@ Process_State Interrupt_Process::execute(){
             if(this -> owns_resource(Resource_Type::INTERRUPT)) {
                 Resource* resc = this -> get_owned_resource(Resource_Type::INTERRUPT);
                 this -> u_id_buffer = resc -> get_owner_id();
-                /**
-                    extract the pid of the process who sent it 
-                 */
-
-                // std::stringstream ss(this -> get_owned_resource(Resource_Type::INTERRUPT) -> get_buffer());
-                // ss >> this -> u_id_buffer;
 
                 this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_IDENTIFY_INTERRUPT;
                 return Process_State::READY;

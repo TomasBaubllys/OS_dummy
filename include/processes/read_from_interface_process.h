@@ -3,9 +3,6 @@
 
 #include "process.h"
 
-#define RMI_FILE_INPUT "F$" 
-#define RMI_SYS_COMMAND "$"
-
 typedef enum Read_From_Interface_Process_Steps{
     READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE,
     READ_FROM_INTERFACE_CHECK_IF_INPUT_STARTS_WITH_F$,

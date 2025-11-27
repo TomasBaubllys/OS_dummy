@@ -9,7 +9,12 @@
 #include <list>
 
 #define SYSTEM_USERNAME "system"
-#define SHUTDOWN_COMMAND "SHUTDOWN"
+#define RMI_SHUTDOWN_COMMAND "$SHUTDOWN"
+#define RMI_FILE_INPUT "F$" 
+#define RMI_SYS_COMMAND "$"
+#define RMI_KILL_COMMAND "$KILL"
+#define STR_MEM_UNKNOWN_SYS_COM_ERR_MSG "Unknown system command!\n"
+
 
 class Job_Governor_Process;
 
@@ -67,12 +72,14 @@ class Kernel {
 		CPU* get_cpu();
 		Memory* get_memory();
 		
+		// returns the process id of the created process
 		template<typename T>
-		void create_process(Process* parent_process, std::vector<Process*> friend_processes, std::string username) {
+		uint32_t create_process(Process* parent_process, std::vector<Process*> friend_processes, std::string username) {
 			Process* process = new T(this, parent_process, friend_processes, username);
 			process -> set_state(Process_State::READY);
 			this -> ready_queue.push(process);
 			this -> all_processes.push_back(process);
+			return process -> get_unique_id();
 		};
 };
 

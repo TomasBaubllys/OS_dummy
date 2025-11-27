@@ -54,7 +54,7 @@ bool Process::owns_resource(Resource_Type resource) {
 }
 
 void Process::on_resource_aquired() {
-    // Logic can be added here later if needed
+    // idk if we need this
 }
 
 void Process::set_priority(uint8_t priority) {
