@@ -19,6 +19,7 @@ Process_State Printer_Process::execute() {
 				return Process_State::READY;
 			}
 
+			this -> kernel -> request_resource(this, Resource_Type::STRING_IN_MEMORY);
 			return Process_State::BLOCKED;
 		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE:
 			if(this -> owns_resource(Resource_Type::CHANNEL_DEVICE)) {
@@ -26,6 +27,7 @@ Process_State Printer_Process::execute() {
 				return Process_State::READY;
 			}
 
+			this -> kernel -> request_resource(this, Resource_Type::CHANNEL_DEVICE);
 			return Process_State::BLOCKED;
 		case Printer_Process_Steps::PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG: {
 			Channel_Device* ch_dev = this -> kernel -> get_channel_device();
@@ -45,7 +47,7 @@ Process_State Printer_Process::execute() {
 		}
 		case Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE:
 			this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);	
-
+			
 			this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE;
 			return Process_State::READY;
 		default:

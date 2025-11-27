@@ -21,6 +21,8 @@ Process_State Interrupt_Process::execute(){
                 this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_IDENTIFY_INTERRUPT;
                 return Process_State::READY;
             }
+
+            this -> kernel -> request_resource(this, Resource_Type::INTERRUPT);
             return Process_State::BLOCKED;
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_IDENTIFY_INTERRUPT:
             interrupt(this -> kernel -> get_cpu());

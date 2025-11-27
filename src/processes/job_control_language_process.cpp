@@ -16,7 +16,8 @@ Process_State Job_Control_Language_Process::execute(){
                 this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_INITIALIZE_PROGRAM_LIST;
                 return Process_State::READY;
             }
-            
+
+            this -> kernel -> request_resource(this, Resource_Type::TASK_IN_SUPERVISOR);
             return Process_State::BLOCKED;
         case Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_INITIALIZE_PROGRAM_LIST:
             break;
