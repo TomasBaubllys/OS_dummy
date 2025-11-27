@@ -96,6 +96,8 @@ class Resource {
 		uint32_t get_dedicated();
 
 		void set_dedicated(uint32_t pid);
+
+		uint32_t get_owner_id();
 };
 
 #endif // RESOURCE_H_INCLUDED

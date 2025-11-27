@@ -1,4 +1,5 @@
 #include "../include/resource.h"
+#include "../include/processes/process.h"
 
 Resource::Resource(uint32_t unique_id, Resource_Type type, Process* owner) :
     unique_id(unique_id),
@@ -47,4 +48,8 @@ uint32_t Resource::get_dedicated() {
 
 void Resource::set_dedicated(uint32_t pid) {
     this -> dedicated_to = pid;
+}
+
+uint32_t Resource::get_owner_id() {
+    return this -> owner -> get_unique_id();
 }

@@ -15,12 +15,14 @@ Process_State Interrupt_Process::execute(){
     switch (this -> step){
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE:
             if(this -> owns_resource(Resource_Type::INTERRUPT)) {
+                Resource* resc = this -> get_owned_resource(Resource_Type::INTERRUPT);
+                this -> u_id_buffer = resc -> get_owner_id();
                 /**
                     extract the pid of the process who sent it 
                  */
 
-                std::stringstream ss(this -> get_owned_resource(Resource_Type::INTERRUPT) -> get_buffer());
-                ss >> this -> u_id_buffer;
+                // std::stringstream ss(this -> get_owned_resource(Resource_Type::INTERRUPT) -> get_buffer());
+                // ss >> this -> u_id_buffer;
 
                 this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_IDENTIFY_INTERRUPT;
                 return Process_State::READY;
@@ -31,9 +33,7 @@ Process_State Interrupt_Process::execute(){
             this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_RECOGNIZE_JOB_GOVERNOR_RESPONSIBLE_FOR_INTERRUPT;
             return Process_State::READY;
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_RECOGNIZE_JOB_GOVERNOR_RESPONSIBLE_FOR_INTERRUPT:
-            /*
-                We already have the id
-            */
+            // we already have the ID from the first step, this is not needed
             this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_FREE_FROM_INTERRUPT_RESOURCE;
             return Process_State::READY;
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_FREE_FROM_INTERRUPT_RESOURCE:
