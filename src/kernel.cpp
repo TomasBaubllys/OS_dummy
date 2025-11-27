@@ -274,4 +274,7 @@ void release_resource_for(Resource_Type resource_type, uint32_t for_pid, std::st
 
 }
 
+void request_to_kill(uint32_t pid) {
+    
+}
 

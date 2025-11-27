@@ -65,6 +65,8 @@ class Kernel {
 
 		void kill_processes_except(Process* process);
 
+		void request_to_kill(uint32_t pid);
+
 		void destroy_resources();
 
 		Channel_Device* get_channel_device();
