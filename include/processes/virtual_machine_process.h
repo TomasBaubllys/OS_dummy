@@ -1,5 +1,5 @@
-#ifndef VIRTUAL_MACHINE_H_INCLUDED
-#define VIRTUAL_MACHINE_H_INCLUDED
+#ifndef VIRTUAL_MACHINE_PROCESS_H_INCLUDED
+#define VIRTUAL_MACHINE_PROCESS_H_INCLUDED
 
 #include "process.h"
 
@@ -19,4 +19,4 @@ class Virtual_Machine_Process: public Process{
         Process_State execute() override;
 };
 
-#endif // VIRTUAL_MACHINE_H_INCLUDED
+#endif // VIRTUAL_MACHINE_PROCESS_H_INCLUDED

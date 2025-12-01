@@ -15,6 +15,8 @@ typedef struct Channel_Device {
 	uint32_t sa;			// symbol register
 	char* _sa_ptr;
 
+	char* _file_name;
+
 	Memory* memory;			// bruh
 	Hard_Disk* hard_disk;	// bruh
 } Channel_Device;

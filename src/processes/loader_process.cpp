@@ -19,6 +19,7 @@ Process_State Loader_Process::execute(){
                 std::string buffer = resc -> get_buffer();
                 
                 std::stringstream ss(buffer);
+                // program len is always the size of supervisor
                 ss >> this -> u_id_buffer >> this -> current_program_len >> this -> saved_registers.ptr;
 
                 this -> step = Loader_Process_Steps::LOADER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE;

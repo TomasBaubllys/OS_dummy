@@ -25,7 +25,8 @@ Process_State Interrupt_Process::execute(){
             this -> kernel -> request_resource(this, Resource_Type::INTERRUPT);
             return Process_State::BLOCKED;
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_IDENTIFY_INTERRUPT:
-            interrupt(this -> kernel -> get_cpu());
+            // identify and send to jg to do the interrupt
+            // interrupt(this -> kernel -> get_cpu());
             this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_RECOGNIZE_JOB_GOVERNOR_RESPONSIBLE_FOR_INTERRUPT;
             return Process_State::READY;
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_RECOGNIZE_JOB_GOVERNOR_RESPONSIBLE_FOR_INTERRUPT:

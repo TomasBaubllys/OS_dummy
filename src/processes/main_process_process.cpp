@@ -23,6 +23,7 @@ Process_State Main_Process_Process::execute(){
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_IF_PIE_IN_THE_OVEN_FREE:
             if(this -> owns_resource(Resource_Type::PIE_IN_THE_OVEN)) {
                 /**
+                 *  check buffer if it contains 0 or 1 
                  * DO SOMETHING
                  */
             }

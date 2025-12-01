@@ -8,11 +8,17 @@ Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent
 
 Virtual_Machine_Process::~Virtual_Machine_Process(){
     destroy_virtual_machine(this -> vm);
+    free(this -> vm);
 }
 
 Process_State Virtual_Machine_Process::execute(){
     switch (this -> step){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE:
+            /**
+             *  Move restoring registers to main loop
+             * 
+             */
+
             CPU* cpu = this -> kernel -> get_cpu();
             cpu -> mr = CPU_USER_MODE;
             this -> saved_registers = cpu_save_regs(cpu);
@@ -22,14 +28,17 @@ Process_State Virtual_Machine_Process::execute(){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM:
             cpu_load_regs(this -> kernel -> get_cpu(), this -> saved_registers);
             
-            virtual_machine_excecute(this -> vm);
+            virtual_machine_execute(this -> vm);
 
             this -> saved_registers = cpu_save_regs(this -> kernel -> get_cpu());
+            if(this -> vm -> cpu -> si + this -> vm -> cpu -> pi > 0 || this -> vm -> cpu -> ti == 0) {
+                this -> step = VIRTUAL_MACHINE_FREE_RESOURCE_INTERRUPT;
+            }
 
-            break;
+            return Process_State::READY;
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_FREE_RESOURCE_INTERRUPT:
-            break;
-        
+            this -> kernel -> release_resource_for(Resource_Type::INTERRUPT, this -> parent_process -> get_unique_id());
+            return Process_State::READY_STOPPED;
         default:
             break;
     }

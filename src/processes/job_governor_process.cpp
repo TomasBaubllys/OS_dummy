@@ -2,6 +2,10 @@
 #include "../../include/virtual_machine.h"
 #include <sstream>
 
+/**
+ *  call the interrupt here, just lock the resources.... GEDA/PUTA etc... -> interrupt(this -> kernel -> cpu) 
+ */
+
 Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username): 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_GOVERNOR_PRIORITY){
 

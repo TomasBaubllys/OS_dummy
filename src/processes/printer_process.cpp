@@ -51,6 +51,7 @@ Process_State Printer_Process::execute() {
 			this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE;
 			return Process_State::READY;
 		default:
+			// throw exception
 			return Process_State::BLOCKED_STOPPED;
 	}
 

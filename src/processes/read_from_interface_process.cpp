@@ -33,8 +33,15 @@ Process_State Read_From_Interface_Process::execute(){
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_FILE_EXISTS;
                 return Process_State::READY;
             }
+            this -> kernel -> request_resource(this, Resource_Type::HARD_DISK);
             return Process_State::BLOCKED;
+        /**
+         *   WAIT FOR CHANNEL_DEVICE
+         */
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_FILE_EXISTS: {
+            /**
+                move to xchg (set regs acordingly), 
+             */
             std::string file_name = this -> buffer.substr(2);
             Hard_Disk* hd = this -> kernel -> get_hard_disk();
             File_Entry* file_entries;
