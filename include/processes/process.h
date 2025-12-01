@@ -86,6 +86,8 @@ class Process {
         Resource* get_owned_resource(Resource_Type resource_type);
 
         void add_owned_resource(Resource* resource);
+
+        void free_owned_resources();
 };
 
 #endif // PROCESS_H_INCLUDED

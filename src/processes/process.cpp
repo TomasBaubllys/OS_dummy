@@ -96,3 +96,10 @@ void Process::add_owned_resource(Resource* resource) {
     resource -> assign(this);
     this -> owned_resources.push_back(resource);
 }
+
+
+void Process::free_owned_resources() {
+    for(Resource* resc : this -> owned_resources) {
+        this -> kernel -> release_resource(resc -> get_resource_type());
+    }
+}

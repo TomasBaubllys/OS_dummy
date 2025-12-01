@@ -55,7 +55,8 @@ class Kernel {
 		// used for dynamic resources, like "from loader" or "from interrupt"
 		void release_resource_for(Resource_Type resource_type, uint32_t for_pid, std::string updated_buffer = "");
 
-		// used for dynamic resources
+		void delete_resource(Process* process, Resource_Type resource_type);
+
 		// void release_resource(Resource* resource);
 
 		// used for system resources
