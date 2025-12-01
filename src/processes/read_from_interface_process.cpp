@@ -35,27 +35,27 @@ Process_State Read_From_Interface_Process::execute(){
             }
             this -> kernel -> request_resource(this, Resource_Type::HARD_DISK);
             return Process_State::BLOCKED;
-        /**
-         *   WAIT FOR CHANNEL_DEVICE
-         */
+
+        case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_CHANNEL_DEVICE:
+            if(this -> owns_resource(Resource_Type::CHANNEL_DEVICE)) {
+                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_FILE_EXISTS;
+                return Process_State::READY;
+            }
+
+            this -> kernel -> request_resource(this ,Resource_Type::CHANNEL_DEVICE);
+            return Process_State::BLOCKED;
+
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_FILE_EXISTS: {
             /**
                 move to xchg (set regs acordingly), 
-             */
+            */
             std::string file_name = this -> buffer.substr(2);
-            Hard_Disk* hd = this -> kernel -> get_hard_disk();
-            File_Entry* file_entries;
-            uint32_t file_count = read_file_entries(hd, &file_entries);
+            Channel_Device* ch_dev = this -> kernel -> get_channel_device();
+            ch_dev -> st = FILE_CHECK;
+            ch_dev -> _file_name = file_name.data();
 
-            bool match_found = false;
-            for(uint32_t i = 0; i < file_count; ++i) {
-                if(strcmp(file_entries[i].file_name, file_name.c_str()) == 0) {
-                    match_found = true;
-                    break;
-                }
-            }
-
-            if(!match_found) {
+            if(ch_dev -> sa == 0) {
+                // match not found
                 // FREE CURRENT RESOURCES
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
             }

@@ -144,9 +144,23 @@ int xchg(Channel_Device* channel_device) {
 				default:
 					break;
 			}
+		case FILE_CHECK:
+            File_Entry* file_entries;
+            uint32_t file_count = read_file_entries(channel_device -> hard_disk, &file_entries);
+
+            int match_found = 0;
+            for(uint32_t i = 0; i < file_count; ++i) {
+                if(strcmp(file_entries[i].file_name, channel_device -> _file_name) == 0) {
+                    match_found = 1;
+                    break;
+                }
+            }
+
+			channel_device -> sa = match_found;
+
 		default:
 			break;
 	}
 
-	return -1;
+	return 0;
 }

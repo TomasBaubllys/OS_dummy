@@ -28,7 +28,8 @@ enum Object_numbers {
 	RA_REG,
 	SUPER_MEM,
 	HD_DISK,
-	MSG_IN_MEMORY
+	MSG_IN_MEMORY,
+	FILE_CHECK
 };
 
 // initializes channel device
