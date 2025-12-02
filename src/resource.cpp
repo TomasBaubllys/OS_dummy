@@ -53,3 +53,7 @@ void Resource::set_dedicated(uint32_t pid) {
 uint32_t Resource::get_owner_id() {
     return this -> owner -> get_unique_id();
 }
+
+uint32_t Resource::get_uid() {
+    return this -> unique_id;
+}

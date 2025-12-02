@@ -117,7 +117,7 @@ void Kernel::request_resource(Process* process, Resource* resource) {
     }
 }
 
-void Kernel::release_resource(Resource* resource) {
+/*void Kernel::release_resource(Resource* resource) {
     if (!resource) return;
 
     resource -> free_resource();
@@ -146,7 +146,7 @@ void Kernel::release_resource(Resource* resource) {
     for (Process* p : temp_container) {
         this -> blocked_queue.push(p);
     }
-}
+}*/
 
 void Kernel::run() {
     while(true) {
@@ -243,11 +243,12 @@ void Kernel::destroy_resources() {
     this -> resources.clear();
 }
 
-void Kernel::init_resource(Resource_Type resource_type, Process* owner, std::string buffer) {
+uint32_t Kernel::init_resource(Resource_Type resource_type, Process* owner, std::string buffer) {
     // Using resources.size() as a simple unique ID generator since resource_id_pool isn't in header
     uint32_t new_id = (uint32_t)this -> resources.size(); 
     Resource* new_resc = new Resource(new_id, resource_type);
     this -> resources.push_back(new_resc);
+    return new_resc -> get_uid();
 }
 
 void Kernel::release_resource(Resource_Type resource_type, std::string buffer) {
@@ -270,8 +271,27 @@ Memory* Kernel::get_memory() {
     return &this -> real_machine -> mem;
 }
 
-void release_resource_for(Resource_Type resource_type, uint32_t for_pid, std::string updated_buffer) {
+void Kernel::release_resource_for(Resource_Type resource_type, uint32_t resc_id, uint32_t for_pid, std::string updated_buffer) {
+    // check if the resource exists... if not throw?
+    Resource* resc = nullptr;
+    for(auto it = this -> resources.begin(); it != this -> resources.end(); ++it) {
+        if((*it) -> get_uid() == resc_id) {
+            resc = (*it);
+        } 
+    }    
 
+    // if resc not found quit lol
+    if(!resc) {
+        return;
+    }
+
+    // locate the process thats waiting
+    for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
+        if((*it) -> get_unique_id() == for_pid) {
+            (*it) -> add_owned_resource(resc);
+        }
+    }
+    // done ?
 }
 
 void request_to_kill(uint32_t pid) {

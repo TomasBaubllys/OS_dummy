@@ -46,13 +46,17 @@ class Kernel {
 
 		Resource* get_resource(Process* process, Resource_Type resource_type);
 
-		void init_resource(Resource_Type resource_type, Process* owner);
-		void init_resource(Resource_Type resource_type, Process* owner, std::string buffer);
+		// returns the created resoursces ID
+		uint32_t init_resource(Resource_Type resource_type, Process* owner);
+		uint32_t init_resource(Resource_Type resource_type, Process* owner, std::string buffer);
 
 		// used for system resources
 		void release_resource(Resource_Type resource_type, std::string updated_buffer = "");
 		
 		// used for dynamic resources, like "from loader" or "from interrupt"
+		void release_resource_for(uint32_t resc_id, uint32_t for_pid, std::string updated_buffer = "");
+
+		// used for non dynamic resources that are meant for a specific process, like interrupt
 		void release_resource_for(Resource_Type resource_type, uint32_t for_pid, std::string updated_buffer = "");
 
 		void delete_resource(Process* process, Resource_Type resource_type);
