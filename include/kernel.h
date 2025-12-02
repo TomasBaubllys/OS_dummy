@@ -7,6 +7,16 @@
 #include <string>
 #include "../include/resource.h"
 #include "../include/processes/process.h"
+#include "../include/processes/idle_process.h"
+#include "../include/processes/interrupt_process.h"
+#include "../include/processes/job_control_language_process.h"
+#include "../include/processes/job_governor_process.h"
+#include "../include/processes/loader_process.h"
+#include "../include/processes/main_process_process.h"
+#include "../include/processes/printer_process.h"
+#include "../include/processes/read_from_interface_process.h"
+#include "../include/processes/start_stop_process.h"
+#include "../include/processes/virtual_machine_process.h"
 #include <list>
 #include <queue>
 
@@ -77,6 +87,8 @@ class Kernel {
 		void kill_processes_except(Process* process);
 
 		void request_to_kill(uint32_t pid);
+
+		void assign_vm(uint32_t vm_pid, Virtual_Machine* vm);
 
 		void destroy_resources();
 
