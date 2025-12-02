@@ -39,14 +39,14 @@ Process_State Job_Governor_Process::execute(){
             this -> saved_registers.ptr = this -> kernel -> get_cpu() -> ptr;
 
             return Process_State::READY;    
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE:
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE: {
             std::stringstream ss;
-            // unique id is used for identifying to which job governor asked for this package
-            // figure out how to get the program len
-            ss << this -> unique_id  << "PROGRAM LEN"  << " " << this -> saved_registers.ptr;
+            // program length is always the length of the supervisor memory size
+            ss << this -> unique_id  << MEM_SUPERVISOR_MEMORY_SIZE * MEM_WORD_SIZE << " " << this -> saved_registers.ptr;
             // this is not good, we must release the resources in some dynamic way... or maybe not???
             this -> kernel -> release_resource(Resource_Type::LOADER_PACKAGE, ss.str());
             return Process_State::READY;
+        }
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE:
             if(this -> owns_resource(Resource_Type::FROM_LOADER)) {
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE;
@@ -61,6 +61,7 @@ Process_State Job_Governor_Process::execute(){
             */   
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE:
             if(this -> owns_resource(Resource_Type::FROM_INTERRUPT)) {
+                // not really stop, identify the interupts
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_STOP_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
