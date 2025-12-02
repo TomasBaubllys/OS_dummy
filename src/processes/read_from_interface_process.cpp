@@ -34,6 +34,7 @@ Process_State Read_From_Interface_Process::execute(){
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_FILE_EXISTS;
                 return Process_State::READY;
             }
+
             this -> kernel -> request_resource(this, Resource_Type::HARD_DISK);
             return Process_State::BLOCKED;
 
@@ -116,5 +117,6 @@ Process_State Read_From_Interface_Process::execute(){
             return Process_State::READY;
         default:
             break;
+        }
     }
 }
