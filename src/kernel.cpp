@@ -96,11 +96,12 @@ Resource* Kernel::get_resource_by_type(Resource_Type resource_type) {
     return nullptr;
 }
 
-void Kernel::init_resource(Resource_Type resource_type, Process* owner) {
+uint32_t Kernel::init_resource(Resource_Type resource_type, Process* owner) {
     // Using resources.size() as a simple unique ID generator since resource_id_pool isn't in header
     uint32_t new_id = (uint32_t)this -> resources.size(); 
     Resource* new_resc = new Resource(new_id, resource_type);
     this -> resources.push_back(new_resc);
+    return new_resc -> get_uid();
 }
 
 void Kernel::request_resource(Process* process, Resource* resource) {
@@ -116,37 +117,6 @@ void Kernel::request_resource(Process* process, Resource* resource) {
         // Will be pushed to blocked_queue in run() loop
     }
 }
-
-/*void Kernel::release_resource(Resource* resource) {
-    if (!resource) return;
-
-    resource -> free_resource();
-
-    std::vector<Process*> temp_container;
-    bool found = false;
-
-    while (!this -> blocked_queue.empty()) {
-        Process* proc = this -> blocked_queue.top();
-        this -> blocked_queue.pop();
-
-        if (!found && proc -> get_waiting_resource() == resource) {
-            resource -> assign(proc);
-            
-            proc -> set_state(Process_State::READY);
-            proc -> set_waiting_resource(nullptr);
-
-            this -> ready_queue.push(proc);
-            found = true;
-        } 
-        else {
-            temp_container.push_back(proc);
-        }
-    }
-
-    for (Process* p : temp_container) {
-        this -> blocked_queue.push(p);
-    }
-}*/
 
 void Kernel::run() {
     while(true) {
@@ -271,7 +241,7 @@ Memory* Kernel::get_memory() {
     return &this -> real_machine -> mem;
 }
 
-void Kernel::release_resource_for(Resource_Type resource_type, uint32_t resc_id, uint32_t for_pid, std::string updated_buffer) {
+void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::string updated_buffer) {
     // check if the resource exists... if not throw?
     Resource* resc = nullptr;
     for(auto it = this -> resources.begin(); it != this -> resources.end(); ++it) {
@@ -292,6 +262,28 @@ void Kernel::release_resource_for(Resource_Type resource_type, uint32_t resc_id,
         }
     }
     // done ?
+}
+
+void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid, std::string updated_buffer) {
+    // check if the resource exists... if not throw?
+    Resource* resc = nullptr;
+    for(auto it = this -> resources.begin(); it != this -> resources.end(); ++it) {
+        if((*it) -> get_resource_type() == resource_type) {
+            resc = (*it);
+        } 
+    }    
+
+    // if resc not found quit lol
+    if(!resc) {
+        return;
+    }
+
+    // locate the process thats waiting
+    for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
+        if((*it) -> get_unique_id() == for_pid) {
+            (*it) -> add_owned_resource(resc);
+        }
+    }
 }
 
 void request_to_kill(uint32_t pid) {
