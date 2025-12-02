@@ -1,5 +1,6 @@
 #include "../../include/processes/printer_process.h"
 #include "../include/resource.h"
+#include "../../include/kernel.h"
 
 Printer_Process::Printer_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
 	Process(kernel, parent_process, friend_processes, username, Process_Priorities::PRINTER_PRIORITY)
@@ -54,6 +55,6 @@ Process_State Printer_Process::execute() {
 			// throw exception
 			return Process_State::BLOCKED_STOPPED;
 	}
-
+	
 	return Process_State::BLOCKED_STOPPED;
 }

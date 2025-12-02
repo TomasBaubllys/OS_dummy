@@ -1,4 +1,5 @@
 #include "../../include/processes/loader_process.h"
+#include "../../include/kernel.h"
 #include <string>
 #include <sstream>
 
@@ -37,7 +38,7 @@ Process_State Loader_Process::execute(){
 
             this -> kernel -> request_resource(this, Resource_Type::CHANNEL_DEVICE);
             return Process_State::BLOCKED;
-        case Loader_Process_Steps::LOADER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG:
+        case Loader_Process_Steps::LOADER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG: {
             Channel_Device* ch_dev = this -> kernel -> get_channel_device();
             CPU* cpu = this -> kernel -> get_cpu();
             cpu -> ptr = this -> saved_registers.ptr;
@@ -63,6 +64,7 @@ Process_State Loader_Process::execute(){
 
             this -> step = Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_CHANNEL_DEVICE;
             return Process_State::READY;
+        }
         case Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_CHANNEL_DEVICE:
             this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);
             this -> step = Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_SUPERVISOR_MEMORY;

@@ -6,7 +6,9 @@
 #include <unordered_map>
 #include <string>
 #include "../include/resource.h"
+#include "../include/processes/process.h"
 #include <list>
+#include <queue>
 
 #define SYSTEM_USERNAME "system"
 #define RMI_SHUTDOWN_COMMAND "$SHUTDOWN"
@@ -22,7 +24,11 @@ class Process;
 
 class Kernel {
 	private:
-		struct Process_Comparator;
+		struct Process_Comparator {
+    		bool operator()(const Process* a, const Process* b) const {
+        		return a -> get_priority() < b -> get_priority();
+    		}
+		};
 
 		Real_Machine* real_machine;
 		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> ready_queue;

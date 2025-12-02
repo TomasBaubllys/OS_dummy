@@ -76,6 +76,8 @@ uint32_t read_word(Memory* mem, const uint16_t address) {
 		word |= (mem -> memory[index + 1] & 0xffffff00) >> 8; 
 		return word;
 	}
+
+	return -1;
 } 			
 
 int write_word(Memory* mem, const uint16_t address, const uint32_t word) {

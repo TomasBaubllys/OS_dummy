@@ -1,15 +1,16 @@
 #ifndef PROCESS_H_INCLUDED
 #define PROCESS_H_INCLUDED
 
-#include "saved_registers.h"
-#include "resource.h"
-#include "kernel.h"
-#include "cpu.h"
+#include "../saved_registers.h"
+#include "../resource.h"
+#include "../cpu.h"
 #include <vector>
 #include <string>
 
 #define PROCESS_MAX_PRIORITY UINT8_MAX
 #define PROCESS_MIN_PRIORITY 0
+
+class Kernel;
 
 uint32_t process_id_pool = 0;
 

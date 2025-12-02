@@ -2,8 +2,12 @@
 #define RESOURCE_H_INCLUDED
 
 #include <stdint.h>
-#include "kernel.h"
+// #include "kernel.h"
 #include <queue>
+#include <string>
+
+class Kernel;
+class Process;
 
 #define RESOURCE_MEMORY_STRING_MAX_LENGTH 256
 #define NOT_DEDICATED_VAL 0

@@ -49,7 +49,7 @@ int xchg(Channel_Device* channel_device) {
 				case RA_REG:											// user memory -> ra register LW
 					channel_device -> sa = read_word(channel_device -> memory, channel_device -> sb * MEM_WORD_SIZE * MEM_PAGE_SIZE + channel_device -> of);
 					return 0;
-				case IO_STREAM:											// user memory -> stdio PSTR
+				case IO_STREAM: {											// user memory -> stdio PSTR
 					uint32_t size = (channel_device -> cb) / MEM_WORD_SIZE;
 					uint8_t rem = (channel_device -> cb) % MEM_WORD_SIZE;
 					uint32_t addr = channel_device -> sb * MEM_WORD_SIZE * MEM_PAGE_SIZE + channel_device -> of;
@@ -69,6 +69,7 @@ int xchg(Channel_Device* channel_device) {
 						}
 					}
 					break;
+				}
 				default:
 					break;
 			}
@@ -144,7 +145,7 @@ int xchg(Channel_Device* channel_device) {
 				default:
 					break;
 			}
-		case FILE_CHECK:
+		case FILE_CHECK: {
             File_Entry* file_entries;
             uint32_t file_count = read_file_entries(channel_device -> hard_disk, &file_entries);
 
@@ -157,7 +158,7 @@ int xchg(Channel_Device* channel_device) {
             }
 
 			channel_device -> sa = match_found;
-
+		}
 		default:
 			break;
 	}

@@ -4,6 +4,7 @@
 #include "../../include/processes/main_process_process.h"
 #include "../../include/processes/read_from_interface_process.h"
 #include "../../include/processes/printer_process.h"
+#include "../../include/kernel.h"
 
 Start_Stop_Process::Start_Stop_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::START_STOP_PRIORITY), step(Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_RESOURCES)

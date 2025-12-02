@@ -1,32 +1,68 @@
-# Compiler and flags
-CC = gcc
+# Compilers and flags
+CC  = gcc      # C compiler
+CXX = g++      # C++ compiler
 CFLAGS = -g
+CXXFLAGS = -g
 
 # Directories
 SRC_DIR = src
+PRCS_SRC_DIR = src/processes
 OBJ_DIR = obj
 
-# Files
+# Target
 TARGET = main
-SRC = $(filter-out $(SRC_DIR)/test.c $(SRC_DIR)/endian_reverser.c, $(wildcard $(SRC_DIR)/*.c))
-OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
-# Default rule
+# =====================================
+# Source file detection
+# =====================================
+
+# C source files (excluding specific ones)
+SRC_C = $(filter-out \
+	$(SRC_DIR)/test.c \
+	$(SRC_DIR)/endian_reverser.c \
+	$(SRC_DIR)/menu.c, \
+	$(wildcard $(SRC_DIR)/*.c))
+
+# C++ source files
+SRC_CPP = $(wildcard $(SRC_DIR)/*.cpp)
+PRCS_CPP = $(wildcard $(PRCS_SRC_DIR)/*.cpp)
+
+# =====================================
+# Object file generation
+# =====================================
+
+OBJ_C     = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_C))
+OBJ_CPP   = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_CPP))
+PRCS_OBJ  = $(patsubst $(PRCS_SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(PRCS_CPP))
+
+OBJ = $(OBJ_C) $(OBJ_CPP) $(PRCS_OBJ)
+
+# =====================================
+# Build rules
+# =====================================
+
 all: $(TARGET)
 
-# Linking
+# Link using C++ compiler
 $(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $(OBJ)
+	$(CXX) -o $@ $(OBJ)
 
-# Compiling
+# Compile C files with gcc
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# Compile C++ files in src/ with g++
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Compile C++ files in src/processes/ with g++
+$(OBJ_DIR)/%.o: $(PRCS_SRC_DIR)/%.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Ensure obj directory exists
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-# Clean build files
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
 

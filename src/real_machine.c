@@ -30,7 +30,7 @@ int add_virtual_machine(Real_Machine* real_machine) {
 		return -1;
 	} 
 
-	Virtual_Machine* vm = calloc(1, sizeof(Virtual_Machine));
+	Virtual_Machine* vm = (Virtual_Machine*)calloc(1, sizeof(Virtual_Machine));
 	if(!vm) {
 		return -1;
 	}

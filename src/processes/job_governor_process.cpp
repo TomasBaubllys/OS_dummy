@@ -1,5 +1,6 @@
 #include "../../include/processes/job_governor_process.h"
 #include "../../include/virtual_machine.h"
+#include "../../include/kernel.h"
 #include <sstream>
 
 /**
@@ -128,4 +129,6 @@ Process_State Job_Governor_Process::execute(){
         default:
             break;
     }
+
+    return Process_State::BLOCKED_STOPPED;
 }

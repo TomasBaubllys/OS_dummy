@@ -88,7 +88,7 @@ uint8_t* read_stream_hard_disk(Hard_Disk* hard_disk, uint16_t address, uint16_t 
 		return NULL;
 	}
 
-	uint8_t* stream = malloc(bytes_to_read);
+	uint8_t* stream = (uint8_t*)malloc(bytes_to_read);
 
 	if(!stream) {
 		perror("malloc");
@@ -130,7 +130,7 @@ uint32_t read_file_entries(Hard_Disk* hard_disk, File_Entry** files) {
 		return 0;
 	}
 
-	*files = malloc(sizeof(File_Entry) * file_count);	
+	*files = (File_Entry*)malloc(sizeof(File_Entry) * file_count);	
 
 	if(!*files) {
 		perror("malloc: ");

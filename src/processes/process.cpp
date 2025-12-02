@@ -1,4 +1,5 @@
 #include "../../include/processes/process.h"
+#include "../../include/kernel.h"
 
 Process::Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username, uint8_t priority) :
     unique_id(process_id_pool++),

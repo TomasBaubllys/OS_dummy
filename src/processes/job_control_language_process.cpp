@@ -1,4 +1,5 @@
 #include "../../include/processes/job_control_language_process.h"
+#include "../../include/kernel.h"
 
 Job_Control_Language_Process::Job_Control_Language_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_CONTROL_LANGUAGE_PRIORITY){
@@ -47,4 +48,6 @@ Process_State Job_Control_Language_Process::execute(){
         default:
             break;
     }
+
+    return Process_State::BLOCKED_STOPPED;
 }

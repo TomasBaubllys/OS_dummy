@@ -6,7 +6,7 @@
 //#include "../include/menu.h"
 #include "../include/io.h"
 #include <assert.h>
-#include "../real_machine.h"
+#include "../include/real_machine.h"
 #include "../include/kernel.h"
 
 int main(int argc, char* argv[]) {

@@ -1,5 +1,6 @@
 #include "../../include/processes/virtual_machine_process.h"
 #include "../../include/virtual_machine.h"
+#include "../../include/kernel.h"
 
 Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::VM_PRIORITY) {

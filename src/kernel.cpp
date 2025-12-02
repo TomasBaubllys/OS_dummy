@@ -1,16 +1,10 @@
 #include "../include/kernel.h"
-#include "../../include/processes/process.h"
-#include "../../include/processes/job_governor_process.h" // Assuming this exists based on forward decl
-#include "../../include/processes/start_stop_process.h"
+#include "../include/processes/process.h"
+#include "../include/processes/job_governor_process.h" // Assuming this exists based on forward decl
+#include "../include/processes/start_stop_process.h"
 #include "../include/io.h"
 #include <algorithm>
 #include <vector>
-
-struct Kernel::Process_Comparator {
-    bool operator()(const Process* a, const Process* b) const {
-        return a -> get_priority() < b -> get_priority();
-    }
-};
 
 Kernel::Kernel(Real_Machine* real_machine) : real_machine(real_machine) {
     this -> current_console_holder = nullptr;
@@ -219,10 +213,6 @@ uint32_t Kernel::init_resource(Resource_Type resource_type, Process* owner, std:
     Resource* new_resc = new Resource(new_id, resource_type);
     this -> resources.push_back(new_resc);
     return new_resc -> get_uid();
-}
-
-void Kernel::release_resource(Resource_Type resource_type, std::string buffer) {
-    throw 1;
 }
 
 void release_resource_for(Resource_Type resource_type, uint32_t for_pid) {

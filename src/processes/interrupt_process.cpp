@@ -1,4 +1,5 @@
 #include "../../include/processes/interrupt_process.h"
+#include "../../include/kernel.h"
 #include <sstream>
 
 Interrupt_Process::Interrupt_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
@@ -40,4 +41,6 @@ Process_State Interrupt_Process::execute(){
         default:
             break;
     }
+
+    return Process_State::BLOCKED_STOPPED;
 }

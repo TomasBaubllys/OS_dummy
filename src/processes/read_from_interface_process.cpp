@@ -1,5 +1,6 @@
 #include "../../include/processes/read_from_interface_process.h"
 #include "../../include/processes/job_governor_process.h"
+#include "../../include/kernel.h"
 #include <iostream>
 
 Read_From_Interface_Process::Read_From_Interface_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username):
