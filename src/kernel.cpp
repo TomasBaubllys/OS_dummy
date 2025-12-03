@@ -203,7 +203,6 @@ void Kernel::kill_processes_except(Process* survivor) {
         this -> blocked_stopped_queue.pop();
     }
 
-    // 3. Remove nulls from main list
     this -> all_processes.erase(
         std::remove(this -> all_processes.begin(), this -> all_processes.end(), nullptr), 
         this -> all_processes.end()
