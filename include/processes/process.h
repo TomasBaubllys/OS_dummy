@@ -12,7 +12,7 @@
 
 class Kernel;
 
-uint32_t process_id_pool = 0;
+extern uint32_t process_id_pool;
 
 enum class Process_State : uint8_t {
     EXECUTING,

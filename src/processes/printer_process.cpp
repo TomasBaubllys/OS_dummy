@@ -1,5 +1,5 @@
 #include "../../include/processes/printer_process.h"
-#include "../include/resource.h"
+#include "../../include/resource.h"
 #include "../../include/kernel.h"
 
 Printer_Process::Printer_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :

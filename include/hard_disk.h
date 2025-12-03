@@ -19,6 +19,10 @@
 #define HD_OPEN_ERR "Hard disk could not be openned\n"
 #define HD_CORUPTION_ERR "Hard disk was corrupted\n"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct Hard_Disk {
 	FILE *fptr;
 } Hard_Disk;
@@ -40,5 +44,9 @@ uint32_t read_file_entries(Hard_Disk* hard_disk, File_Entry** files);
 
 // prints file info
 File_Entry print_files(Hard_Disk* hard_disk);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // HARD_DISK_H_INCLUDED

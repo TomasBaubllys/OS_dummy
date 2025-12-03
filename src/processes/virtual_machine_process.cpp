@@ -1,5 +1,4 @@
 #include "../../include/processes/virtual_machine_process.h"
-#include "../../include/virtual_machine.h"
 #include "../../include/kernel.h"
 
 Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
@@ -14,7 +13,7 @@ Virtual_Machine_Process::~Virtual_Machine_Process(){
 
 Process_State Virtual_Machine_Process::execute(){
     switch (this -> step){
-        case Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE:
+        case Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE: {
             /**
              *  Move restoring registers to main loop
              * 
@@ -26,6 +25,7 @@ Process_State Virtual_Machine_Process::execute(){
 
             this -> step = Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM;
             return Process_State::READY;
+        }
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM:
             cpu_load_regs(this -> kernel -> get_cpu(), this -> saved_registers);
             
@@ -44,4 +44,6 @@ Process_State Virtual_Machine_Process::execute(){
         default:
             break;
     }
+
+    return Process_State::BLOCKED_STOPPED;
 }

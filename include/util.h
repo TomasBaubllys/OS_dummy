@@ -6,6 +6,10 @@
 
 #define UTIL_BAD_ARG 0xff
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // converts characters representing hexadecimal values to decimal values
 uint8_t char_hex_to_decimal(uint8_t ch);
 
@@ -30,5 +34,9 @@ void print_uint32_as_str(uint32_t value);
 
 // used to print file names
 void print_file_name(char* fname, uint16_t size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // UTIL_H_INCLUDED

@@ -1,6 +1,8 @@
 #include "../../include/processes/process.h"
 #include "../../include/kernel.h"
 
+uint32_t process_id_pool = 0;
+
 Process::Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username, uint8_t priority) :
     unique_id(process_id_pool++),
     process_state(Process_State::READY),

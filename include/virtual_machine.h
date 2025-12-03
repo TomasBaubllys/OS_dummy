@@ -14,6 +14,10 @@
 
 #define VM_EXEC_FAILED_NULL_ERR "Virtual machine is null execution cancelled\n"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct Virtual_Machine {
 	CPU* cpu;
 	Memory* memory;
@@ -27,5 +31,9 @@ int destroy_virtual_machine(Virtual_Machine* virtual_machine);
 
 // executes a command at virtual pc
 void virtual_machine_execute(Virtual_Machine* virtual_machine);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // VIRTUAL_MACHINE_H_INCLUDED

@@ -57,6 +57,10 @@
 #define MSG_LOGGING_CHOICE "Choose a mode:\n 1. Logging ON\n 2. Logging OFF\n"
 #define MSG_STEPPING_LOGGING_INVALID_CHOICE "Invalid choice, please select 1 or 2 \n"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // prints contents of memory
 void dump_memory(Real_Machine* real_machine);
 
@@ -65,5 +69,9 @@ int display_menu();
 
 // main menu loop
 void menu(Real_Machine* real_machine);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // MENU_H_INCLUDED

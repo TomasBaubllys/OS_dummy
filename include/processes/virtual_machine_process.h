@@ -2,6 +2,7 @@
 #define VIRTUAL_MACHINE_PROCESS_H_INCLUDED
 
 #include "process.h"
+#include "../../include/virtual_machine.h"
 
 typedef enum Virtual_Machine_Steps{
     VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE,

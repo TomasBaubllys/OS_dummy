@@ -13,10 +13,18 @@
 #define MSG_SELECT_FILE "Select a file to load: \n"
 #define FILE_TOO_BIG_ERR_MSG "File size exceeds maximum virtual machine memory\n"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct File_Entry {
 	char file_name[FILE_NAME_SIZE + 1];
 	uint32_t offset;
 	uint32_t size;
 } File_Entry;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // FILE_H_INCLUDED

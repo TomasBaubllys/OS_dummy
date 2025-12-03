@@ -17,6 +17,10 @@
 #define RM_MSG_BAD_PROGRAM "Invalid program encountered exiting...\n"
 #define RM_MSG_NULL_VM "Internal error while creating the virtual machine\n"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct Virtual_Machine Virtual_Machine;
 
 typedef struct Real_Machine {
@@ -48,5 +52,9 @@ int load_program_supervisor(Real_Machine* real_machine, File_Entry* file_entry);
 int load_program_user(Real_Machine* real_machine, uint32_t program_length);
 
 void remove_virtual_machine(Real_Machine* real_machine);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // REAL_MACHINE_H_INCLUDED

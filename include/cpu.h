@@ -18,6 +18,10 @@
 #define RB_CODE 0x7262
 #define RC_CODE 0x7263
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum Cpu_Pi_Type {
 	CPU_PI_NONE,
 	CPU_PI_INVALID_ADDRESS,
@@ -85,5 +89,9 @@ int reset_cpu(CPU* cpu);
 Saved_Registers cpu_save_regs(CPU* cpu);
 
 void cpu_load_regs(CPU* cpu, Saved_Registers saved_regs);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // CPU_H_INCLUDED

@@ -276,7 +276,11 @@ void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid,
     }
 }
 
-void request_to_kill(uint32_t pid) {
+void Kernel::request_to_kill(uint32_t pid) {
     
 }
 
+
+void Kernel::assign_vm(uint32_t vm_pid, Virtual_Machine* vm) {
+    
+}

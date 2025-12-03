@@ -119,4 +119,6 @@ Process_State Read_From_Interface_Process::execute(){
             break;
         }
     }
+
+    return Process_State::BLOCKED_STOPPED;
 }

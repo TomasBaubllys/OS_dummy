@@ -41,6 +41,10 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct CPU CPU;
 
 typedef struct Memory {
@@ -72,5 +76,9 @@ int return_page(Memory* mem, uint8_t page_num);
 
 // prints memory from start address till end address, they must be aligned to a word a.k.a divisible by 4
 void fprint_memory(FILE* stream, Memory* mem, uint16_t start, uint16_t end, uint8_t column_count);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // MEMORY_H_INCLUDED
