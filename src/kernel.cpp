@@ -109,7 +109,8 @@ void Kernel::run() {
         }
 
         if(this -> ready_queue.empty()) {
-            exit(-1);
+            // no more processes, shutdown...
+            break;
         }
 
         Process* curr_p = this -> ready_queue.top();

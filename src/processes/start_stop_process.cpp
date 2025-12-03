@@ -5,6 +5,7 @@
 #include "../../include/processes/read_from_interface_process.h"
 #include "../../include/processes/printer_process.h"
 #include "../../include/kernel.h"
+#include <iostream>
 
 Start_Stop_Process::Start_Stop_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::START_STOP_PRIORITY), step(Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_RESOURCES)
@@ -51,6 +52,7 @@ Process_State Start_Stop_Process::execute() {
 
         case Start_Stop_Process_Steps::START_STOP_PROCESS_BLOCKED_WAITING_FOR_MOS_END : {
             if(this -> owns_resource(Resource_Type::MOS_END)) {
+                std::cout << SSP_SHUTDOWN_MSG << std::endl;
                 this -> step = Start_Stop_Process_Steps::START_STOP_PROCESS_KILL_SYSTEM_PROCESSES;
                 return Process_State::READY;
             }

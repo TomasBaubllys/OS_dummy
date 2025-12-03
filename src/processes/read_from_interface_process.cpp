@@ -106,9 +106,8 @@ Process_State Read_From_Interface_Process::execute(){
             }
             return Process_State::READY; 
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_SYSTEM_COMMAND:
-            this -> kernel -> release_resource(Resource_Type::SYSTEM_COMMAND, this -> buffer.substr(1));
+            this -> kernel -> release_resource(Resource_Type::SYSTEM_COMMAND, this -> buffer);
             this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
-            
             /*
                 RELEASE HARD DISK
                 and others?

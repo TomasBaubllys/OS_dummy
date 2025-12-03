@@ -3,6 +3,8 @@
 
 #include "process.h"
 
+#define SSP_SHUTDOWN_MSG "Bye bye..." 
+
 enum class Start_Stop_Process_Steps{
     START_STOP_PROCESS_INITIALIZE_RESOURCES,
     START_STOP_PROCESS_INITIALIZE_SYSTEM_PROCESSES,

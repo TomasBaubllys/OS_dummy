@@ -92,7 +92,7 @@ Process_State Job_Governor_Process::execute(){
             return Process_State::READY;
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_INTERRUPT:
-            bool io_interrupt = false;
+            static bool io_interrupt = false;
             switch(this -> kernel -> get_cpu() -> si){
                 case Cpu_Si_Type::CPU_SI_GEDA:
                 case Cpu_Si_Type::CPU_SI_BG:
@@ -117,7 +117,7 @@ Process_State Job_Governor_Process::execute(){
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_REACHED_LIMIT: 
             // no clue :(
-            bool limit_reached = false;
+            static bool limit_reached = false;
             /*
             *  HERE CHECK IF IO LIMIT REACHED
             *

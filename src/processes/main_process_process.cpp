@@ -1,5 +1,6 @@
 #include "../../include/processes/main_process_process.h"
 #include "../../include/kernel.h"
+#include <iostream>
 
 Main_Process_Process::Main_Process_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::MAIN_PROCESS_PRIORITY){

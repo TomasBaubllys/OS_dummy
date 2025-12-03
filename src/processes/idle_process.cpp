@@ -1,4 +1,5 @@
 #include "../../include/processes/idle_process.h"
+#include <iostream>
 
 Idle_Process::Idle_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::IDLE_PRIORITY),
