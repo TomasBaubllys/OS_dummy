@@ -20,6 +20,7 @@ Process_State Start_Stop_Process::execute() {
     switch (this -> step)
     {
         case Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_RESOURCES: {
+            // release half if these resources by default....
             this -> kernel -> init_resource(Resource_Type::SYSTEM_COMMAND, this);
             this -> kernel -> init_resource(Resource_Type::HARD_DISK, this);
             this -> kernel -> init_resource(Resource_Type::USER_MEMORY, this);

@@ -5,6 +5,8 @@
 #include "../include/io.h"
 #include <algorithm>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 Kernel::Kernel(Real_Machine* real_machine) : real_machine(real_machine) {
     this -> current_console_holder = nullptr;
@@ -19,21 +21,9 @@ Kernel::Kernel(Real_Machine* real_machine) : real_machine(real_machine) {
 void Kernel::request_resource(Process* process, Resource_Type resource_type) {
     if (!process) return;
 
-    Resource* res = this -> get_resource_by_type(resource_type);
-
-    if (!res) {
-        return;
-    }
-
-    if (res -> is_free()) {
-        process -> add_owned_resource(res);
-        // res -> assign(process);
-    } 
-    else {
-        process -> set_waiting_resource_type(resource_type);
-        process -> set_waiting_resource(nullptr);
-        process -> set_state(Process_State::BLOCKED);
-    }
+    process -> set_waiting_resource_type(resource_type);
+    process -> set_waiting_resource(nullptr);
+    process -> set_state(Process_State::BLOCKED);
 }
 
 void Kernel::release_resource(Resource_Type resource_type, std::string updated_buffer) {
@@ -52,7 +42,7 @@ void Kernel::release_resource(Resource_Type resource_type, std::string updated_b
         this -> blocked_queue.pop();
 
         if (!found && proc -> get_waiting_resource_type() == resource_type) {
-            res -> assign(proc);
+            proc -> add_owned_resource(res);
             
             proc -> set_state(Process_State::READY);
             proc -> set_waiting_resource_type(Resource_Type::NONE); // Clear wait reason
@@ -93,7 +83,7 @@ Resource* Kernel::get_resource_by_type(Resource_Type resource_type) {
 uint32_t Kernel::init_resource(Resource_Type resource_type, Process* owner) {
     // Using resources.size() as a simple unique ID generator since resource_id_pool isn't in header
     uint32_t new_id = (uint32_t)this -> resources.size(); 
-    Resource* new_resc = new Resource(new_id, resource_type);
+    Resource* new_resc = new Resource(new_id, resource_type, owner);
     this -> resources.push_back(new_resc);
     return new_resc -> get_uid();
 }
@@ -115,7 +105,7 @@ void Kernel::request_resource(Process* process, Resource* resource) {
 void Kernel::run() {
     while(true) {
         if(line_ready()) {
-            this -> init_resource(Resource_Type::FROM_USER_INTERFACE, nullptr);
+            this -> release_resource(Resource_Type::FROM_USER_INTERFACE);
         }
 
         if(this -> ready_queue.empty()) {
@@ -134,10 +124,26 @@ void Kernel::run() {
                 this -> ready_queue.push(curr_p);
                 break;
                 
-            case Process_State::BLOCKED: 
-                this -> blocked_queue.push(curr_p); 
+            case Process_State::BLOCKED: {
+                bool found = false;
+                for(Resource* resc : this -> resources) {
+                    if(resc -> get_resource_type() == curr_p -> get_waiting_resource_type()) {
+                        if(resc -> is_free()) {
+                            curr_p -> add_owned_resource(resc);
+                            found = true;
+                        }
+                    }
+
+                }
+
+                if(!found) {
+                    this -> blocked_queue.push(curr_p); 
+                }
+                else {
+                    this -> ready_queue.push(curr_p);
+                }
                 break;
-                
+            }
             case Process_State::READY_STOPPED:
                 this -> ready_stopped_queue.push(curr_p);
                 break;
@@ -154,6 +160,9 @@ void Kernel::run() {
             default:
                 break;
         }
+
+        // to make debug easier
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 }
 
@@ -282,5 +291,5 @@ void Kernel::request_to_kill(uint32_t pid) {
 
 
 void Kernel::assign_vm(uint32_t vm_pid, Virtual_Machine* vm) {
-    
+
 }
