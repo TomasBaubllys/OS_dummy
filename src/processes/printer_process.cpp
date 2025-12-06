@@ -24,6 +24,7 @@ Process_State Printer_Process::execute() {
 			this -> kernel -> request_resource(this, Resource_Type::STRING_IN_MEMORY);
 			return Process_State::BLOCKED;
 		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE:
+			std::cout << "PRINTER EXEC: " << (int)this -> step << std::endl;
 			if(this -> owns_resource(Resource_Type::CHANNEL_DEVICE)) {
 				this -> step = Printer_Process_Steps::PRINTER_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG;
 				return Process_State::READY;

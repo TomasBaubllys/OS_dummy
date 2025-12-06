@@ -30,7 +30,7 @@ void Kernel::request_resource(Process* process, Resource_Type resource_type) {
 void Kernel::release_resource(Resource_Type resource_type, std::string updated_buffer) {
     Resource* res = this -> get_resource_by_type(resource_type);
 
-    // std::cout << (int)resource_type << std::endl;
+    std::cout << (int)resource_type << std::endl;
 
     if (!res) return;
 
@@ -179,7 +179,7 @@ void Kernel::kill_processes_except(Process* survivor) {
     for(Process*& proc : this -> all_processes) {
         if(proc != survivor) {
             delete proc;
-            proc = nullptr;     
+            proc = nullptr;
         }
     }
 
@@ -250,8 +250,8 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
     for(auto it = this -> resources.begin(); it != this -> resources.end(); ++it) {
         if((*it) -> get_uid() == resc_id) {
             resc = (*it);
-        } 
-    }    
+        }
+    }
 
     // if resc not found quit lol
     if(!resc) {
