@@ -5,6 +5,7 @@
 
 #define JOB_CONTROL_LANGUAGE_PROCESS_MSG_BYE_NOT_FOUND "#BYE not found\n"
 #define JOB_CONTROL_LANGUAGE_PROCESS_MSG_LOS_NOT_FOUND "#LOD not found\n"
+#define JCL_NAME "Job_Control_Language_Process"
 
 
 enum class Job_Control_Language_Process_Steps{

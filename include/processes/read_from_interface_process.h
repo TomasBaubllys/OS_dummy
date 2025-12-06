@@ -3,7 +3,9 @@
 
 #include "process.h"
 
-#define FILE_NOT_FOUND_ERR_MSG "File by that name was not found!"
+#define FILE_NOT_FOUND_ERR_MSG "File by that name was not found!\n"
+
+#define RMI_NAME "Read_From_Interface_Process"
 
 typedef enum Read_From_Interface_Process_Steps{
     READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE,

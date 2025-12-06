@@ -7,6 +7,9 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <sys/ioctl.h>
+#include <cstdio>
+#include <unistd.h>
 
 Kernel::Kernel(Real_Machine* real_machine) : real_machine(real_machine) {
     init_real_machine(real_machine);
@@ -29,8 +32,9 @@ void Kernel::request_resource(Process* process, Resource_Type resource_type) {
 
 void Kernel::release_resource(Resource_Type resource_type, std::string updated_buffer) {
     Resource* res = this -> get_resource_by_type(resource_type);
+    // std::cout << "FReeing resc: " << (int)resource_type << std::endl;
 
-    std::cout << (int)resource_type << std::endl;
+    // std::cout << (int)resource_type << std::endl;
 
     if (!res) return;
 
@@ -45,6 +49,7 @@ void Kernel::release_resource(Resource_Type resource_type, std::string updated_b
         this -> blocked_queue.pop();
 
         if (!found && proc -> get_waiting_resource_type() == resource_type) {
+            // std::cout << "Resource " << (int)resource_type << " FOUND for " << proc -> get_p_name() << std::endl;
             // std::cout << "given to process: " << proc->get_unique_id() << std::endl;
             proc -> add_owned_resource(res);
             
@@ -118,6 +123,7 @@ void Kernel::run() {
         }
 
         Process* curr_p = this -> ready_queue.top();
+        this -> print_running_proc(curr_p);
         this -> ready_queue.pop();
         
         curr_p -> set_state(Process_State::EXECUTING);
@@ -167,7 +173,7 @@ void Kernel::run() {
         }
 
         // to make debug easier
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }
 
@@ -300,4 +306,28 @@ void Kernel::request_to_kill(uint32_t pid) {
 
 void Kernel::assign_vm(uint32_t vm_pid, Virtual_Machine* vm) {
 
+}
+
+void Kernel::print_running_proc(Process* running_proc) {
+    if (!running_proc) return;
+
+    // Query terminal size
+    struct winsize ws{};
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
+    int bottom = ws.ws_row;     // last row
+    int col = 1;                // first column
+
+    // Save cursor position
+    printf("\x1b[s");
+
+    // Move cursor to bottom row
+    printf("\x1b[%d;%dH", bottom, col);
+
+    // Clear that line and print status
+    printf("\x1b[2K[Running: %s]", running_proc->get_p_name().c_str());
+
+    // Restore original cursor position
+    printf("\x1b[u");
+
+    fflush(stdout);
 }

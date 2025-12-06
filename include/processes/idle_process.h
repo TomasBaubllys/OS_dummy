@@ -2,6 +2,8 @@
 #define IDLE_PROCESS_H_INCLUDED
 #include "process.h"
 
+#define IDLE_NAME "Idle_Process"
+
 class Idle_Process: public Process{
     private:
         uint64_t do_nothing_counter;

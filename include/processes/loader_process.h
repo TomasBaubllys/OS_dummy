@@ -3,6 +3,8 @@
 
 #include "process.h"
 
+#define LOADER_NAME "Loader_Process"
+
 enum class Loader_Process_Steps{
     LOADER_PROCESS_BLOCKED_WAITING_FOR_LOADER_PACKAGE_RESOURCE,
     LOADER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE,

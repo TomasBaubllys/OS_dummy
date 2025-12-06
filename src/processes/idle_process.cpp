@@ -6,6 +6,7 @@ Idle_Process::Idle_Process(Kernel* kernel, Process* parent_process, std::vector<
     do_nothing_counter(0)
 {
     this -> saved_registers = {};
+    this -> name = IDLE_NAME;
 }
 
 Idle_Process::~Idle_Process() {

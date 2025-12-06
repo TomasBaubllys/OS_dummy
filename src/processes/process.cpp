@@ -128,3 +128,7 @@ void Process::release_owned_resource(Resource_Type resource_type, std::string bu
         }
     }
 }
+
+std::string Process::get_p_name() {
+    return this -> name;
+}

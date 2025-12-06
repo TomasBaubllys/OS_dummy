@@ -5,7 +5,7 @@
 
 Read_From_Interface_Process::Read_From_Interface_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username):
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::READ_FROM_INTERFACE_PRIORITY){
-
+    this -> name = RMI_NAME;
 }
 
 Read_From_Interface_Process::~Read_From_Interface_Process() {
@@ -62,8 +62,10 @@ Process_State Read_From_Interface_Process::execute(){
             if(ch_dev -> sa == 0) {
                 // match not found
                 // FREE CURRENT RESOURCES
-                this -> return_owned_resources();
+                this -> release_owned_resource(Resource_Type::CHANNEL_DEVICE);
+                this -> release_owned_resource(Resource_Type::HARD_DISK);
                 this -> kernel -> release_resource(Resource_Type::STRING_IN_MEMORY, FILE_NOT_FOUND_ERR_MSG);
+                this -> return_owned_resources();
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
             }
             else {

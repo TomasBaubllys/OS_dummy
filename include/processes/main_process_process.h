@@ -3,6 +3,8 @@
 
 #include "process.h"
 
+#define MAIN_PROCESS_NAME "Main_Process_Process"
+
 enum class Main_Process_Process_Steps{
     MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND,
     MAIN_PROCESS_PROCESS_CHECK_IF_PIE_IN_THE_OVEN_FREE,

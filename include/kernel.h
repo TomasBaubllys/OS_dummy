@@ -108,6 +108,8 @@ class Kernel {
 			this -> all_processes.push_back(process);
 			return process -> get_unique_id();
 		};
+
+		void print_running_proc(Process* running_proc);
 };
 
 

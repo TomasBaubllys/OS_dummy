@@ -4,6 +4,8 @@
 #include "process.h"
 #include "../../include/virtual_machine.h"
 
+#define VIRTUAL_MACHINE_NAME "Virtual_Machine_Process"
+
 typedef enum Virtual_Machine_Steps{
     VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE,
     VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM,

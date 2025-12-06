@@ -4,6 +4,7 @@
 Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::VM_PRIORITY) {
     this -> saved_registers = {};
+    this -> name = VIRTUAL_MACHINE_NAME;
 }
 
 Virtual_Machine_Process::~Virtual_Machine_Process(){

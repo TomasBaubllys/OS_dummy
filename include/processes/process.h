@@ -59,6 +59,8 @@ class Process {
 
         std::string username;
 
+        std::string name;
+
     public:
         Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username, uint8_t priority);
         virtual ~Process();
@@ -93,6 +95,8 @@ class Process {
         void return_owned_resources();
 
         void release_owned_resource(Resource_Type resource_type, std::string buffer = "");
+
+        std::string get_p_name();
 };
 
 #endif // PROCESS_H_INCLUDED

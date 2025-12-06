@@ -3,6 +3,8 @@
 
 #include "process.h"
 
+#define PRINTER_NAME "Printer_Process"
+
 enum class Printer_Process_Steps : uint16_t {
 	PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE,
 	PRINTER_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE,

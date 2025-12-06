@@ -5,6 +5,7 @@
 Interrupt_Process::Interrupt_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::INTERRUPT_PRIORITY){
     this -> saved_registers = {};
+    this -> name = INTERRUPT_NAME;
 }
 
 Interrupt_Process::~Interrupt_Process(){

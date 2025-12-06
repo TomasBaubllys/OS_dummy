@@ -1,4 +1,5 @@
 #include "../include/channel_device.h"
+#include "../include/util.h"
 
 int init_channel_device(Channel_Device* channel_device, Memory* memory, Hard_Disk* hard_disk) {
 	if(!channel_device || !memory) {
@@ -149,9 +150,10 @@ int xchg(Channel_Device* channel_device) {
 		case FILE_CHECK: {
             File_Entry* file_entries;
             uint32_t file_count = read_file_entries(channel_device -> hard_disk, &file_entries);
-
+			reverse_endianness_array((uint32_t*)channel_device -> _file_name, 2);
             int match_found = 0;
             for(uint32_t i = 0; i < file_count; ++i) {
+				// printf("%s <-> %s\n", file_entries[i].file_name, channel_device -> _file_name);
                 if(strcmp(file_entries[i].file_name, channel_device -> _file_name) == 0) {
                     match_found = 1;
                     break;

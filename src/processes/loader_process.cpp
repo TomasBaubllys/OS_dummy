@@ -5,7 +5,7 @@
 
 Loader_Process::Loader_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::LOADER_PRIORITY){
-
+    this -> name = LOADER_NAME;
 }
 
 Loader_Process::~Loader_Process(){

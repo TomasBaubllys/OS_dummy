@@ -3,6 +3,8 @@
 
 #include "process.h"
 
+#define INTERRUPT_NAME "Interrupt_Process"
+
 enum class Interrupt_Process_Steps{
     INTERRUPT_PROCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE,
     INTERRUPT_PROCESS_IDENTIFY_INTERRUPT,

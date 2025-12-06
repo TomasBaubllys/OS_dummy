@@ -6,6 +6,8 @@
 #define JOB_GOVERNOR_PROCESS_MSG_IO_LIMIT_REACHED "Input limit reached \n" 
 #define JOB_GOVERNOR_PROCESS_MSG_PLACEHOLDER "lol jg is here\n"
 
+#define JG_NAME "Job_Governor_Process"
+
 enum class Job_Governor_Process_Steps{
     JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE,
     JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE,
