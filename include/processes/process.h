@@ -88,7 +88,11 @@ class Process {
 
         void add_owned_resource(Resource* resource);
 
-        void free_owned_resources();
+        void release_owned_resources();
+
+        void return_owned_resources();
+
+        void release_owned_resource(Resource_Type resource_type, std::string buffer = "");
 };
 
 #endif // PROCESS_H_INCLUDED

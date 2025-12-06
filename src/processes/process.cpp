@@ -101,8 +101,30 @@ void Process::add_owned_resource(Resource* resource) {
 }
 
 
-void Process::free_owned_resources() {
+void Process::release_owned_resources() {
     for(Resource* resc : this -> owned_resources) {
         this -> kernel -> release_resource(resc -> get_resource_type());
+    }
+
+    this -> owned_resources.clear();
+    
+}
+
+void Process::return_owned_resources() {
+    for(Resource* resc : this -> owned_resources) {
+        kernel -> return_resource_to_owner(resc);
+    }
+
+    this -> owned_resources.clear();
+}
+
+void Process::release_owned_resource(Resource_Type resource_type, std::string buffer) {
+    this -> kernel -> release_resource(resource_type, buffer);
+
+    for(auto it = this -> owned_resources.begin(); it != this -> owned_resources.end(); ++it) {
+        if ((*it) -> get_resource_type() == resource_type) {
+            this -> owned_resources.erase(it);
+            break;
+        }
     }
 }

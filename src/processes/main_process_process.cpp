@@ -93,9 +93,17 @@ Process_State Main_Process_Process::execute(){
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_FREE_RESOURCE_STRING_IN_MEMORY_WITH_INFO_NONEXISTING_SYSTEM_COMMAND:
             this -> kernel -> release_resource(Resource_Type::STRING_IN_MEMORY, STR_MEM_UNKNOWN_SYS_COM_ERR_MSG);
             this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND;
-            /*
-                probably get rid of the current resource, to avoid the same pattern
-            */
+
+            // find the system command an return it to the owner
+            for(auto it = this -> owned_resources.begin(); it != this -> owned_resources.end(); ++it) {
+                if((*it) -> get_resource_type() == Resource_Type::SYSTEM_COMMAND) {
+                    this -> kernel -> return_resource_to_owner((*it));
+                    // a lil risky, but its fine:)
+                    this -> owned_resources.erase(it);
+                    break;
+                }
+            }
+
             return Process_State::READY;
 
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_RUNTIME_0:

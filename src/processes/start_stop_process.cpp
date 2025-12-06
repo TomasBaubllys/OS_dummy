@@ -23,14 +23,27 @@ Process_State Start_Stop_Process::execute() {
         case Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_RESOURCES: {
             // release half if these resources by default....
             this -> kernel -> init_resource(Resource_Type::SYSTEM_COMMAND, this);
+
             this -> kernel -> init_resource(Resource_Type::HARD_DISK, this);
+            this -> kernel -> release_resource(Resource_Type::HARD_DISK);
+
             this -> kernel -> init_resource(Resource_Type::USER_MEMORY, this);
+            this -> kernel -> release_resource(Resource_Type::USER_MEMORY);
+
             this -> kernel -> init_resource(Resource_Type::SUPERVISOR_MEMORY, this);
+            this -> kernel -> release_resource(Resource_Type::SUPERVISOR_MEMORY);
+
             this -> kernel -> init_resource(Resource_Type::STRING_IN_MEMORY, this);
+
             this -> kernel -> init_resource(Resource_Type::CONSOLE, this);
+            this -> kernel -> release_resource(Resource_Type::CONSOLE);
+
             this -> kernel -> init_resource(Resource_Type::PIE_IN_THE_OVEN, this);
             this -> kernel -> init_resource(Resource_Type::NON_EXISTANT, this);
+            
             this -> kernel -> init_resource(Resource_Type::CHANNEL_DEVICE, this);
+            this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);
+
             this -> kernel -> init_resource(Resource_Type::USER_INPUT, this);
             this -> kernel -> init_resource(Resource_Type::INTERRUPT, this);
             this -> kernel -> init_resource(Resource_Type::FROM_USER_INTERFACE, this);

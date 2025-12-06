@@ -29,6 +29,8 @@ void Kernel::request_resource(Process* process, Resource_Type resource_type) {
 void Kernel::release_resource(Resource_Type resource_type, std::string updated_buffer) {
     Resource* res = this -> get_resource_by_type(resource_type);
 
+    std::cout << (int)resource_type << std::endl;
+
     if (!res) return;
 
     res -> free_resource();
@@ -42,6 +44,7 @@ void Kernel::release_resource(Resource_Type resource_type, std::string updated_b
         this -> blocked_queue.pop();
 
         if (!found && proc -> get_waiting_resource_type() == resource_type) {
+            // std::cout << "given to process: " << proc->get_unique_id() << std::endl;
             proc -> add_owned_resource(res);
             
             proc -> set_state(Process_State::READY);
@@ -261,6 +264,10 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
         }
     }
     // done ?
+}
+
+void Kernel::return_resource_to_owner(Resource* resource) {
+    resource -> return_to_owner();
 }
 
 void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid, std::string updated_buffer) {

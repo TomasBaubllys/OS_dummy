@@ -1,6 +1,7 @@
 #include "../../include/processes/printer_process.h"
 #include "../../include/resource.h"
 #include "../../include/kernel.h"
+#include <iostream>
 
 Printer_Process::Printer_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
 	Process(kernel, parent_process, friend_processes, username, Process_Priorities::PRINTER_PRIORITY)
@@ -42,13 +43,14 @@ Process_State Printer_Process::execute() {
 			ch_dev -> cb = buffer.size();
 			ch_dev -> of = 0;  
 			xchg(ch_dev);
-
 			this -> step = Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE; 
 			return Process_State::READY;
 		}
 		case Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE:
-			this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);	
-			
+			// remove from ownder resources...
+			this -> release_owned_resource(Resource_Type::CHANNEL_DEVICE);	
+			// return all the other processes to owners to avoid looping
+			this -> return_owned_resources();
 			this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE;
 			return Process_State::READY;
 		default:

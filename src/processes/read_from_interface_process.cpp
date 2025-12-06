@@ -59,6 +59,7 @@ Process_State Read_From_Interface_Process::execute(){
             if(ch_dev -> sa == 0) {
                 // match not found
                 // FREE CURRENT RESOURCES
+                this -> return_owned_resources();
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
             }
             else {
@@ -81,6 +82,7 @@ Process_State Read_From_Interface_Process::execute(){
             break;
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_TASK_IN_SUPERVISOR:
             this -> kernel -> release_resource(Resource_Type::TASK_IN_SUPERVISOR);
+            this -> return_owned_resources();
             this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
 
             return Process_State::READY;
@@ -92,6 +94,7 @@ Process_State Read_From_Interface_Process::execute(){
                 Job_Governor_Process* jg = this -> kernel -> current_console_holder; 
                 // if current console holder is null, ignore the buffer
                 if(jg == nullptr) {
+                    this -> return_owned_resources();
                     this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
                     // RELEASE THE OWNED RESOURCES
 
@@ -100,6 +103,7 @@ Process_State Read_From_Interface_Process::execute(){
                 
                 // are you sure that that process is already created????
                 this -> kernel -> release_resource_for(Resource_Type::USER_INPUT, jg -> get_unique_id(), this -> buffer);
+                this -> return_owned_resources();
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
                 // jg -> vm_input -> set_buffer(this -> buffer);
                 // this -> kernel -> release_resource(jg -> vm_input);
@@ -107,6 +111,7 @@ Process_State Read_From_Interface_Process::execute(){
             return Process_State::READY; 
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_SYSTEM_COMMAND:
             this -> kernel -> release_resource(Resource_Type::SYSTEM_COMMAND, this -> buffer);
+            this -> return_owned_resources();
             this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
             /*
                 RELEASE HARD DISK

@@ -145,6 +145,7 @@ int xchg(Channel_Device* channel_device) {
 				default:
 					break;
 			}
+			break;
 		case FILE_CHECK: {
             File_Entry* file_entries;
             uint32_t file_count = read_file_entries(channel_device -> hard_disk, &file_entries);

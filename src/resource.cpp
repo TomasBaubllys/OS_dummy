@@ -57,3 +57,7 @@ uint32_t Resource::get_owner_id() {
 uint32_t Resource::get_uid() {
     return this -> unique_id;
 }
+
+void Resource::return_to_owner() {
+    this -> user = this -> owner;
+}

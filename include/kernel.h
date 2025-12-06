@@ -77,6 +77,8 @@ class Kernel {
 
 		void delete_resource(Process* process, Resource_Type resource_type);
 
+		void return_resource_to_owner(Resource* resource);
+
 		// void release_resource(Resource* resource);
 
 		// used for system resources

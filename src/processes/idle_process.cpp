@@ -14,5 +14,6 @@ Idle_Process::~Idle_Process() {
 
 Process_State Idle_Process::execute() {
     ++this -> do_nothing_counter;
+    // std::cout << "Idle: " << this -> do_nothing_counter << std::endl;
     return Process_State::READY;
 }
