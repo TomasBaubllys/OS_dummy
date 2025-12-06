@@ -29,7 +29,7 @@ void Kernel::request_resource(Process* process, Resource_Type resource_type) {
 void Kernel::release_resource(Resource_Type resource_type, std::string updated_buffer) {
     Resource* res = this -> get_resource_by_type(resource_type);
 
-    std::cout << (int)resource_type << std::endl;
+    // std::cout << (int)resource_type << std::endl;
 
     if (!res) return;
 
