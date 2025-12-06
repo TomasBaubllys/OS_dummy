@@ -25,13 +25,15 @@ Process_State Read_From_Interface_Process::execute(){
             return Process_State::BLOCKED;
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_INPUT_STARTS_WITH_F$:
             if(this -> buffer.rfind(RMI_FILE_INPUT, 0) == 0) {
-                Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_HARD_DISK;
+                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_HARD_DISK;
             }
-            this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_INPUT_STARTS_WITH_$;
+            else {
+                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_INPUT_STARTS_WITH_$;
+            }
             return Process_State::READY;
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_HARD_DISK:
             if(this -> owns_resource(Resource_Type::HARD_DISK)) {
-                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_FILE_EXISTS;
+                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_CHANNEL_DEVICE;
                 return Process_State::READY;
             }
 
@@ -55,6 +57,8 @@ Process_State Read_From_Interface_Process::execute(){
             Channel_Device* ch_dev = this -> kernel -> get_channel_device();
             ch_dev -> st = FILE_CHECK;
             ch_dev -> _file_name = file_name.data();
+            xchg(ch_dev);
+            std::cout << "KERLELELELE" << std::endl;
 
             if(ch_dev -> sa == 0) {
                 // match not found
