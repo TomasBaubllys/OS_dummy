@@ -58,12 +58,12 @@ Process_State Read_From_Interface_Process::execute(){
             ch_dev -> st = FILE_CHECK;
             ch_dev -> _file_name = file_name.data();
             xchg(ch_dev);
-            std::cout << "KERLELELELE" << std::endl;
 
             if(ch_dev -> sa == 0) {
                 // match not found
                 // FREE CURRENT RESOURCES
                 this -> return_owned_resources();
+                this -> kernel -> release_resource(Resource_Type::STRING_IN_MEMORY, FILE_NOT_FOUND_ERR_MSG);
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
             }
             else {

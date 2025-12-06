@@ -9,6 +9,7 @@
 #include <thread>
 
 Kernel::Kernel(Real_Machine* real_machine) : real_machine(real_machine) {
+    init_real_machine(real_machine);
     this -> current_console_holder = nullptr;
 
     Process* start_stop = new Start_Stop_Process(this, nullptr, {}, SYSTEM_USERNAME);

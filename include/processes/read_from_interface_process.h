@@ -3,6 +3,8 @@
 
 #include "process.h"
 
+#define FILE_NOT_FOUND_ERR_MSG "File by that name was not found!"
+
 typedef enum Read_From_Interface_Process_Steps{
     READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE,
     READ_FROM_INTERFACE_CHECK_IF_INPUT_STARTS_WITH_F$,
