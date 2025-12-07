@@ -106,10 +106,13 @@ Process_State Job_Governor_Process::execute(){
             }
 
             if(io_interrupt){
+                std::cout << "io " << std::endl;
+
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_REACHED_LIMIT;
                 return Process_State::READY;
             }
             else{
+                std::cout << "not io " << std::endl;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
@@ -163,6 +166,8 @@ Process_State Job_Governor_Process::execute(){
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE: 
             // make vm process the middle step
             this -> kernel -> unstop_ready(this -> u_id_buffer);
+
+            io_interrupt = false;
 
             std::cout << "miau" << std::endl;
 

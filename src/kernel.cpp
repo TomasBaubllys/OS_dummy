@@ -405,7 +405,7 @@ void Kernel::print_running_proc(Process* running_proc) {
 void Kernel::unstop_ready(uint32_t pid) {
     bool found = false;
     std::vector<Process*> temp_container;
-    while (!this -> blocked_queue.empty()) {
+    while (!this -> ready_stopped_queue.empty()) {
         Process* rsproc = this -> ready_stopped_queue.top();
         this -> ready_stopped_queue.pop();
 
