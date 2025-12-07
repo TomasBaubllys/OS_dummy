@@ -93,6 +93,7 @@ Process_State Job_Governor_Process::execute(){
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_INTERRUPT:
             static bool io_interrupt = false;
+
             switch(this -> kernel -> get_cpu() -> si){
                 case Cpu_Si_Type::CPU_SI_GEDA:
                 case Cpu_Si_Type::CPU_SI_BG:
@@ -104,6 +105,13 @@ Process_State Job_Governor_Process::execute(){
                 default:
                     break;
             }
+
+            if(this -> kernel -> get_cpu() -> ti == 0){
+                this -> kernel -> lower_priority(this -> u_id_buffer);
+
+                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
+                return Process_State::READY;
+            } 
 
             if(io_interrupt){
                 std::cout << "io " << std::endl;
