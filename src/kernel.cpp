@@ -45,6 +45,7 @@ void Kernel::release_resource(Resource_Type resource_type, std::string updated_b
 
     while (!this -> blocked_queue.empty()) {
         Process* proc = this -> blocked_queue.top();
+        // std::cout << proc -> get_p_name() << proc -> get_unique_id() << std::endl;
         this -> blocked_queue.pop();
 
         if(proc -> get_p_name() == MAIN_PROCESS_NAME && resource_type == Resource_Type::PIE_IN_THE_OVEN) {
@@ -274,7 +275,6 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
         if((*it) -> get_unique_id() == for_pid) {
             (*it) -> add_owned_resource(resc);
             proc = (*it);
-
         }
     }
     std::vector<Process*> temp_container;
@@ -294,7 +294,7 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
             found = true;
         } 
         else {
-            temp_container.push_back(proc);
+            temp_container.push_back(bproc);
         }
     }
 
