@@ -113,6 +113,7 @@ Process_State Job_Governor_Process::execute(){
             }
             else{
                 std::cout << "not io " << std::endl;
+                this -> kernel -> get_cpu() -> si = 0;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
@@ -120,7 +121,8 @@ Process_State Job_Governor_Process::execute(){
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_REACHED_LIMIT: 
             // no clue :(
-            static bool limit_reached = false;
+            static bool limit_reached;
+            limit_reached = false;
             /*
             *  HERE CHECK IF IO LIMIT REACHED
             *
