@@ -45,6 +45,9 @@ Process_State Start_Stop_Process::execute() {
             this -> kernel -> init_resource(Resource_Type::CHANNEL_DEVICE, this);
             this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);
 
+            // idk about this....
+            this -> kernel -> init_resource(Resource_Type::TASK_IN_SUPERVISOR, this);
+
             this -> kernel -> init_resource(Resource_Type::USER_INPUT, this);
             this -> kernel -> init_resource(Resource_Type::INTERRUPT, this);
             this -> kernel -> init_resource(Resource_Type::FROM_USER_INTERFACE, this);
