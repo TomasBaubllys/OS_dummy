@@ -702,6 +702,7 @@ void virtual_machine_execute(Virtual_Machine* virtual_machine) {
 			break;
 	}
 
-	--(virtual_machine -> cpu -> ti);
+
+	virtual_machine -> cpu -> ti == 0? 1 : --(virtual_machine -> cpu -> ti);
 	return;
 }

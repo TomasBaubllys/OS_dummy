@@ -108,7 +108,7 @@ Process_State Job_Governor_Process::execute(){
 
             if(this -> kernel -> get_cpu() -> ti == 0){
                 this -> kernel -> lower_priority(this -> u_id_buffer);
-
+                this -> kernel -> get_cpu() -> ti = CPU_DEFAULT_TIMER_VALUE;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             } 
