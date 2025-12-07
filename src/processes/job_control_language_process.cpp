@@ -35,7 +35,8 @@ Process_State Job_Control_Language_Process::execute(){
                 throw std::runtime_error("no mem");
             }
             // first page
-            static uint32_t cur_page_index = MEM_SUPERVISOR_PAGE_BEGIN * MEM_PAGE_SIZE;
+            static uint32_t cur_page_index;
+            cur_page_index = MEM_SUPERVISOR_PAGE_BEGIN * MEM_PAGE_SIZE;
             //static uint32_t* cur_page = &mem -> memory[MEM_SUPERVISOR_PAGE_BEGIN * MEM_PAGE_SIZE];
             
             this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_CHECK_IF_BLOCK_IS_LOS;

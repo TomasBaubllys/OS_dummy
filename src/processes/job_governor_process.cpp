@@ -234,8 +234,6 @@ Process_State Job_Governor_Process::execute(){
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE: 
             this -> kernel -> request_to_kill(this -> u_id_buffer);
-
-            std::cout << "after req to kill" << std::endl;
  
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_USER_MEMORY_RESOURCE;
             return Process_State::READY;
