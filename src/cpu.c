@@ -188,7 +188,13 @@ int interrupt(CPU* cpu) {
 		}
 
 		cpu -> mr = CPU_USER_MODE;
-		cpu -> ti -= 3;
+
+		if(cpu -> ti >= 3){
+			cpu -> ti -= 3;
+		}
+		else{
+			cpu -> ti = 0;
+		}
 	}
 
 	cpu -> si = 0;
