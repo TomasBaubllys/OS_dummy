@@ -97,17 +97,24 @@ Process_State Job_Control_Language_Process::execute(){
         case Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_FREE_RESOURCE_STRING_IN_MEMORY_WITH_INFO_BYE_NOT_FOUND:
             this -> kernel -> release_resource(Resource_Type::STRING_IN_MEMORY, JOB_CONTROL_LANGUAGE_PROCESS_MSG_BYE_NOT_FOUND);
 
+            this -> kernel -> release_resource(Resource_Type::SUPERVISOR_MEMORY);
+            this -> return_owned_resources();
+            
             this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_BLOCKED_WAIT_FOR_TASK_IN_SUPERVISOR;
             return Process_State::READY;
             break;
         case Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_FREE_RESOURCE_STRING_IN_MEMORY_WITH_INFO_LOS_NOT_FOUND:
             this -> kernel -> release_resource(Resource_Type::STRING_IN_MEMORY, JOB_CONTROL_LANGUAGE_PROCESS_MSG_BYE_NOT_FOUND);
 
+            this -> kernel -> release_resource(Resource_Type::SUPERVISOR_MEMORY);
+            this -> return_owned_resources();
+
             this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_BLOCKED_WAIT_FOR_TASK_IN_SUPERVISOR;
             return Process_State::READY;
             break;
         case Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_FREE_RESOURCE_SYSTEM_COMMAND:
             this -> kernel -> release_resource(Resource_Type::SYSTEM_COMMAND);
+
 
             this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_BLOCKED_WAIT_FOR_TASK_IN_SUPERVISOR;
             return Process_State::READY;
