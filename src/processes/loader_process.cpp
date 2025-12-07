@@ -7,6 +7,7 @@
 Loader_Process::Loader_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::LOADER_PRIORITY){
     this -> name = LOADER_NAME;
+    this -> step = Loader_Process_Steps::LOADER_PROCESS_BLOCKED_WAITING_FOR_LOADER_PACKAGE_RESOURCE;
 }
 
 Loader_Process::~Loader_Process(){

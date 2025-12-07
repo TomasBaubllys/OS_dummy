@@ -6,6 +6,7 @@ Interrupt_Process::Interrupt_Process(Kernel* kernel, Process* parent_process, st
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::INTERRUPT_PRIORITY){
     this -> saved_registers = {};
     this -> name = INTERRUPT_NAME;
+    this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE;
 }
 
 Interrupt_Process::~Interrupt_Process(){

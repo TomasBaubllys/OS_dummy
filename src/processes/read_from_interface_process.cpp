@@ -6,6 +6,7 @@
 Read_From_Interface_Process::Read_From_Interface_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username):
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::READ_FROM_INTERFACE_PRIORITY){
     this -> name = RMI_NAME;
+    this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
 }
 
 Read_From_Interface_Process::~Read_From_Interface_Process() {

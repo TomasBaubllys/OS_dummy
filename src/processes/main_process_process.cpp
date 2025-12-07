@@ -6,6 +6,7 @@ Main_Process_Process::Main_Process_Process(Kernel* kernel, Process* parent_proce
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::MAIN_PROCESS_PRIORITY){
     this -> name = MAIN_PROCESS_NAME;
     this -> kernel -> request_resource(this, Resource_Type::PIE_IN_THE_OVEN);
+    this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND;
 }
 
 Main_Process_Process::~Main_Process_Process(){

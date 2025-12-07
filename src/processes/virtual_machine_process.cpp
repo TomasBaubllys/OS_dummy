@@ -6,6 +6,7 @@ Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::VM_PRIORITY) {
     this -> saved_registers = {};
     this -> name = VIRTUAL_MACHINE_NAME;
+    this -> step = Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE;
 }
 
 Virtual_Machine_Process::~Virtual_Machine_Process(){
@@ -14,7 +15,6 @@ Virtual_Machine_Process::~Virtual_Machine_Process(){
 }
 
 Process_State Virtual_Machine_Process::execute(){
-    std::cout << "HEHEHEHEH" << std::endl;
 
     switch (this -> step){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE: {
@@ -32,6 +32,8 @@ Process_State Virtual_Machine_Process::execute(){
         }
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM:
             cpu_load_regs(this -> kernel -> get_cpu(), this -> saved_registers);
+
+            std::cout << this -> kernel -> get_cpu() -> ptr << "  <---- PTR" << std::endl;
             
             virtual_machine_execute(this -> vm);
 
@@ -46,6 +48,7 @@ Process_State Virtual_Machine_Process::execute(){
             this -> kernel -> release_resource(Resource_Type::INTERRUPT, std::to_string(this -> parent_process -> get_unique_id()));
             return Process_State::READY_STOPPED;
         default:
+            std::cout << "hehe i com ehere" << std::endl;
             break;
     }
 

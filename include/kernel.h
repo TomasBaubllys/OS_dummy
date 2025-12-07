@@ -27,6 +27,8 @@
 #define RMI_KILL_COMMAND "$KILL"
 #define STR_MEM_UNKNOWN_SYS_COM_ERR_MSG "Unknown system command!\n"
 
+#define KERNEL_DELAY 100
+
 
 class Job_Governor_Process;
 

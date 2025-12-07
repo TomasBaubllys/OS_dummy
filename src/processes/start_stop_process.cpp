@@ -12,6 +12,7 @@ Start_Stop_Process::Start_Stop_Process(Kernel* kernel, Process* parent_process, 
 {
     this -> saved_registers = {};
     this -> name = START_STOP_NAME;
+    this -> step = Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_RESOURCES;
 }
 
 Start_Stop_Process::~Start_Stop_Process() {

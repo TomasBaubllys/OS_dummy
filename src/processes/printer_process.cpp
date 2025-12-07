@@ -7,6 +7,7 @@ Printer_Process::Printer_Process(Kernel* kernel, Process* parent_process, std::v
 	Process(kernel, parent_process, friend_processes, username, Process_Priorities::PRINTER_PRIORITY)
 {	
 	this -> name = PRINTER_NAME;
+	this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE;
 }
 
 Printer_Process::~Printer_Process() {
