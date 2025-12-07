@@ -54,15 +54,15 @@ Process_State Job_Governor_Process::execute(){
             return Process_State::BLOCKED;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_VIRTUAL_MACHINE: 
             // create the virtual machine
-            static Virtual_Machine* vm = (Virtual_Machine*)malloc(sizeof(Virtual_Machine));
-            init_virtual_machine(vm, this -> kernel -> get_cpu(), this -> kernel -> get_memory());
+            this -> _vm_holder = (Virtual_Machine*)malloc(sizeof(Virtual_Machine));
+            init_virtual_machine(this -> _vm_holder, this -> kernel -> get_cpu(), this -> kernel -> get_memory());
             this -> saved_registers.ptr = this -> kernel -> get_cpu() -> ptr;
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
             return Process_State::READY;    
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE:
             this -> u_id_buffer =  this -> kernel -> create_process<Virtual_Machine_Process>(this, {},  SYSTEM_USERNAME);
             std::cout << "vm_pid " << this -> u_id_buffer << std::endl;
-            this -> kernel -> assign_vm(this -> u_id_buffer, vm);
+            this -> kernel -> assign_vm(this -> u_id_buffer, this -> _vm_holder);
 
             this -> release_owned_resource(Resource_Type::USER_MEMORY);
             // delete from loader???

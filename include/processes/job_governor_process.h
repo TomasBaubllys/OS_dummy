@@ -2,6 +2,7 @@
 #define JOB_GOVERNOR_PROCESS_H_INCLUDED
 
 #include "process.h"
+#include "../../include/virtual_machine.h"
 
 #define JOB_GOVERNOR_PROCESS_MSG_IO_LIMIT_REACHED "Input limit reached \n"
 #define JOB_GOVERNOR_PROCESS_MSG_PLACEHOLDER "Job governor placeholder \n" 
@@ -39,6 +40,7 @@ class Job_Governor_Process: public Process {
     private:
         Job_Governor_Process_Steps step;
 
+        Virtual_Machine* _vm_holder;
     public:
         Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Job_Governor_Process();
