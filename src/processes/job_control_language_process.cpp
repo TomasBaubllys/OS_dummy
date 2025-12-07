@@ -1,6 +1,7 @@
 #include "../../include/processes/job_control_language_process.h"
 #include "../../include/kernel.h"
 #include <stdexcept>
+#include <iostream>
 
 Job_Control_Language_Process::Job_Control_Language_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_CONTROL_LANGUAGE_PRIORITY){
@@ -14,6 +15,7 @@ Job_Control_Language_Process::~Job_Control_Language_Process(){
 Process_State Job_Control_Language_Process::execute(){
     switch (this -> step){
         case Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_BLOCKED_WAIT_FOR_TASK_IN_SUPERVISOR:
+            std::cout << "JCL here" << std::endl;
             if(this -> owns_resource(Resource_Type::TASK_IN_SUPERVISOR)) {
                 this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_INITIALIZE_PROGRAM_LIST;
                 return Process_State::READY;
