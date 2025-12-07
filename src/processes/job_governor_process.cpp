@@ -60,8 +60,9 @@ Process_State Job_Governor_Process::execute(){
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
             return Process_State::READY;    
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE:
-            static uint32_t vm_pid = this -> kernel -> create_process<Virtual_Machine_Process>(this, {},  SYSTEM_USERNAME);
-            this -> kernel -> assign_vm(vm_pid, vm);
+            this -> u_id_buffer =  this -> kernel -> create_process<Virtual_Machine_Process>(this, {},  SYSTEM_USERNAME);
+            std::cout << "vm_pid " << this -> u_id_buffer << std::endl;
+            this -> kernel -> assign_vm(this -> u_id_buffer, vm);
 
             this -> release_owned_resource(Resource_Type::USER_MEMORY);
             // delete from loader???
@@ -222,7 +223,7 @@ Process_State Job_Governor_Process::execute(){
             return Process_State::READY;
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE: 
-            this -> kernel -> request_to_kill(vm_pid);
+            this -> kernel -> request_to_kill(this -> u_id_buffer);
  
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_USER_MEMORY_RESOURCE;
             return Process_State::READY;
