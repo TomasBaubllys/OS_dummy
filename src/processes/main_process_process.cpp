@@ -143,7 +143,10 @@ Process_State Main_Process_Process::execute(){
             /*
                 COME HERE ONLY IF YOU FIGURE OUT WHAT TO DO WITH THE IF TIME NOT 0 command....
             */
-                return Process_State::READY;
+
+            this -> return_owned_resource(Resource_Type::SYSTEM_COMMAND);
+            this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND;
+            return Process_State::READY;
         }
             
         default:

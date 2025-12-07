@@ -232,6 +232,8 @@ Process_State Job_Governor_Process::execute(){
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE: 
             this -> kernel -> request_to_kill(this -> u_id_buffer);
+
+            std::cout << "after req to kill" << std::endl;
  
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_USER_MEMORY_RESOURCE;
             return Process_State::READY;
@@ -243,7 +245,7 @@ Process_State Job_Governor_Process::execute(){
             return Process_State::READY;
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_PIE_IN_THE_OVEN_RESOURCE: 
-            this -> kernel -> release_resource(Resource_Type::PIE_IN_THE_OVEN);
+            this -> kernel -> release_resource(Resource_Type::PIE_IN_THE_OVEN, std::to_string(this -> get_unique_id()));
             
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_SYSTEM_COMMAND_RESOURCE;
             return Process_State::READY;
