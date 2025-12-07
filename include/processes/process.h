@@ -6,6 +6,7 @@
 #include "../cpu.h"
 #include <vector>
 #include <string>
+#include "../../include/virtual_machine.h"
 
 #define PROCESS_MAX_PRIORITY UINT8_MAX
 #define PROCESS_MIN_PRIORITY 0
@@ -99,6 +100,8 @@ class Process {
         void release_owned_resource(Resource_Type resource_type, std::string buffer = "");
 
         std::string get_p_name();
+
+        virtual void assign_vm(Virtual_Machine* vm);
 };
 
 #endif // PROCESS_H_INCLUDED

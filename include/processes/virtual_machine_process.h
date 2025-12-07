@@ -20,6 +20,7 @@ class Virtual_Machine_Process: public Process{
         Virtual_Machine_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Virtual_Machine_Process();
         Process_State execute() override;
+        void assign_vm(Virtual_Machine* vm) override;
 };
 
 #endif // VIRTUAL_MACHINE_PROCESS_H_INCLUDED

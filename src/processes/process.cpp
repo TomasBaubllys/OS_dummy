@@ -142,3 +142,7 @@ void Process::return_owned_resource(Resource_Type resource_type) {
 std::string Process::get_p_name() {
     return this -> name;
 }
+
+void Process::assign_vm(Virtual_Machine* vm) {
+
+}

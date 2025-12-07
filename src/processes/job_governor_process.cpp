@@ -62,8 +62,10 @@ Process_State Job_Governor_Process::execute(){
 
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE:
             static uint32_t vm_pid = this -> kernel -> create_process<Virtual_Machine_Process>(this, {},  SYSTEM_USERNAME);
-            // add vm to it
             this -> kernel -> assign_vm(vm_pid, vm);
+
+            this -> release_owned_resource(Resource_Type::USER_MEMORY);
+            // delete from loader???
 
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE;
             return Process_State::READY;

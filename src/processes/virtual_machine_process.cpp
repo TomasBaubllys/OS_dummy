@@ -1,5 +1,6 @@
 #include "../../include/processes/virtual_machine_process.h"
 #include "../../include/kernel.h"
+#include <iostream>
 
 Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::VM_PRIORITY) {
@@ -13,6 +14,8 @@ Virtual_Machine_Process::~Virtual_Machine_Process(){
 }
 
 Process_State Virtual_Machine_Process::execute(){
+    std::cout << "HEHEHEHEH" << std::endl;
+
     switch (this -> step){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE: {
             /**
@@ -47,4 +50,12 @@ Process_State Virtual_Machine_Process::execute(){
     }
 
     return Process_State::BLOCKED_STOPPED;
+}
+
+void Virtual_Machine_Process::assign_vm(Virtual_Machine* vm) {
+    if(!vm) {
+        return;
+    }
+
+    this -> vm = vm;
 }

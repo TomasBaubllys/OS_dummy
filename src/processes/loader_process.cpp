@@ -63,6 +63,8 @@ Process_State Loader_Process::execute(){
                 }
             }
 
+            // fprint_memory(stdout, mem, 0, MEM_MAX_ADDRESS - 1, 16);
+
             this -> step = Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_CHANNEL_DEVICE;
             return Process_State::READY;
         }
