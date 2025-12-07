@@ -365,9 +365,59 @@ void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid,
 }
 
 void Kernel::request_to_kill(uint32_t pid) {
-    
-}
+    Process* victim = nullptr;
 
+    // 1. Find process pointer in all_processes
+    for (Process*& proc : this->all_processes) {
+        if (proc && proc->get_unique_id() == pid) {
+            victim = proc;
+            break;
+        }
+    }
+
+    if (!victim) {
+        return;  // PID not found
+    }
+
+    // Small lambda to rebuild a priority queue without the victim
+    auto remove_from_pqueue = [&](auto& q) {
+        std::vector<Process*> temp;
+
+        // Take elements out
+        while (!q.empty()) {
+            Process* p = q.top();
+            q.pop();
+
+            if (p != victim)
+                temp.push_back(p);
+        }
+
+        // Rebuild priority queue
+        for (Process* p : temp)
+            q.push(p);
+    };
+
+    // 2–5. Remove victim from every queue
+    remove_from_pqueue(this->ready_queue);
+    remove_from_pqueue(this->ready_stopped_queue);
+    remove_from_pqueue(this->blocked_queue);
+    remove_from_pqueue(this->blocked_stopped_queue);
+
+    // 6. Delete process object
+    delete victim;
+
+    // 7. Remove nullptr entries from all_processes
+    this->all_processes.erase(
+        std::remove_if(
+            this->all_processes.begin(),
+            this->all_processes.end(),
+            [&](Process* proc) {
+                return !proc || proc->get_unique_id() == pid;
+            }
+        ),
+        this->all_processes.end()
+    );
+}
 
 void Kernel::assign_vm(uint32_t vm_pid, Virtual_Machine* vm) {
     for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
