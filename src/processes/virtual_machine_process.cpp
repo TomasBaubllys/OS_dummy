@@ -6,6 +6,7 @@ Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::VM_PRIORITY) {
     this -> saved_registers = {};
     this -> name = VIRTUAL_MACHINE_NAME;
+    this -> name += std::to_string(this -> unique_id);
     this -> step = Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE;
 }
 
@@ -15,7 +16,6 @@ Virtual_Machine_Process::~Virtual_Machine_Process(){
 }
 
 Process_State Virtual_Machine_Process::execute(){
-
     switch (this -> step){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE: {
             /**
