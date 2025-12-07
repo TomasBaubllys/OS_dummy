@@ -5,6 +5,7 @@
 Main_Process_Process::Main_Process_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::MAIN_PROCESS_PRIORITY){
     this -> name = MAIN_PROCESS_NAME;
+    this -> kernel -> request_resource(this, Resource_Type::PIE_IN_THE_OVEN);
 }
 
 Main_Process_Process::~Main_Process_Process(){
@@ -24,10 +25,8 @@ Process_State Main_Process_Process::execute(){
 
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_IF_PIE_IN_THE_OVEN_FREE:
             if(this -> owns_resource(Resource_Type::PIE_IN_THE_OVEN)) {
-                /**
-                 *  check buffer if it contains 0 or 1 
-                 * DO SOMETHING
-                 */
+                this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_RUNTIME_0;
+                return Process_State::READY;
             }
             
             this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_IF_ITS_SHUT_DOWN; 
