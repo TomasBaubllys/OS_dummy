@@ -268,13 +268,39 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
         return;
     }
 
+    Process* proc = nullptr;
     // locate the process thats waiting
     for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
         if((*it) -> get_unique_id() == for_pid) {
             (*it) -> add_owned_resource(resc);
+            proc = (*it);
+
         }
     }
-    // done ?
+    std::vector<Process*> temp_container;
+    bool found = false;
+
+    while (!this -> blocked_queue.empty()) {
+        Process* bproc = this -> blocked_queue.top();
+        this -> blocked_queue.pop();
+
+        if (!found && bproc == proc) {
+            // std::cout << "Resource " << (int)resource_type << " FOUND for " << proc -> get_p_name() << std::endl;
+            // std::cout << "given to process: " << proc->get_unique_id() << std::endl;
+            proc -> set_state(Process_State::READY);
+            proc -> set_waiting_resource_type(Resource_Type::NONE); // Clear wait reason
+
+            this -> ready_queue.push(proc);
+            found = true;
+        } 
+        else {
+            temp_container.push_back(proc);
+        }
+    }
+
+    for (Process* p : temp_container) {
+        this -> blocked_queue.push(p);
+    }
 }
 
 void Kernel::return_resource_to_owner(Resource* resource) {

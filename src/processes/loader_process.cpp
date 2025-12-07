@@ -2,6 +2,7 @@
 #include "../../include/kernel.h"
 #include <string>
 #include <sstream>
+#include <iostream>
 
 Loader_Process::Loader_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::LOADER_PRIORITY){
@@ -66,7 +67,7 @@ Process_State Loader_Process::execute(){
             return Process_State::READY;
         }
         case Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_CHANNEL_DEVICE:
-            this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);
+            this -> release_owned_resource(Resource_Type::CHANNEL_DEVICE);
             this -> step = Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_SUPERVISOR_MEMORY;
             return Process_State::READY;
 
@@ -76,8 +77,11 @@ Process_State Loader_Process::execute(){
             return Process_State::READY;
 
         case Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_FROM_LOADER_FOR_JOB_GOVERNER: {
-            this -> kernel -> release_resource_for(Resource_Type::FROM_LOADER, this -> u_id_buffer);
+            this -> return_owned_resource(Resource_Type::LOADER_PACKAGE);
+            uint32_t id = this -> kernel -> init_resource(Resource_Type::FROM_LOADER, this);
+            this -> kernel -> release_resource_for(id, this -> u_id_buffer);
             this -> step = Loader_Process_Steps::LOADER_PROCESS_BLOCKED_WAITING_FOR_LOADER_PACKAGE_RESOURCE;
+            // fprint_memory(stdout, this -> kernel -> get_memory(), 0, MEM_MAX_ADDRESS - 1, 16);
             return Process_State::READY;
         }
         default:

@@ -17,7 +17,7 @@
 Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username): 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_GOVERNOR_PRIORITY){
     this -> name = JG_NAME;
-    putchar('a');
+    std::cout << "Dobze dobze..." << std::endl;
 }
 
 Job_Governor_Process::~Job_Governor_Process(){
@@ -28,7 +28,7 @@ Process_State Job_Governor_Process::execute(){
     switch (this -> step){
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE:
             if(this -> owns_resource(Resource_Type::USER_MEMORY)) {
-                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
+                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
 
@@ -37,7 +37,7 @@ Process_State Job_Governor_Process::execute(){
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE: {
             std::stringstream ss;
             // program length is always the length of the supervisor memory size
-            ss << this -> unique_id  << MEM_SUPERVISOR_MEMORY_SIZE * MEM_WORD_SIZE << " " << this -> saved_registers.ptr;
+            ss << this -> unique_id  << " " << MEM_SUPERVISOR_MEMORY_SIZE * MEM_WORD_SIZE << " " << this -> saved_registers.ptr;
             // this is not good, we must release the resources in some dynamic way... or maybe not???
             this -> kernel -> release_resource(Resource_Type::LOADER_PACKAGE, ss.str());
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE;
@@ -45,6 +45,7 @@ Process_State Job_Governor_Process::execute(){
         }
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE:
             if(this -> owns_resource(Resource_Type::FROM_LOADER)) {
+                std::cout << "here" << std::endl;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
@@ -56,7 +57,7 @@ Process_State Job_Governor_Process::execute(){
             static Virtual_Machine* vm = (Virtual_Machine*)malloc(sizeof(Virtual_Machine));
             init_virtual_machine(vm, this -> kernel -> get_cpu(), this -> kernel -> get_memory());
             this -> saved_registers.ptr = this -> kernel -> get_cpu() -> ptr;
-
+            this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
             return Process_State::READY;    
 
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE:

@@ -62,7 +62,7 @@ Process_State Start_Stop_Process::execute() {
             this -> kernel -> create_process<Read_From_Interface_Process>(this, {}, SYSTEM_USERNAME);
             this -> kernel -> create_process<Printer_Process>(this, {}, SYSTEM_USERNAME);
             this -> kernel -> create_process<Job_Control_Language_Process>(this, {}, SYSTEM_USERNAME);
-
+            this -> kernel -> create_process<Loader_Process>(this, {}, SYSTEM_USERNAME);
             this -> step = Start_Stop_Process_Steps::START_STOP_PROCESS_BLOCKED_WAITING_FOR_MOS_END;
             return Process_State::READY;
         }
