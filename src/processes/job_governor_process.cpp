@@ -72,8 +72,11 @@ Process_State Job_Governor_Process::execute(){
                 CREATE THE ACTUAL VM PROCESS AND ADD THE VM TO IT
             */   
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE:
+            std::cout << "blocked again" << std::endl;
             if(this -> owns_resource(Resource_Type::FROM_INTERRUPT)) {
                 // not really stop, identify the interupts
+                            std::cout << "blocked again inside" << std::endl;
+
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_STOP_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
@@ -159,6 +162,8 @@ Process_State Job_Governor_Process::execute(){
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE: 
             // make vm process the middle step
 
+            this -> return_owned_resource(Resource_Type::FROM_INTERRUPT);
+
 
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE;
             return Process_State::READY;
@@ -210,12 +215,9 @@ Process_State Job_Governor_Process::execute(){
             }
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_STRING_IN_MEMORY_RESOURCE_WITH_INFO_OUTPUT_CONTENT:
-            this -> kernel -> release_resource(Resource_Type::STRING_IN_MEMORY, JOB_GOVERNOR_PROCESS_MSG_PLACEHOLDER);
+            //this -> kernel -> release_resource(Resource_Type::STRING_IN_MEMORY, JOB_GOVERNOR_PROCESS_MSG_PLACEHOLDER);
 
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
-
-
-            this -> return_owned_resource(Resource_Type::FROM_INTERRUPT);
 
             return Process_State::READY;
             break;
