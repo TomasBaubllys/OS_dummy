@@ -2,6 +2,8 @@
 #include "../../include/kernel.h"
 #include <sstream>
 
+#include <iostream>
+
 Interrupt_Process::Interrupt_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::INTERRUPT_PRIORITY){
     this -> saved_registers = {};
@@ -19,7 +21,8 @@ Process_State Interrupt_Process::execute(){
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE:
             if(this -> owns_resource(Resource_Type::INTERRUPT)) {
                 Resource* resc = this -> get_owned_resource(Resource_Type::INTERRUPT);
-                this -> u_id_buffer = resc -> get_owner_id();
+                std::stringstream ss(resc -> get_buffer());
+                ss >> this -> u_id_buffer;
 
                 this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_IDENTIFY_INTERRUPT;
                 return Process_State::READY;
@@ -37,7 +40,10 @@ Process_State Interrupt_Process::execute(){
             this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_FREE_FROM_INTERRUPT_RESOURCE;
             return Process_State::READY;
         case Interrupt_Process_Steps::INTERRUPT_PROCESS_FREE_FROM_INTERRUPT_RESOURCE:
+            this -> kernel -> init_resource(Resource_Type::FROM_INTERRUPT, this);
             this -> kernel -> release_resource_for(Resource_Type::FROM_INTERRUPT, this -> u_id_buffer);
+            this -> return_owned_resource(Resource_Type::INTERRUPT);
+
             this -> step = Interrupt_Process_Steps::INTERRUPT_PROCESS_BLOCKED_WAITING_FOR_INTERRUPT_RESOURCE;
             return Process_State::READY;
         default:

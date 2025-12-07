@@ -35,14 +35,18 @@ Process_State Virtual_Machine_Process::execute(){
             
             virtual_machine_execute(this -> vm);
 
+            std::cout << this -> kernel -> get_cpu() -> si << " <--- SI" << std::endl;
+
             this -> saved_registers = cpu_save_regs(this -> kernel -> get_cpu());
             if(this -> vm -> cpu -> si + this -> vm -> cpu -> pi > 0 || this -> vm -> cpu -> ti == 0) {
+                std::cout << "here " <<  std::endl;
                 this -> step = VIRTUAL_MACHINE_FREE_RESOURCE_INTERRUPT;
             }
 
             return Process_State::READY;
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_FREE_RESOURCE_INTERRUPT:
             // release the resource with jg id in the buffer
+            std::cout << "miauu " << std::endl;
             this -> kernel -> release_resource(Resource_Type::INTERRUPT, std::to_string(this -> parent_process -> get_unique_id()));
             return Process_State::READY_STOPPED;
         default:

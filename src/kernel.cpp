@@ -33,7 +33,7 @@ void Kernel::request_resource(Process* process, Resource_Type resource_type) {
 void Kernel::release_resource(Resource_Type resource_type, std::string updated_buffer) {
     Resource* res = this -> get_resource_by_type(resource_type);
 
-    // std::cout << (int)resource_type << std::endl;
+    //std::cout << (int)resource_type << std::endl;
 
     if (!res) return;
 
@@ -43,18 +43,22 @@ void Kernel::release_resource(Resource_Type resource_type, std::string updated_b
     std::vector<Process*> temp_container;
     bool found = false;
 
+
     while (!this -> blocked_queue.empty()) {
         Process* proc = this -> blocked_queue.top();
         this -> blocked_queue.pop();
+
 
         if(proc -> get_p_name() == MAIN_PROCESS_NAME && resource_type == Resource_Type::PIE_IN_THE_OVEN) {
             proc -> add_owned_resource(res);
             found = true;
         }
 
+        //std::cout << proc -> get_unique_id() << ": " << (int)(proc -> get_waiting_resource_type()) << " <--- " << (int)resource_type << std::endl;
+
         if (!found && proc -> get_waiting_resource_type() == resource_type) {
-            // std::cout << "Resource " << (int)resource_type << " FOUND for " << proc -> get_p_name() << std::endl;
-            // std::cout << "given to process: " << proc->get_unique_id() << std::endl;
+            //std::cout << "Resource " << (int)resource_type << " FOUND for " << proc -> get_p_name() << std::endl;
+            //std::cout << "given to process: " << proc->get_unique_id() << std::endl;
             proc -> add_owned_resource(res);
             
             proc -> set_state(Process_State::READY);
@@ -294,7 +298,7 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
             found = true;
         } 
         else {
-            temp_container.push_back(proc);
+            temp_container.push_back(bproc);
         }
     }
 
@@ -310,6 +314,8 @@ void Kernel::return_resource_to_owner(Resource* resource) {
 void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid, std::string updated_buffer) {
     // check if the resource exists... if not throw?
     Resource* resc = nullptr;
+    Process* proc = nullptr;
+
     for(auto it = this -> resources.begin(); it != this -> resources.end(); ++it) {
         if((*it) -> get_resource_type() == resource_type) {
             resc = (*it);
@@ -323,9 +329,38 @@ void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid,
 
     // locate the process thats waiting
     for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
+        //std::cout << (*it) -> get_p_name() << " " << (*it) -> get_unique_id() <<  "       " << for_pid << std::endl;
         if((*it) -> get_unique_id() == for_pid) {
             (*it) -> add_owned_resource(resc);
+            proc = (*it);
         }
+    }
+
+
+    std::vector<Process*> temp_container;
+    bool found = false;
+
+
+    while (!this -> blocked_queue.empty()) {
+        Process* bproc = this -> blocked_queue.top();
+        this -> blocked_queue.pop();
+
+        if (!found && bproc == proc) {
+            // std::cout << "Resource " << (int)resource_type << " FOUND for " << proc -> get_p_name() << std::endl;
+            // std::cout << "given to process: " << proc->get_unique_id() << std::endl;
+            proc -> set_state(Process_State::READY);
+            proc -> set_waiting_resource_type(Resource_Type::NONE); // Clear wait reason
+
+            this -> ready_queue.push(proc);
+            found = true;
+        } 
+        else {
+            temp_container.push_back(bproc);
+        }
+    }
+
+    for (Process* p : temp_container) {
+        this -> blocked_queue.push(p);
     }
 }
 

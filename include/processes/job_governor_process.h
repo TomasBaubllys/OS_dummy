@@ -4,7 +4,7 @@
 #include "process.h"
 
 #define JOB_GOVERNOR_PROCESS_MSG_IO_LIMIT_REACHED "Input limit reached \n"
-#define JOB_GOVERNOR_PROCESS_MSG_PLACEHOLDER "Job governor placeholder" 
+#define JOB_GOVERNOR_PROCESS_MSG_PLACEHOLDER "Job governor placeholder \n" 
 #define JG_NAME "Job_Governor_Process"
 
 enum class Job_Governor_Process_Steps{

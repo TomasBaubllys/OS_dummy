@@ -138,6 +138,7 @@ Process_State Job_Governor_Process::execute(){
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_GEDA_INTERRUPT: 
             if(this -> kernel -> get_cpu() -> si == Cpu_Si_Type::CPU_SI_GEDA){
+                interrupt(this -> kernel -> get_cpu());
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_INPUT_RESOURCE;
                 return Process_State::READY;
             }
@@ -163,7 +164,10 @@ Process_State Job_Governor_Process::execute(){
             return Process_State::READY;
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_BP_BG_INTERRUPT: 
+        
             if(this -> kernel -> get_cpu() -> si == Cpu_Si_Type::CPU_SI_BP || this -> kernel -> get_cpu() -> si == Cpu_Si_Type::CPU_SI_BG){
+                interrupt(this -> kernel -> get_cpu());
+
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE;
                 return Process_State::READY;
             }
@@ -195,6 +199,8 @@ Process_State Job_Governor_Process::execute(){
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_PSTR_PUTA_INTERRUPT: 
             if(this -> kernel -> get_cpu() -> si == Cpu_Si_Type::CPU_SI_PSTR || this -> kernel -> get_cpu() -> si == Cpu_Si_Type::CPU_SI_PUTA){
+                interrupt(this -> kernel -> get_cpu());
+
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_STRING_IN_MEMORY_RESOURCE_WITH_INFO_OUTPUT_CONTENT;
                 return Process_State::READY;
             }
@@ -207,6 +213,10 @@ Process_State Job_Governor_Process::execute(){
             this -> kernel -> release_resource(Resource_Type::STRING_IN_MEMORY, JOB_GOVERNOR_PROCESS_MSG_PLACEHOLDER);
 
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
+
+
+            this -> return_owned_resource(Resource_Type::FROM_INTERRUPT);
+
             return Process_State::READY;
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE: 
