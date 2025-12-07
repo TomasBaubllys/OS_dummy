@@ -46,7 +46,6 @@ Process_State Job_Governor_Process::execute(){
         }
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE:
             if(this -> owns_resource(Resource_Type::FROM_LOADER)) {
-                std::cout << "here" << std::endl;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
@@ -60,7 +59,6 @@ Process_State Job_Governor_Process::execute(){
             this -> saved_registers.ptr = this -> kernel -> get_cpu() -> ptr;
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
             return Process_State::READY;    
-
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE:
             static uint32_t vm_pid = this -> kernel -> create_process<Virtual_Machine_Process>(this, {},  SYSTEM_USERNAME);
             this -> kernel -> assign_vm(vm_pid, vm);

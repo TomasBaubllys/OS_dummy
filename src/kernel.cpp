@@ -335,8 +335,12 @@ void Kernel::request_to_kill(uint32_t pid) {
 
 
 void Kernel::assign_vm(uint32_t vm_pid, Virtual_Machine* vm) {
-
-
+    for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
+        if((*it) -> get_unique_id() == vm_pid) {
+            (*it) -> assign_vm(vm);
+            break;
+        }
+    }
 }
 
 void Kernel::print_running_proc(Process* running_proc) {

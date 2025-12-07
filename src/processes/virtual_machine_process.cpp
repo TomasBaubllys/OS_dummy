@@ -32,8 +32,6 @@ Process_State Virtual_Machine_Process::execute(){
         }
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM:
             cpu_load_regs(this -> kernel -> get_cpu(), this -> saved_registers);
-
-            std::cout << this -> kernel -> get_cpu() -> ptr << "  <---- PTR" << std::endl;
             
             virtual_machine_execute(this -> vm);
 
