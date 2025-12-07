@@ -401,3 +401,29 @@ void Kernel::print_running_proc(Process* running_proc) {
 
     fflush(stdout);
 }
+
+void Kernel::unstop_ready(uint32_t pid) {
+    bool found = false;
+    std::vector<Process*> temp_container;
+    while (!this -> blocked_queue.empty()) {
+        Process* rsproc = this -> ready_stopped_queue.top();
+        this -> ready_stopped_queue.pop();
+
+        if (!found && rsproc -> get_unique_id() == pid) {
+            // std::cout << "Resource " << (int)resource_type << " FOUND for " << proc -> get_p_name() << std::endl;
+            // std::cout << "given to process: " << proc->get_unique_id() << std::endl;
+            rsproc -> set_state(Process_State::READY);
+            rsproc -> set_waiting_resource_type(Resource_Type::NONE); // Clear wait reason
+
+            this -> ready_queue.push(rsproc);
+            found = true;
+        } 
+        else {
+            temp_container.push_back(rsproc);
+        }
+    }
+
+    for (Process* p : temp_container) {
+        this -> ready_stopped_queue.push(p);
+    }
+}

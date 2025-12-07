@@ -112,6 +112,9 @@ class Kernel {
 		};
 
 		void print_running_proc(Process* running_proc);
+
+		// forces a ready_stopped process to run
+		void unstop_ready(uint32_t pid);
 };
 
 

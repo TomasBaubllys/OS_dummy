@@ -47,6 +47,7 @@ Process_State Virtual_Machine_Process::execute(){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_FREE_RESOURCE_INTERRUPT:
             // release the resource with jg id in the buffer
             this -> kernel -> release_resource(Resource_Type::INTERRUPT, std::to_string(this -> parent_process -> get_unique_id()));
+            this -> step =  Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM;       
             return Process_State::READY_STOPPED;
         default:
             std::cout << "hehe i com ehere" << std::endl;
