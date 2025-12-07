@@ -7,6 +7,7 @@ Job_Control_Language_Process::Job_Control_Language_Process(Kernel* kernel, Proce
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_CONTROL_LANGUAGE_PRIORITY){
     this -> name = JCL_NAME;
     this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_BLOCKED_WAIT_FOR_TASK_IN_SUPERVISOR;
+    this -> cur_page_index = MEM_SUPERVISOR_PAGE_BEGIN * MEM_PAGE_SIZE;
 } 
 
 Job_Control_Language_Process::~Job_Control_Language_Process(){
@@ -35,7 +36,6 @@ Process_State Job_Control_Language_Process::execute(){
                 throw std::runtime_error("no mem");
             }
             // first page
-            static uint32_t cur_page_index;
             cur_page_index = MEM_SUPERVISOR_PAGE_BEGIN * MEM_PAGE_SIZE;
             //static uint32_t* cur_page = &mem -> memory[MEM_SUPERVISOR_PAGE_BEGIN * MEM_PAGE_SIZE];
             
