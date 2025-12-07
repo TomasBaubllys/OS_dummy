@@ -43,9 +43,20 @@ Process_State Job_Control_Language_Process::execute(){
             break;
         case Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_CHECK_IF_BLOCK_IS_LOS:
             if(mem -> memory[cur_page_index] == MEM_PROGRAM_LOS_UINT32){
+                for(uint32_t index = cur_page_index; index < cur_page_index + MEM_PAGE_SIZE; ++index){
+                    
+                    // check if los is not in the same block
+                    if(mem -> memory[index] == MEM_PROGRAM_LOS_UINT32){
+                        this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_ATTACH_BOCK_TO_PROGRAM_LIST_AND_CREATE_RESOURCE_LOADER_PACKAGE;
+                        return Process_State::READY;
+                    }
+                }
+
                 this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_ATTACH_BLOCK_TO_PROGRAM_LIST;
                 return Process_State::READY;
             }
+
+
             
             this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_FREE_RESOURCE_STRING_IN_MEMORY_WITH_INFO_LOS_NOT_FOUND;
             return Process_State::READY;
@@ -62,7 +73,15 @@ Process_State Job_Control_Language_Process::execute(){
             return Process_State::READY;
             break;
         case Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_CHECK_IF_BLOCK_IS_BYE_OR_IS_IT_LAST_BLOCK:
-            if(mem -> memory[cur_page_index] == MEM_PROGRAM_BYE_UINT32 || cur_page_index >= MEM_SUPERVISOR_PAGE_END * MEM_PAGE_SIZE){
+            for(uint32_t index = cur_page_index; index < cur_page_index + MEM_PAGE_SIZE; ++index){
+                if(mem -> memory[index] == MEM_PROGRAM_BYE_UINT32){
+                    this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_CHECK_IF_BLOCK_IS_BYE;
+                    return Process_State::READY;
+                }
+            }
+            
+
+            if(cur_page_index >= MEM_SUPERVISOR_PAGE_END * MEM_PAGE_SIZE){
                 this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_CHECK_IF_BLOCK_IS_BYE;
                 return Process_State::READY;
             }
