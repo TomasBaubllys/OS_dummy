@@ -470,3 +470,14 @@ void Kernel::unstop_ready(uint32_t pid) {
         this -> ready_stopped_queue.push(p);
     }
 }
+
+void Kernel::lower_priority(uint32_t pid) {
+    for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
+        if((*it) -> get_unique_id() == pid) {
+            uint8_t curr_priot = (*it) -> get_priority();
+            curr_priot == 2? curr_priot = VM_PRIORITY : --curr_priot;
+            (*it) -> set_priority(curr_priot); 
+            return;
+        }
+    }
+}

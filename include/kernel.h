@@ -115,6 +115,8 @@ class Kernel {
 
 		// forces a ready_stopped process to run
 		void unstop_ready(uint32_t pid);
+
+		void lower_priority(uint32_t pid);
 };
 
 
