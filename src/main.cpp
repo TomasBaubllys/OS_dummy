@@ -10,6 +10,7 @@
 #include "../include/kernel.h"
 
 int main(int argc, char* argv[]) {
+	srand(time(nullptr));
 	// init start stop
 	Real_Machine real_machine;
 	Kernel kernel(&real_machine);

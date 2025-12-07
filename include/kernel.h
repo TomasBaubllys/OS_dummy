@@ -38,6 +38,9 @@ class Kernel {
 	private:
 		struct Process_Comparator {
     		bool operator()(const Process* a, const Process* b) const {
+				if(a -> get_priority() == b -> get_priority()) {
+					return rand() % 2;
+				}
         		return a -> get_priority() < b -> get_priority();
     		}
 		};
