@@ -39,7 +39,6 @@ Process_State Start_Stop_Process::execute() {
             this -> kernel -> init_resource(Resource_Type::CONSOLE, this);
             this -> kernel -> release_resource(Resource_Type::CONSOLE);
 
-            this -> kernel -> init_resource(Resource_Type::PIE_IN_THE_OVEN, this);
             this -> kernel -> init_resource(Resource_Type::NON_EXISTANT, this);
             
             this -> kernel -> init_resource(Resource_Type::CHANNEL_DEVICE, this);

@@ -110,6 +110,7 @@ Process_State Job_Control_Language_Process::execute(){
             return Process_State::READY;
             break;
         case Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_FREE_RESOURCE_PIE_IN_THE_OVEN:
+            this -> kernel -> init_resource(Resource_Type::PIE_IN_THE_OVEN, this);
             this -> kernel -> release_resource(Resource_Type::PIE_IN_THE_OVEN);
 
             this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_FREE_RESOURCE_SYSTEM_COMMAND;

@@ -17,6 +17,7 @@
 Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username): 
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_GOVERNOR_PRIORITY){
     this -> name = JG_NAME;
+    putchar('a');
 }
 
 Job_Governor_Process::~Job_Governor_Process(){
@@ -27,29 +28,21 @@ Process_State Job_Governor_Process::execute(){
     switch (this -> step){
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE:
             if(this -> owns_resource(Resource_Type::USER_MEMORY)) {
-                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_VIRTUAL_MACHINE;
+                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
                 return Process_State::READY;
             }
 
             this -> kernel -> request_resource(this, Resource_Type::USER_MEMORY);
             return Process_State::BLOCKED;
-        /* NO NEED FOR THIS SINCE WE DONT DIFERENTIATE BETWEEN THIS AND THE FIRST STEP case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_FOR_PAGING_TABLE: 
-            if(this -> owns_resource(Resource_Type::USER_MEMORY)) {
-
-            }    
-
-            this -> kernel -> request_resource();
-            ;*/
-
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE: {
             std::stringstream ss;
             // program length is always the length of the supervisor memory size
             ss << this -> unique_id  << MEM_SUPERVISOR_MEMORY_SIZE * MEM_WORD_SIZE << " " << this -> saved_registers.ptr;
             // this is not good, we must release the resources in some dynamic way... or maybe not???
             this -> kernel -> release_resource(Resource_Type::LOADER_PACKAGE, ss.str());
+            this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE;
             return Process_State::READY;
         }
-
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE:
             if(this -> owns_resource(Resource_Type::FROM_LOADER)) {
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE;
