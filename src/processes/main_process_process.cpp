@@ -110,7 +110,7 @@ Process_State Main_Process_Process::execute(){
 
             return Process_State::READY;
 
-        case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_RUNTIME_0:
+        case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_RUNTIME_0:{
             Resource* resc = this -> get_owned_resource(Resource_Type::PIE_IN_THE_OVEN);
             if(resc -> get_buffer_size() > 0){
                 this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_REMOVE_PROCESS_JOB_GOVERNER_2;
@@ -123,6 +123,7 @@ Process_State Main_Process_Process::execute(){
             */
             this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CREATE_PROCESS_JOB_OVERNOR_WITH_PIE_IN_THE_OVEN_RESOURCE;
             return Process_State::READY;
+        }
 
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CREATE_PROCESS_JOB_OVERNOR_WITH_PIE_IN_THE_OVEN_RESOURCE: {
             uint32_t jg_id = this -> kernel -> create_process<Job_Governor_Process>(this, {}, SYSTEM_USERNAME);
@@ -131,24 +132,20 @@ Process_State Main_Process_Process::execute(){
             this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND;
             return Process_State::READY;
         }
-        case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_REMOVE_PROCESS_JOB_GOVERNER_2:
-            {
+        case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_REMOVE_PROCESS_JOB_GOVERNER_2:{
+            
                 Resource* resc = this -> get_owned_resource(Resource_Type::PIE_IN_THE_OVEN);
-
                 std::stringstream ss(resc -> get_buffer());
                 uint32_t temp_id;
-
                 ss >> temp_id;
-
                 this -> kernel -> request_to_kill(temp_id);
-
-
-
-            }
+            
             /*
                 COME HERE ONLY IF YOU FIGURE OUT WHAT TO DO WITH THE IF TIME NOT 0 command....
             */
-            return Process_State::READY;
+                return Process_State::READY;
+        }
+            
         default:
             break;
     }
