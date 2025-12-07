@@ -49,7 +49,10 @@ Process_State Read_From_Interface_Process::execute(){
             this -> kernel -> request_resource(this ,Resource_Type::CHANNEL_DEVICE);
             return Process_State::BLOCKED;
 
-        case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_FILE_EXISTS: {
+        case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_FILE_EXISTS: 
+            static uint32_t file_offset = 0;
+            static uint32_t file_size = 0; 
+            {
             /**
                 move to xchg (set regs acordingly), 
             */
@@ -69,13 +72,14 @@ Process_State Read_From_Interface_Process::execute(){
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
             }
             else {
+                file_offset = ch_dev -> cb;
+                file_size = ch_dev -> of;
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_READ_AND_DIVIDE_FILE;
             }
 
             return Process_State::READY;
         }
-        case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_READ_AND_DIVIDE_FILE:
-            break;
+        case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_READ_AND_DIVIDE_FILE:;
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_SUPERVISOR_MEMORY:
             if(this -> owns_resource(Resource_Type::SUPERVISOR_MEMORY)) {
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_COPY_BYTES_TO_SUPERVISOR_MEMORY;
@@ -84,8 +88,20 @@ Process_State Read_From_Interface_Process::execute(){
 
             this -> kernel -> request_resource(this, Resource_Type::SUPERVISOR_MEMORY);
             return Process_State::BLOCKED;
-        case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_COPY_BYTES_TO_SUPERVISOR_MEMORY:
-            break;
+        case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_COPY_BYTES_TO_SUPERVISOR_MEMORY: {
+            Channel_Device* ch_dev = this -> kernel -> get_channel_device();
+
+            ch_dev -> dt = SUPER_MEM;
+            ch_dev -> db = MEM_SUPERVISOR_PAGE_BEGIN;
+            ch_dev -> cb = (file_size < MEM_WORDS_SUPERVISOR_COUNT * MEM_WORD_SIZE? file_size : MEM_WORD_SIZE * MEM_WORDS_SUPERVISOR_COUNT);
+            ch_dev -> st = HD_DISK;
+            ch_dev -> sb = ((file_offset / MEM_WORD_SIZE) / MEM_PAGE_SIZE);	// calculate the hard disk page
+            ch_dev -> of = file_offset % (MEM_PAGE_BYTE_COUNT);
+            xchg(ch_dev);
+            // fprint_memory(stdout, this -> kernel -> get_memory(), 0, MEM_MAX_ADDRESS - 1, 16);
+            this -> step = READ_FROM_INTERFACE_RELEASE_TASK_IN_SUPERVISOR;
+            return Process_State::READY;
+        }
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_TASK_IN_SUPERVISOR:
             this -> kernel -> release_resource(Resource_Type::TASK_IN_SUPERVISOR);
             this -> return_owned_resources();

@@ -156,6 +156,8 @@ int xchg(Channel_Device* channel_device) {
 				// printf("%s <-> %s\n", file_entries[i].file_name, channel_device -> _file_name);
                 if(strcmp(file_entries[i].file_name, channel_device -> _file_name) == 0) {
                     match_found = 1;
+					channel_device -> cb = file_entries[i].offset;
+                	channel_device -> of = file_entries[i].size;
                     break;
                 }
             }
