@@ -129,6 +129,16 @@ void Process::release_owned_resource(Resource_Type resource_type, std::string bu
     }
 }
 
+void Process::return_owned_resource(Resource_Type resource_type) {
+    for(auto it = this -> owned_resources.begin(); it != this -> owned_resources.end(); ++it) {
+        if ((*it) -> get_resource_type() == resource_type) {
+            this -> kernel -> return_resource_to_owner((*it));
+            this -> owned_resources.erase(it);
+            break;
+        }
+    }
+}
+
 std::string Process::get_p_name() {
     return this -> name;
 }

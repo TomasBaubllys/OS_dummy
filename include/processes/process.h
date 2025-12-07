@@ -94,6 +94,8 @@ class Process {
 
         void return_owned_resources();
 
+        void return_owned_resource(Resource_Type resource_type);
+
         void release_owned_resource(Resource_Type resource_type, std::string buffer = "");
 
         std::string get_p_name();
