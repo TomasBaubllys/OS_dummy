@@ -162,6 +162,9 @@ Process_State Job_Governor_Process::execute(){
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE: 
             // make vm process the middle step
+            this -> kernel -> unstop_ready(this -> u_id_buffer);
+
+            std::cout << "miau" << std::endl;
 
             this -> return_owned_resource(Resource_Type::FROM_INTERRUPT);
 
