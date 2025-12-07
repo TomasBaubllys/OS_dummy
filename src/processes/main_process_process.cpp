@@ -145,6 +145,9 @@ Process_State Main_Process_Process::execute(){
             */
 
             this -> return_owned_resource(Resource_Type::SYSTEM_COMMAND);
+            this -> return_owned_resource(Resource_Type::PIE_IN_THE_OVEN);
+
+
             this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND;
             return Process_State::READY;
         }
