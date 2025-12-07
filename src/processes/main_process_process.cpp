@@ -25,6 +25,8 @@ Process_State Main_Process_Process::execute(){
 
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_IF_PIE_IN_THE_OVEN_FREE:
             if(this -> owns_resource(Resource_Type::PIE_IN_THE_OVEN)) {
+                this -> return_owned_resource(Resource_Type::SYSTEM_COMMAND);
+
                 this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_RUNTIME_0;
                 return Process_State::READY;
             }
@@ -114,7 +116,6 @@ Process_State Main_Process_Process::execute(){
 
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CREATE_PROCESS_JOB_OVERNOR_WITH_PIE_IN_THE_OVEN_RESOURCE: {
             uint32_t jg_id = this -> kernel -> create_process<Job_Governor_Process>(this, {}, SYSTEM_USERNAME);
-            this -> kernel -> init_resource(Resource_Type::PIE_IN_THE_OVEN, this);
             this -> kernel -> release_resource_for(Resource_Type::PIE_IN_THE_OVEN, jg_id);
             this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND;
             return Process_State::READY;
