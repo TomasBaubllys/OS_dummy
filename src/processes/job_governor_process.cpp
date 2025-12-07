@@ -18,7 +18,7 @@ Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_proce
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_GOVERNOR_PRIORITY){
     this -> name = JG_NAME;
     this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE;
-    std::cout << "Dobze dobze..." << std::endl;
+    //std::cout << "Dobze dobze..." << std::endl;
 }
 
 Job_Governor_Process::~Job_Governor_Process(){
@@ -61,7 +61,7 @@ Process_State Job_Governor_Process::execute(){
             return Process_State::READY;    
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE:
             this -> u_id_buffer =  this -> kernel -> create_process<Virtual_Machine_Process>(this, {},  SYSTEM_USERNAME);
-            std::cout << "vm_pid " << this -> u_id_buffer << std::endl;
+            //std::cout << "vm_pid " << this -> u_id_buffer << std::endl;
             this -> kernel -> assign_vm(this -> u_id_buffer, this -> _vm_holder);
 
             this -> release_owned_resource(Resource_Type::USER_MEMORY);
@@ -73,10 +73,10 @@ Process_State Job_Governor_Process::execute(){
                 CREATE THE ACTUAL VM PROCESS AND ADD THE VM TO IT
             */   
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE:
-            std::cout << "blocked again" << std::endl;
+            //std::cout << "blocked again" << std::endl;
             if(this -> owns_resource(Resource_Type::FROM_INTERRUPT)) {
                 // not really stop, identify the interupts
-                            std::cout << "blocked again inside" << std::endl;
+                            //std::cout << "blocked again inside" << std::endl;
 
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_STOP_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
@@ -114,13 +114,13 @@ Process_State Job_Governor_Process::execute(){
             } 
 
             if(io_interrupt){
-                std::cout << "io " << std::endl;
+                //std::cout << "io " << std::endl;
 
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_REACHED_LIMIT;
                 return Process_State::READY;
             }
             else{
-                std::cout << "not io " << std::endl;
+                //std::cout << "not io " << std::endl;
                 this -> kernel -> get_cpu() -> si = 0;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
@@ -179,7 +179,7 @@ Process_State Job_Governor_Process::execute(){
 
             io_interrupt = false;
 
-            std::cout << "miau" << std::endl;
+            //std::cout << "miau" << std::endl;
 
             this -> return_owned_resource(Resource_Type::FROM_INTERRUPT);
 
@@ -243,7 +243,7 @@ Process_State Job_Governor_Process::execute(){
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE: 
             this -> kernel -> request_to_kill(this -> u_id_buffer);
 
-            std::cout << "after req to kill" << std::endl;
+            //std::cout << "after req to kill" << std::endl;
  
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_USER_MEMORY_RESOURCE;
             return Process_State::READY;

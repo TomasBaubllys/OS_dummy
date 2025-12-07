@@ -28,6 +28,7 @@ class Job_Control_Language_Process: public Process{
     private:
         Job_Control_Language_Process_Steps step;
         uint32_t cur_page_index;
+
     public:
         Job_Control_Language_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Job_Control_Language_Process();

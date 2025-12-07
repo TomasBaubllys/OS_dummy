@@ -18,7 +18,7 @@ Virtual_Machine_Process::~Virtual_Machine_Process(){
 Process_State Virtual_Machine_Process::execute(){
     switch (this -> step){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE: {
-            std::cout << "vm here" << std::endl;
+            //std::cout << "vm here" << std::endl;
             /**
              *  Move restoring registers to main loop
              * 
@@ -50,7 +50,7 @@ Process_State Virtual_Machine_Process::execute(){
             this -> step =  Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM;   
             return Process_State::READY_STOPPED;
         default:
-            std::cout << "hehe i com ehere" << std::endl;
+            //std::cout << "hehe i com ehere" << std::endl;
             break;
     }
 
