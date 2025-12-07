@@ -35,6 +35,8 @@ int init_virtual_machine(Virtual_Machine* virtual_machine, CPU* cpu, Memory* mem
 		// else write it to the page table
 		memory -> memory[page_table_index * 16 + i] = (uint32_t)i << 16 | (uint32_t)page_index; 		
 	}
+
+	virtual_machine -> cpu -> pc = VM_DEFAULT_PC_VAL;
 	
 	return 0;		
 }

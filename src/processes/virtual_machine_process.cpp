@@ -27,17 +27,16 @@ Process_State Virtual_Machine_Process::execute(){
             CPU* cpu = this -> kernel -> get_cpu();
             cpu -> mr = CPU_USER_MODE;
             this -> saved_registers = cpu_save_regs(cpu);
-            this -> saved_registers.si = 0;
-
+            // this -> saved_registers.si = 0;
             this -> step = Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM;
             return Process_State::READY;
         }
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM:
             cpu_load_regs(this -> kernel -> get_cpu(), this -> saved_registers);
 
-            std::cout << (int)this -> kernel -> get_cpu() -> si << " <--- sI " << std::endl;
+            // std::cout << (int)this -> kernel -> get_cpu() -> si << " <--- sI " << std::endl;
             virtual_machine_execute(this -> vm);
-            std::cout << (int)this -> kernel -> get_cpu() -> si << " <--- sI " << std::endl;
+            // std::cout << (int)this -> kernel -> get_cpu() -> si << " <--- sI " << std::endl;
 
             this -> saved_registers = cpu_save_regs(this -> kernel -> get_cpu());
             if(this -> vm -> cpu -> si + this -> vm -> cpu -> pi > 0 || this -> vm -> cpu -> ti == 0) {
