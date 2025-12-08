@@ -39,7 +39,12 @@ class Kernel {
 		struct Process_Comparator {
     		bool operator()(const Process* a, const Process* b) const {
 				if(a -> get_priority() == b -> get_priority()) {
-					return rand() % 2;
+					if(a -> get_runtime() == b -> get_runtime()) {
+						return false;
+					}
+					else {
+						return a -> get_runtime() + CPU_DEFAULT_TIMER_VALUE > b -> get_runtime();
+					}
 				}
         		return a -> get_priority() < b -> get_priority();
     		}
@@ -120,6 +125,8 @@ class Kernel {
 		void unstop_ready(uint32_t pid);
 
 		void lower_priority(uint32_t pid);
+
+		Process* get_proc_by_id(uint32_t pid);
 };
 
 

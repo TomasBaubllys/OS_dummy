@@ -199,7 +199,6 @@ int interrupt(CPU* cpu) {
 
 	cpu -> si = 0;
 	cpu -> pi = 0;
-	
 	return 0;
 }
 
@@ -240,15 +239,15 @@ Saved_Registers cpu_save_regs(CPU* cpu) {
 
 	s_regs.mr = cpu -> mr;
 	s_regs.pc = cpu -> pc;
-	// s_regs.pi = cpu -> pi;
+	s_regs.pi = cpu -> pi;
 	s_regs.ptr = cpu -> ptr;
 	s_regs.ra = cpu -> ra;
 	s_regs.rb = cpu -> rb;
 	s_regs.rc = cpu -> rc;
 	s_regs.sf = cpu -> sf;
-	// s_regs.si = cpu -> si;
+	s_regs.si = cpu -> si;
 	s_regs.ss = cpu -> ss;
-	// s_regs.ti = cpu -> ti;
+	s_regs.ti = cpu -> ti;
 	s_regs.tr = cpu -> tr;
 
 	return s_regs;
@@ -261,14 +260,14 @@ void cpu_load_regs(CPU* cpu, Saved_Registers saved_regs) {
 	
 	cpu -> mr = saved_regs.mr;
 	cpu -> pc = saved_regs.pc;
-	// cpu -> pi = saved_regs.pi;
+	cpu -> pi = saved_regs.pi;
 	cpu -> ptr = saved_regs.ptr;
 	cpu -> ra = saved_regs.ra;
 	cpu -> rb = saved_regs.rb ;
 	cpu -> rc = saved_regs.rc;
 	cpu -> sf = saved_regs.sf;
-	// cpu -> si = saved_regs.si;
+	cpu -> si = saved_regs.si;
 	cpu -> ss = saved_regs.ss;
-	// cpu -> ti = saved_regs.ti;
+	cpu -> ti = saved_regs.ti;
 	cpu -> tr = saved_regs.tr;
 }

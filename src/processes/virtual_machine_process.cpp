@@ -16,6 +16,7 @@ Virtual_Machine_Process::~Virtual_Machine_Process(){
 }
 
 Process_State Virtual_Machine_Process::execute(){
+    ++this -> runtime;
     switch (this -> step){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_SWITCH_PROCESSOR_TO_USER_MODE: {
             //std::cout << "vm here" << std::endl;
@@ -27,7 +28,6 @@ Process_State Virtual_Machine_Process::execute(){
             CPU* cpu = this -> kernel -> get_cpu();
             cpu -> mr = CPU_USER_MODE;
             this -> saved_registers = cpu_save_regs(cpu);
-            //this -> saved_registers.si = 0;
             this -> step = Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM;
             return Process_State::READY;
         }

@@ -62,6 +62,8 @@ class Process {
 
         std::string name;
 
+        uint64_t runtime;
+
     public:
         Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username, uint8_t priority);
         virtual ~Process();
@@ -102,6 +104,10 @@ class Process {
         std::string get_p_name();
 
         virtual void assign_vm(Virtual_Machine* vm);
+
+        Saved_Registers& ref_sregs();
+
+        uint64_t get_runtime() const;
 };
 
 #endif // PROCESS_H_INCLUDED

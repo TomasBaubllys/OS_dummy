@@ -41,6 +41,7 @@ class Job_Governor_Process: public Process {
         Job_Governor_Process_Steps step;
 
         Virtual_Machine* _vm_holder;
+        bool io_interrupt;
     public:
         Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username);
         ~Job_Governor_Process();

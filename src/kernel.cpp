@@ -271,6 +271,9 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
     if(!resc) {
         return;
     }
+    
+    resc -> set_buffer(updated_buffer);
+
 
     Process* proc = nullptr;
     // locate the process thats waiting
@@ -326,6 +329,8 @@ void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid,
     if(!resc) {
         return;
     }
+
+    resc -> set_buffer(updated_buffer);
 
     // locate the process thats waiting
     for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
@@ -480,4 +485,13 @@ void Kernel::lower_priority(uint32_t pid) {
             return;
         }
     }
+}
+
+Process* Kernel::get_proc_by_id(uint32_t pid) {
+    for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
+        if((*it) -> get_unique_id() == pid) {
+            return (*it);
+        }
+    }
+    return nullptr;
 }

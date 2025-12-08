@@ -127,8 +127,8 @@ Process_State Read_From_Interface_Process::execute(){
                 }
                 
                 // are you sure that that process is already created????
-                this -> kernel -> release_resource_for(Resource_Type::USER_INPUT, jg -> get_unique_id(), this -> buffer);
                 this -> return_owned_resources();
+                this -> kernel -> release_resource_for(Resource_Type::USER_INPUT, jg -> get_unique_id(), this -> buffer);
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
                 // jg -> vm_input -> set_buffer(this -> buffer);
                 // this -> kernel -> release_resource(jg -> vm_input);

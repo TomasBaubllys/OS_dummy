@@ -12,7 +12,8 @@ Process::Process(Kernel* kernel, Process* parent_process, std::vector<Process*> 
     waiting_for(Resource_Type::NONE),
     waiting_for_ptr(nullptr),
     username(username),
-    priority(priority)
+    priority(priority),
+    runtime(0)
 {
 
 }
@@ -90,6 +91,7 @@ Resource* Process::get_owned_resource(Resource_Type resource_type) {
         if((*it) -> get_resource_type() == resource_type) {
             return (*it);
         }
+        ++it;
     }
 
     return nullptr;
@@ -145,4 +147,12 @@ std::string Process::get_p_name() {
 
 void Process::assign_vm(Virtual_Machine* vm) {
 
+}
+
+Saved_Registers& Process::ref_sregs() {
+   return this -> saved_registers; 
+}
+
+uint64_t Process::get_runtime() const {
+    return this -> runtime;
 }

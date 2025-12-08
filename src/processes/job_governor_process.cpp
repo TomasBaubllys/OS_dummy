@@ -4,6 +4,7 @@
 #include "../../include/processes/virtual_machine_process.h"
 #include <sstream>
 #include <iostream>
+#include <string>
 
 /**
  * 
@@ -19,6 +20,7 @@ Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_proce
     this -> name = JG_NAME;
     this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE;
     //std::cout << "Dobze dobze..." << std::endl;
+    io_interrupt = false;
 }
 
 Job_Governor_Process::~Job_Governor_Process(){
@@ -91,11 +93,24 @@ Process_State Job_Governor_Process::execute(){
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_INTERRUPT;
             return Process_State::READY;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_INTERRUPT:
-            static bool io_interrupt = false;
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_INTERRUPT: {
+            Process* vm_p = this -> kernel -> get_proc_by_id(this -> u_id_buffer);
+            Saved_Registers& vm_regs = vm_p -> ref_sregs();
+            cpu_load_regs(this -> kernel -> get_cpu(), vm_regs);
 
-            switch(this -> kernel -> get_cpu() -> si){
-                case Cpu_Si_Type::CPU_SI_GEDA:
+
+            io_interrupt = false;
+
+//            switch(this -> kernel -> get_cpu() -> si){
+            switch(vm_regs.si){
+
+                case Cpu_Si_Type::CPU_SI_GEDA: {
+                    this -> kernel -> current_console_holder = this;
+                    this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_INPUT_RESOURCE;
+                    this -> kernel -> get_cpu() -> si = 0;
+                    vm_regs.si = 0;
+                    return Process_State::READY;
+                }
                 case Cpu_Si_Type::CPU_SI_BG:
                 case Cpu_Si_Type::CPU_SI_BP:
                 case Cpu_Si_Type::CPU_SI_PSTR:
@@ -106,40 +121,48 @@ Process_State Job_Governor_Process::execute(){
                     break;
             }
 
-           
-
             if(io_interrupt){
                 //std::cout << "io " << std::endl;
-
-                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_REACHED_LIMIT;
-                return Process_State::READY;
-            }
-            else if(this -> kernel -> get_cpu() -> ti == 0){
-                // this -> kernel -> lower_priority(this -> u_id_buffer);
-                this -> kernel -> get_cpu() -> ti = CPU_DEFAULT_TIMER_VALUE;
-                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
-                return Process_State::READY;
-            } 
-            else if(this -> kernel -> get_cpu() -> si + this -> kernel -> get_cpu() -> pi > 0){
-                
-                std::cout << "SI: " << this -> kernel -> get_cpu() -> si << std::endl;
-                std::cout << "PI: " << this -> kernel -> get_cpu() -> pi << std::endl;
-                std::cout << "TI: " << (int)this -> kernel -> get_cpu() -> ti << std::endl;
-
-                std::cout << "not io " << std::endl;
+                Saved_Registers cpu_save = cpu_save_regs(this -> kernel -> get_cpu());
+                this -> kernel -> get_cpu() -> si = vm_regs.si;
+                cpu_load_regs(this -> kernel -> get_cpu(), vm_regs);
+                interrupt(this -> kernel -> get_cpu());
+                cpu_load_regs(this -> kernel -> get_cpu(), cpu_save);
+                vm_regs.si = 0;
                 this -> kernel -> get_cpu() -> si = 0;
                 this -> kernel -> get_cpu() -> pi = 0;
+                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
+                return Process_State::READY;
+            }
+//            else if(this -> kernel -> get_cpu() -> si + this -> kernel -> get_cpu() -> pi > 0){
+            else if(vm_regs.pi + vm_regs.si > 0){
+ 
+                // std::cout << "SI: " << this -> kernel -> get_cpu() -> si << std::endl;
+                // std::cout << "PI: " << this -> kernel -> get_cpu() -> pi << std::endl;
+                // std::cout << "TI: " << (int)this -> kernel -> get_cpu() -> ti << std::endl;
 
-
+                // std::cout << "not io " << std::endl;
+                // this -> kernel -> get_cpu() -> si = 0;
+                // this -> kernel -> get_cpu() -> pi = 0;
+                vm_regs.pi = 0;
+                vm_regs.si = 0;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
+            else if(vm_regs.ti == 0){
+                this -> kernel -> lower_priority(this -> u_id_buffer);
+                this -> kernel -> get_cpu() -> ti = CPU_DEFAULT_TIMER_VALUE;
+                vm_regs.ti = CPU_DEFAULT_TIMER_VALUE;
+                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
+                return Process_State::READY;
+            } 
             else{
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
 
             break;
+        }
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_REACHED_LIMIT: 
             // no clue :(
             static bool limit_reached;
@@ -179,6 +202,18 @@ Process_State Job_Governor_Process::execute(){
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_INPUT_RESOURCE: 
             if(this -> owns_resource(Resource_Type::USER_INPUT)) {
+                Resource* resc = this -> get_owned_resource(Resource_Type::USER_INPUT);
+                Process* vm_p = this -> kernel -> get_proc_by_id(this -> u_id_buffer);
+                Saved_Registers& vm_regs = vm_p -> ref_sregs();
+                vm_regs.si = 0;
+                try {
+                    vm_regs.ra = stoi(resc -> get_buffer());
+                }
+                catch(...) {
+                    vm_regs.ra = resc -> get_buffer().at(0);
+                }
+                this -> return_owned_resource(Resource_Type::USER_INPUT);
+
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
