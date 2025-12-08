@@ -106,12 +106,7 @@ Process_State Job_Governor_Process::execute(){
                     break;
             }
 
-            if(this -> kernel -> get_cpu() -> ti == 0){
-                // this -> kernel -> lower_priority(this -> u_id_buffer);
-                this -> kernel -> get_cpu() -> ti = CPU_DEFAULT_TIMER_VALUE;
-                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
-                return Process_State::READY;
-            } 
+           
 
             if(io_interrupt){
                 //std::cout << "io " << std::endl;
@@ -119,10 +114,28 @@ Process_State Job_Governor_Process::execute(){
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_REACHED_LIMIT;
                 return Process_State::READY;
             }
-            else{
-                //std::cout << "not io " << std::endl;
+            else if(this -> kernel -> get_cpu() -> ti == 0){
+                // this -> kernel -> lower_priority(this -> u_id_buffer);
+                this -> kernel -> get_cpu() -> ti = CPU_DEFAULT_TIMER_VALUE;
+                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
+                return Process_State::READY;
+            } 
+            else if(this -> kernel -> get_cpu() -> si + this -> kernel -> get_cpu() -> pi > 0){
+                
+                std::cout << "SI: " << this -> kernel -> get_cpu() -> si << std::endl;
+                std::cout << "PI: " << this -> kernel -> get_cpu() -> pi << std::endl;
+                std::cout << "TI: " << (int)this -> kernel -> get_cpu() -> ti << std::endl;
+
+                std::cout << "not io " << std::endl;
                 this -> kernel -> get_cpu() -> si = 0;
+                this -> kernel -> get_cpu() -> pi = 0;
+
+
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE;
+                return Process_State::READY;
+            }
+            else{
+                this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
 

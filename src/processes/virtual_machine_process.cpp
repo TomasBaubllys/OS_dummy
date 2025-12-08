@@ -36,7 +36,7 @@ Process_State Virtual_Machine_Process::execute(){
 
             // std::cout << (int)this -> kernel -> get_cpu() -> si << " <--- sI " << std::endl;
             virtual_machine_execute(this -> vm);
-            std::cout << (int)this -> kernel -> get_cpu() -> si << " <--- sI " << std::endl;
+             //std::cout << (int)this -> kernel -> get_cpu() -> ti << " <--- TI " << std::endl;
 
             this -> saved_registers = cpu_save_regs(this -> kernel -> get_cpu());
             if(this -> vm -> cpu -> si + this -> vm -> cpu -> pi > 0 || this -> vm -> cpu -> ti == 0) {
