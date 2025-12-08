@@ -54,7 +54,7 @@ void remove_virtual_machine(Real_Machine* real_machine) {
 		return;
 	}
 
-	destroy_virtual_machine(real_machine -> vm);
+	destroy_virtual_machine(real_machine -> vm, real_machine -> cpu.ptr);
 	free(real_machine -> vm);
 	real_machine -> vm = NULL;
 }
@@ -65,7 +65,7 @@ int destroy_real_machine(Real_Machine* real_machine) {
 	}	
 
 	if(real_machine -> vm) {
-		destroy_virtual_machine(real_machine -> vm);
+		destroy_virtual_machine(real_machine -> vm, real_machine -> cpu.ptr);
 		free(real_machine -> vm);
 		real_machine -> vm = NULL;
 	}

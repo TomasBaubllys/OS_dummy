@@ -11,8 +11,9 @@ Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent
 }
 
 Virtual_Machine_Process::~Virtual_Machine_Process(){
-    destroy_virtual_machine(this -> vm);
+    destroy_virtual_machine(this -> vm, this -> saved_registers.ptr);
     free(this -> vm);
+    std::cout << "VM deleted " << this -> unique_id << std::endl;
 }
 
 Process_State Virtual_Machine_Process::execute(){
@@ -25,18 +26,23 @@ Process_State Virtual_Machine_Process::execute(){
              * 
              */
 
-            CPU* cpu = this -> kernel -> get_cpu();
-            cpu -> mr = CPU_USER_MODE;
-            this -> saved_registers = cpu_save_regs(cpu);
+            // CPU* cpu = this -> kernel -> get_cpu();
+            // cpu -> mr = CPU_USER_MODE;
+            // this -> saved_registers = cpu_save_regs(cpu);
+            this -> kernel -> get_cpu() -> mr = CPU_USER_MODE;
+            this -> saved_registers.mr = CPU_USER_MODE;
             this -> step = Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM;
+            fprint_memory(stdout, this -> kernel -> get_memory(), this -> saved_registers.ptr * 16 * 4, (this -> saved_registers.ptr + 1) * 16 * 4, 16);
+
             return Process_State::READY;
         }
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM:
             cpu_load_regs(this -> kernel -> get_cpu(), this -> saved_registers);
 
+            // std::cout << "ID & PTR -> " << this -> unique_id << "  " << this -> saved_registers.ptr << std::endl;
             // std::cout << (int)this -> kernel -> get_cpu() -> si << " <--- sI " << std::endl;
             virtual_machine_execute(this -> vm);
-             //std::cout << (int)this -> kernel -> get_cpu() -> ti << " <--- TI " << std::endl;
+            // std::cout << (int)this -> kernel -> get_cpu() -> ti << " <--- TI " << std::endl;
 
             this -> saved_registers = cpu_save_regs(this -> kernel -> get_cpu());
             if(this -> vm -> cpu -> si + this -> vm -> cpu -> pi > 0 || this -> vm -> cpu -> ti == 0) {

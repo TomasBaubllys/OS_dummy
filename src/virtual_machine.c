@@ -42,7 +42,7 @@ int init_virtual_machine(Virtual_Machine* virtual_machine, CPU* cpu, Memory* mem
 }
 
 // return all the pages	
-int destroy_virtual_machine(Virtual_Machine* virtual_machine) {
+int destroy_virtual_machine1(Virtual_Machine* virtual_machine) {
 	if(!virtual_machine) {
 		return -1;
 	}
@@ -54,6 +54,24 @@ int destroy_virtual_machine(Virtual_Machine* virtual_machine) {
 	}
 	
 	if(return_page(virtual_machine -> memory, virtual_machine -> cpu -> ptr * 16) != 0) {
+		return -1;
+	}
+
+	return 0;
+}
+
+int destroy_virtual_machine(Virtual_Machine* virtual_machine, uint16_t ptr) {
+	if(!virtual_machine) {
+		return -1;
+	}
+
+	for(uint8_t i = 0; i < VM_VIRTUAL_MACHINE_BLOCK_COUNT; ++i) {
+		if(return_page(virtual_machine -> memory, (virtual_machine -> memory -> memory[(ptr) * 16 + i]) & 0x00ff ) != 0) {
+			return -1;
+		} 
+	}
+	
+	if(return_page(virtual_machine -> memory, ptr * 16) != 0) {
 		return -1;
 	}
 

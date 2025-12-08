@@ -27,7 +27,11 @@ typedef struct Virtual_Machine {
 int init_virtual_machine(Virtual_Machine* virtual_machine, CPU* cpu, Memory* memory);
 
 // destroys virtual machine
-int destroy_virtual_machine(Virtual_Machine* virtual_machine);
+int destroy_virtual_machine1(Virtual_Machine* virtual_machine);
+
+// ;lol
+int destroy_virtual_machine(Virtual_Machine* virtual_machine, uint16_t ptr);
+
 
 // executes a command at virtual pc
 void virtual_machine_execute(Virtual_Machine* virtual_machine);

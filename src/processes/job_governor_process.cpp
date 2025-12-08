@@ -61,10 +61,14 @@ Process_State Job_Governor_Process::execute(){
             this -> saved_registers.ptr = this -> kernel -> get_cpu() -> ptr;
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
             return Process_State::READY;    
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE:
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE: {
             this -> u_id_buffer =  this -> kernel -> create_process<Virtual_Machine_Process>(this, {},  SYSTEM_USERNAME);
             //std::cout << "vm_pid " << this -> u_id_buffer << std::endl;
             this -> kernel -> assign_vm(this -> u_id_buffer, this -> _vm_holder);
+
+            Process* proc = this -> kernel -> get_proc_by_id(this -> u_id_buffer);
+            Saved_Registers& vm_regs = proc -> ref_sregs();
+            vm_regs.ptr = this -> saved_registers.ptr;
 
             this -> release_owned_resource(Resource_Type::USER_MEMORY);
             // delete from loader???
@@ -74,6 +78,7 @@ Process_State Job_Governor_Process::execute(){
             /*
                 CREATE THE ACTUAL VM PROCESS AND ADD THE VM TO IT
             */   
+        }
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE:
             //std::cout << "blocked again" << std::endl;
             if(this -> owns_resource(Resource_Type::FROM_INTERRUPT)) {
@@ -135,10 +140,10 @@ Process_State Job_Governor_Process::execute(){
                 return Process_State::READY;
             }
 //            else if(this -> kernel -> get_cpu() -> si + this -> kernel -> get_cpu() -> pi > 0){
-            else if(vm_regs.pi + vm_regs.si > 0){
+            else if(vm_regs.pi + vm_regs.si > 0 && vm_regs.pi != 2){
  
                 // std::cout << "SI: " << this -> kernel -> get_cpu() -> si << std::endl;
-                // std::cout << "PI: " << this -> kernel -> get_cpu() -> pi << std::endl;
+                // std::cout << "PI: " << vm_regs.pi << " VM ID = " << this -> u_id_buffer << std::endl;
                 // std::cout << "TI: " << (int)this -> kernel -> get_cpu() -> ti << std::endl;
 
                 // std::cout << "not io " << std::endl;
@@ -146,11 +151,12 @@ Process_State Job_Governor_Process::execute(){
                 // this -> kernel -> get_cpu() -> pi = 0;
                 vm_regs.pi = 0;
                 vm_regs.si = 0;
+                std::cout << "KILLED" << std::endl;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
             else if(vm_regs.ti == 0){
-                this -> kernel -> lower_priority(this -> u_id_buffer);
+                // this -> kernel -> lower_priority(this -> u_id_buffer);
                 this -> kernel -> get_cpu() -> ti = CPU_DEFAULT_TIMER_VALUE;
                 vm_regs.ti = CPU_DEFAULT_TIMER_VALUE;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
