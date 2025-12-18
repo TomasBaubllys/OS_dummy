@@ -1,14 +1,15 @@
 #include "../include/memory.h"
 #include "../include/cpu.h"
+#include <stdlib.h>
 
 int init_memory(Memory* mem, CPU* cpu) {
 	if(!mem || !cpu) {
 		return -1;
-	}	
+	}
 
 	mem -> cpu = cpu;
 
-	memset(mem -> memory, 0, sizeof(mem -> memory));	
+	memset(mem -> memory, 0, sizeof(mem -> memory));
 	memset(mem -> used_pages, 0, sizeof(mem -> used_pages));
 
 	for(uint8_t i = 0; i < MEM_PAGE_COUNT; ++i) {
@@ -33,9 +34,9 @@ uint16_t translate_to_real_address(Memory* memory, uint16_t virtual_address) {
 	if(memory -> cpu -> ptr >= MEM_USER_PAGE_COUNT) {
 		return MEM_NULL_ADDR;
 	}
- 
+
 	uint16_t v_page = (virtual_address / MEM_WORD_SIZE) / MEM_PAGE_SIZE;
-  
+
 	// offset from the virtual page
     uint16_t offset = virtual_address - (v_page * MEM_WORD_SIZE * MEM_PAGE_SIZE);
 
@@ -55,37 +56,37 @@ uint32_t read_word(Memory* mem, const uint16_t address) {
 
 	if(rem == 0) {
 		return mem -> memory[index];
-	} 
-	
-	uint32_t word = 0;	
-	
+	}
+
+	uint32_t word = 0;
+
 	if(address % MEM_WORD_SIZE == 1) {
 		word = (mem -> memory[index]) << 8;
-		word |= (mem -> memory[index + 1] & 0xff000000) >> 24; 
+		word |= (mem -> memory[index + 1] & 0xff000000) >> 24;
 		return word;
 	}
-	
-	if(address % MEM_WORD_SIZE == 2) {		
+
+	if(address % MEM_WORD_SIZE == 2) {
 		word = (mem -> memory[index]) << 16;
-		word |= (mem -> memory[index + 1] & 0xffff0000) >> 16; 
+		word |= (mem -> memory[index + 1] & 0xffff0000) >> 16;
 		return word;
 	}
-	
+
 	if(address % MEM_WORD_SIZE == 3) {
 		word = (mem -> memory[index]) << 24;
-		word |= (mem -> memory[index + 1] & 0xffffff00) >> 8; 
+		word |= (mem -> memory[index + 1] & 0xffffff00) >> 8;
 		return word;
 	}
 
 	return -1;
-} 			
+}
 
 int write_word(Memory* mem, const uint16_t address, const uint32_t word) {
 	if(address > MEM_MAX_ADDRESS - MEM_WORD_SIZE) {
 		// fprintf(stderr, MEM_BAD_ADDRESS_ERR);
 		return -1;
 	}
-	
+
 	uint8_t rem = address % MEM_WORD_SIZE;
 	uint16_t index = address / MEM_WORD_SIZE;
 
@@ -97,30 +98,30 @@ int write_word(Memory* mem, const uint16_t address, const uint32_t word) {
 	if(rem == 1) {
 		mem -> memory[index] &= 0xff000000;
 		mem -> memory[index] = (mem -> memory[index]) | (word >> 8);
-		
+
 		mem -> memory[index + 1] &= 0x00ffffff;
 		mem -> memory[index + 1] |= word << 24;
 		return 0;
-	}	
+	}
 
 	if(rem == 2) {
 		mem -> memory[index] &= 0xffff0000;
 		mem -> memory[index] = (mem -> memory[index]) | (word >> 16);
-				
+
 		mem -> memory[index + 1] &= 0x0000ffff;
 		mem -> memory[index + 1] |= word << 16;
 		return 0;
 	}
-	
+
 	if(rem == 3) {
 		mem -> memory[index] &= 0xffffff00;
 		mem -> memory[index] |= word >> 24;
-		
+
 		mem -> memory[index + 1] &= 0x000000ff;
 		mem -> memory[index + 1] |= word << 8;
 		return 0;
 	}
-	
+
 	return -1;
 }
 
@@ -129,17 +130,17 @@ void fprint_memory(FILE* stream, Memory* mem, uint16_t start, uint16_t end, uint
 	if(start >= end) {
 		return;
 	}
-	
-	// round both numbers to be divisible by 4 
+
+	// round both numbers to be divisible by 4
 
 	if(end >= MEM_MAX_ADDRESS) {
 		fprintf(stream, MEM_BAD_ADDRESS_ERR);
 		return;
-	}	
-	
+	}
+
 	// take the floor
 	start /= MEM_WORD_SIZE;
-	
+
 	if(end % MEM_WORD_SIZE != 0) {
 		if(end >= MEM_MAX_ADDRESS - MEM_WORD_SIZE) {
 			 end /= MEM_WORD_SIZE;
@@ -150,8 +151,8 @@ void fprint_memory(FILE* stream, Memory* mem, uint16_t start, uint16_t end, uint
 	}
 	else {
 		end /= MEM_WORD_SIZE;
-	}	
-	
+	}
+
 	uint8_t counter = column_count;
 	fprintf(stream, "\n%*x :", MEM_MAX_ADDRESS_LENGTH, start * MEM_WORD_SIZE);
 
@@ -160,7 +161,7 @@ void fprint_memory(FILE* stream, Memory* mem, uint16_t start, uint16_t end, uint
 		fprintf(stream, "%8x ", mem -> memory[start]);
 		++start;
 		--counter;
-		
+
 		if(counter <= 0) {
 			fprintf(stream, "\n%*x :", MEM_MAX_ADDRESS_LENGTH, start * MEM_WORD_SIZE);
 			counter = column_count;
@@ -191,9 +192,10 @@ uint8_t get_free_page(Memory* mem) {
 
 
 int return_page(Memory* mem, uint8_t page_num) {
+	// printf("RETURNING PAGE: %d\n", page_num);
     if(page_num >= MEM_USER_PAGE_COUNT) {
         return -1;
-    } 
+    }
 
     if(mem -> used_page_count > MEM_USER_PAGE_COUNT) {
         return -1;

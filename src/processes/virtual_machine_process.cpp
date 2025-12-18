@@ -2,7 +2,7 @@
 #include "../../include/kernel.h"
 #include <iostream>
 
-Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
+Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::VM_PRIORITY) {
     this -> saved_registers = {};
     this -> name = VIRTUAL_MACHINE_NAME;
@@ -13,7 +13,7 @@ Virtual_Machine_Process::Virtual_Machine_Process(Kernel* kernel, Process* parent
 Virtual_Machine_Process::~Virtual_Machine_Process(){
     destroy_virtual_machine(this -> vm, this -> saved_registers.ptr);
     free(this -> vm);
-    std::cout << "VM deleted " << this -> unique_id << std::endl;
+    // std::cout << "VM deleted " << this -> unique_id << std::endl;
 }
 
 Process_State Virtual_Machine_Process::execute(){
@@ -23,7 +23,7 @@ Process_State Virtual_Machine_Process::execute(){
             //std::cout << "vm here" << std::endl;
             /**
              *  Move restoring registers to main loop
-             * 
+             *
              */
 
             // CPU* cpu = this -> kernel -> get_cpu();
@@ -32,7 +32,7 @@ Process_State Virtual_Machine_Process::execute(){
             this -> kernel -> get_cpu() -> mr = CPU_USER_MODE;
             this -> saved_registers.mr = CPU_USER_MODE;
             this -> step = Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM;
-            fprint_memory(stdout, this -> kernel -> get_memory(), this -> saved_registers.ptr * 16 * 4, (this -> saved_registers.ptr + 1) * 16 * 4, 16);
+            // fprint_memory(stdout, this -> kernel -> get_memory(), this -> saved_registers.ptr * 16 * 4, (this -> saved_registers.ptr + 1) * 16 * 4, 16);
 
             return Process_State::READY;
         }
@@ -53,7 +53,7 @@ Process_State Virtual_Machine_Process::execute(){
         case Virtual_Machine_Steps::VIRTUAL_MACHINE_FREE_RESOURCE_INTERRUPT:
             // release the resource with jg id in the buffer
             this -> kernel -> release_resource(Resource_Type::INTERRUPT, std::to_string(this -> parent_process -> get_unique_id()));
-            this -> step =  Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM;   
+            this -> step =  Virtual_Machine_Steps::VIRTUAL_MACHINE_EXECUTE_USER_PROGRAM;
             return Process_State::READY_STOPPED;
         default:
             //std::cout << "hehe i com ehere" << std::endl;

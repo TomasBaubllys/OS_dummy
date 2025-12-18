@@ -9,13 +9,14 @@ int init_virtual_machine(Virtual_Machine* virtual_machine, CPU* cpu, Memory* mem
 	virtual_machine -> memory = memory;
 
 	uint16_t page_table_index = get_free_page(memory);
-	
+
 	if(page_table_index == MEM_NO_FREE_PAGE_ERR) {
 		return -1;
 	}
 
-	virtual_machine -> cpu -> ptr = page_table_index; 
-	
+	virtual_machine -> cpu -> ptr = page_table_index;
+	// printf("PAGE TABLE INDEX: %d\n", page_table_index);
+
 	// ask for 16 pages and write them to the page table
 	uint16_t page_index;
 	for(uint8_t i = 0; i < VM_VIRTUAL_MACHINE_BLOCK_COUNT; ++i) {
@@ -26,22 +27,23 @@ int init_virtual_machine(Virtual_Machine* virtual_machine, CPU* cpu, Memory* mem
 				uint32_t pizza_slice = memory -> memory[page_table_index * 16 + j];
 				uint16_t real_page_addr = pizza_slice & 0x00ff;
 				return_page(memory, real_page_addr);
-			}	
+			}
 			return_page(memory, page_table_index);
-		
 			return -1;
 		}
+		// printf("GOT PAGE: %d\n", page_index);
 
 		// else write it to the page table
-		memory -> memory[page_table_index * 16 + i] = (uint32_t)i << 16 | (uint32_t)page_index; 		
+		memory -> memory[page_table_index * 16 + i] = (uint32_t)i << 16 | (uint32_t)page_index;
 	}
+	// printf("\n");
 
 	virtual_machine -> cpu -> pc = VM_DEFAULT_PC_VAL;
-	
-	return 0;		
+
+	return 0;
 }
 
-// return all the pages	
+// return all the pages
 int destroy_virtual_machine1(Virtual_Machine* virtual_machine) {
 	if(!virtual_machine) {
 		return -1;
@@ -50,10 +52,11 @@ int destroy_virtual_machine1(Virtual_Machine* virtual_machine) {
 	for(uint8_t i = 0; i < VM_VIRTUAL_MACHINE_BLOCK_COUNT; ++i) {
 		if(return_page(virtual_machine -> memory, (virtual_machine -> memory -> memory[(virtual_machine -> cpu -> ptr) * 16 + i]) & 0x00ff ) != 0) {
 			return -1;
-		} 
+		}
+		// printf("Returning page: %d", (virtual_machine -> memory -> memory[(virtual_machine -> cpu -> ptr) * 16 + i]) & 0x00ff);
 	}
-	
-	if(return_page(virtual_machine -> memory, virtual_machine -> cpu -> ptr * 16) != 0) {
+
+	if(return_page(virtual_machine -> memory, virtual_machine -> cpu -> ptr) != 0) {
 		return -1;
 	}
 
@@ -68,10 +71,10 @@ int destroy_virtual_machine(Virtual_Machine* virtual_machine, uint16_t ptr) {
 	for(uint8_t i = 0; i < VM_VIRTUAL_MACHINE_BLOCK_COUNT; ++i) {
 		if(return_page(virtual_machine -> memory, (virtual_machine -> memory -> memory[(ptr) * 16 + i]) & 0x00ff ) != 0) {
 			return -1;
-		} 
+		}
 	}
-	
-	if(return_page(virtual_machine -> memory, ptr * 16) != 0) {
+
+	if(return_page(virtual_machine -> memory, ptr) != 0) {
 		return -1;
 	}
 
@@ -93,7 +96,7 @@ void virtual_machine_execute(Virtual_Machine* virtual_machine) {
 
 	// read the command
 	uint32_t command = read_word(virtual_machine -> memory, com_addr);
-	
+
 	if((virtual_machine -> cpu -> sf & 0x0008) >> 3 == 1) {
 		printf(
 			"PC: %04x, PI: %04x, SI: %04x, TR: %04x, PTR: %04x\n"
@@ -199,7 +202,7 @@ void virtual_machine_execute(Virtual_Machine* virtual_machine) {
 				virtual_machine -> cpu -> pi = CPU_PI_INVALID_ADDRESS;
 				break;
 			}
-			
+
 			virtual_machine -> cpu -> ra &= 0x0000ffff;
 			virtual_machine -> cpu -> ra |= (x * 16 + y) << 16; // save the address in the upper 2 bytes of ra
 			virtual_machine -> cpu -> si = CPU_SI_LW;

@@ -7,15 +7,15 @@
 #include <string>
 
 /**
- * 
- * 
- * 
- * 
- * 
- *  call the interrupt here, just lock the resources.... GEDA/PUTA etc... -> interrupt(this -> kernel -> cpu) 
+ *
+ *
+ *
+ *
+ *
+ *  call the interrupt here, just lock the resources.... GEDA/PUTA etc... -> interrupt(this -> kernel -> cpu)
  */
 
-Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username): 
+Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username):
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_GOVERNOR_PRIORITY){
     this -> name = JG_NAME;
     this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE;
@@ -54,13 +54,14 @@ Process_State Job_Governor_Process::execute(){
 
             this -> kernel -> request_resource(this, Resource_Type::FROM_LOADER);
             return Process_State::BLOCKED;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_VIRTUAL_MACHINE: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_VIRTUAL_MACHINE:
             // create the virtual machine
             this -> _vm_holder = (Virtual_Machine*)malloc(sizeof(Virtual_Machine));
             init_virtual_machine(this -> _vm_holder, this -> kernel -> get_cpu(), this -> kernel -> get_memory());
             this -> saved_registers.ptr = this -> kernel -> get_cpu() -> ptr;
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
-            return Process_State::READY;    
+            return Process_State::READY;
+
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE: {
             this -> u_id_buffer =  this -> kernel -> create_process<Virtual_Machine_Process>(this, {},  SYSTEM_USERNAME);
             //std::cout << "vm_pid " << this -> u_id_buffer << std::endl;
@@ -77,7 +78,7 @@ Process_State Job_Governor_Process::execute(){
             return Process_State::READY;
             /*
                 CREATE THE ACTUAL VM PROCESS AND ADD THE VM TO IT
-            */   
+            */
         }
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE:
             //std::cout << "blocked again" << std::endl;
@@ -94,7 +95,7 @@ Process_State Job_Governor_Process::execute(){
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_STOP_PROCESS_VIRTUAL_MACHINE:
             //this -> kernel -> request_to_kill(vm_pid);
-            // ?? 
+            // ??
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_INTERRUPT;
             return Process_State::READY;
             break;
@@ -141,7 +142,7 @@ Process_State Job_Governor_Process::execute(){
             }
 //            else if(this -> kernel -> get_cpu() -> si + this -> kernel -> get_cpu() -> pi > 0){
             else if(vm_regs.pi + vm_regs.si > 0 && vm_regs.pi != 2){
- 
+
                 // std::cout << "SI: " << this -> kernel -> get_cpu() -> si << std::endl;
                 // std::cout << "PI: " << vm_regs.pi << " VM ID = " << this -> u_id_buffer << std::endl;
                 // std::cout << "TI: " << (int)this -> kernel -> get_cpu() -> ti << std::endl;
@@ -151,7 +152,7 @@ Process_State Job_Governor_Process::execute(){
                 // this -> kernel -> get_cpu() -> pi = 0;
                 vm_regs.pi = 0;
                 vm_regs.si = 0;
-                std::cout << "KILLED" << std::endl;
+                // std::cout << "KILLED" << std::endl;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
             }
@@ -161,7 +162,7 @@ Process_State Job_Governor_Process::execute(){
                 vm_regs.ti = CPU_DEFAULT_TIMER_VALUE;
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
-            } 
+            }
             else{
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
                 return Process_State::READY;
@@ -169,7 +170,7 @@ Process_State Job_Governor_Process::execute(){
 
             break;
         }
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_REACHED_LIMIT: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_IO_REACHED_LIMIT:
             // no clue :(
             static bool limit_reached;
             limit_reached = false;
@@ -189,13 +190,13 @@ Process_State Job_Governor_Process::execute(){
             }
 
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_STRING_IN_MEMORY_RESOURCE_WITH_INFO_REACHED_LIMIT: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_STRING_IN_MEMORY_RESOURCE_WITH_INFO_REACHED_LIMIT:
             this -> kernel -> release_resource(Resource_Type::STRING_IN_MEMORY, JOB_GOVERNOR_PROCESS_MSG_IO_LIMIT_REACHED);
 
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE;
             return Process_State::READY;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_GEDA_INTERRUPT: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_GEDA_INTERRUPT:
             if(this -> kernel -> get_cpu() -> si == Cpu_Si_Type::CPU_SI_GEDA){
                 interrupt(this -> kernel -> get_cpu());
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_INPUT_RESOURCE;
@@ -206,7 +207,7 @@ Process_State Job_Governor_Process::execute(){
                 return  Process_State::READY;
             }
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_INPUT_RESOURCE: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_INPUT_RESOURCE:
             if(this -> owns_resource(Resource_Type::USER_INPUT)) {
                 Resource* resc = this -> get_owned_resource(Resource_Type::USER_INPUT);
                 Process* vm_p = this -> kernel -> get_proc_by_id(this -> u_id_buffer);
@@ -227,7 +228,7 @@ Process_State Job_Governor_Process::execute(){
             this -> kernel -> request_resource(this, Resource_Type::USER_INPUT);
             return Process_State::BLOCKED;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE:
             // make vm process the middle step
             this -> kernel -> unstop_ready(this -> u_id_buffer);
 
@@ -241,8 +242,8 @@ Process_State Job_Governor_Process::execute(){
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE;
             return Process_State::READY;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_BP_BG_INTERRUPT: 
-        
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_BP_BG_INTERRUPT:
+
             if(this -> kernel -> get_cpu() -> si == Cpu_Si_Type::CPU_SI_BP || this -> kernel -> get_cpu() -> si == Cpu_Si_Type::CPU_SI_BG){
                 interrupt(this -> kernel -> get_cpu());
 
@@ -254,7 +255,7 @@ Process_State Job_Governor_Process::execute(){
                 return  Process_State::READY;
             }
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_CHANNEL_DEVICE_RESOURCE:
             if(this -> owns_resource(Resource_Type::CHANNEL_DEVICE)) {
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG;
                 return Process_State::READY;
@@ -263,19 +264,19 @@ Process_State Job_Governor_Process::execute(){
             this -> kernel -> request_resource(this, Resource_Type::CHANNEL_DEVICE);
             return Process_State::BLOCKED;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_SET_CHANNEL_DEVICE_REGISTERS_AND_XCHG:
             interrupt(this -> kernel -> get_cpu());
 
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE;
             return Process_State::READY;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE:
             this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);
 
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_ACTIVATE_PROCESS_VIRTUAL_MACHINE;
             return Process_State::READY;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_PSTR_PUTA_INTERRUPT: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CHECK_PSTR_PUTA_INTERRUPT:
             if(this -> kernel -> get_cpu() -> si == Cpu_Si_Type::CPU_SI_PSTR || this -> kernel -> get_cpu() -> si == Cpu_Si_Type::CPU_SI_PUTA){
                 interrupt(this -> kernel -> get_cpu());
 
@@ -294,33 +295,33 @@ Process_State Job_Governor_Process::execute(){
 
             return Process_State::READY;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_REMOVE_PROCESS_VIRTUAL_MACHINE:
             this -> kernel -> request_to_kill(this -> u_id_buffer);
 
             //std::cout << "after req to kill" << std::endl;
- 
+
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_USER_MEMORY_RESOURCE;
             return Process_State::READY;
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_USER_MEMORY_RESOURCE:
             this -> kernel -> release_resource(Resource_Type::USER_MEMORY);
-            
+
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_PIE_IN_THE_OVEN_RESOURCE;
             return Process_State::READY;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_PIE_IN_THE_OVEN_RESOURCE: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_PIE_IN_THE_OVEN_RESOURCE:
             this -> kernel -> release_resource(Resource_Type::PIE_IN_THE_OVEN, std::to_string(this -> get_unique_id()));
-            
+
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_SYSTEM_COMMAND_RESOURCE;
             return Process_State::READY;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_SYSTEM_COMMAND_RESOURCE: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_SYSTEM_COMMAND_RESOURCE:
             this -> kernel -> release_resource(Resource_Type::SYSTEM_COMMAND);
-            
+
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_NONEXISTANT_RESOURCE;
             return Process_State::READY;
             break;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_NONEXISTANT_RESOURCE: 
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_NONEXISTANT_RESOURCE:
             if(this -> owns_resource(Resource_Type::NON_EXISTANT)) {
                 return Process_State::BLOCKED_STOPPED;
             }
