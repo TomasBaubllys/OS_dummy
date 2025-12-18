@@ -14,6 +14,7 @@ Read_From_Interface_Process::~Read_From_Interface_Process() {
 }
 
 Process_State Read_From_Interface_Process::execute(){
+    //std::cout << "READ_FROM_INTERFACE::ID: " << this -> get_unique_id() << "Step: " << (uint16_t)this -> step << std::endl;
     switch (this -> step) {
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE: {
             if(this -> owns_resource(Resource_Type::FROM_USER_INTERFACE)) {
@@ -34,7 +35,9 @@ Process_State Read_From_Interface_Process::execute(){
             return Process_State::READY;
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_HARD_DISK:
             if(this -> owns_resource(Resource_Type::HARD_DISK)) {
-                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_CHANNEL_DEVICE;
+                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_SUPERVISOR_MEMORY;
+
+                //this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_CHANNEL_DEVICE;
                 return Process_State::READY;
             }
 
@@ -50,12 +53,12 @@ Process_State Read_From_Interface_Process::execute(){
             this -> kernel -> request_resource(this ,Resource_Type::CHANNEL_DEVICE);
             return Process_State::BLOCKED;
 
-        case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_FILE_EXISTS: 
+        case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_FILE_EXISTS:
             static uint32_t file_offset = 0;
-            static uint32_t file_size = 0; 
+            static uint32_t file_size = 0;
             {
             /**
-                move to xchg (set regs acordingly), 
+                move to xchg (set regs acordingly),
             */
             std::string file_name = this -> buffer.substr(2);
             Channel_Device* ch_dev = this -> kernel -> get_channel_device();
@@ -75,15 +78,18 @@ Process_State Read_From_Interface_Process::execute(){
             else {
                 file_offset = ch_dev -> cb;
                 file_size = ch_dev -> of;
-                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_READ_AND_DIVIDE_FILE;
+                //this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_SUPERVISOR_MEMORY;
+                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_COPY_BYTES_TO_SUPERVISOR_MEMORY;
+
             }
 
             return Process_State::READY;
         }
-        case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_READ_AND_DIVIDE_FILE:;
+        //case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_READ_AND_DIVIDE_FILE:;
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_SUPERVISOR_MEMORY:
             if(this -> owns_resource(Resource_Type::SUPERVISOR_MEMORY)) {
-                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_COPY_BYTES_TO_SUPERVISOR_MEMORY;
+                //this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_COPY_BYTES_TO_SUPERVISOR_MEMORY;
+                this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_CHANNEL_DEVICE;
                 return Process_State::READY;
             }
 
@@ -116,7 +122,7 @@ Process_State Read_From_Interface_Process::execute(){
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_SYSTEM_COMMAND;
             }
             else {
-                Job_Governor_Process* jg = this -> kernel -> current_console_holder; 
+                Job_Governor_Process* jg = this -> kernel -> current_console_holder;
                 // if current console holder is null, ignore the buffer
                 if(jg == nullptr) {
                     this -> return_owned_resources();
@@ -125,7 +131,7 @@ Process_State Read_From_Interface_Process::execute(){
 
                     return Process_State::READY;
                 }
-                
+
                 // are you sure that that process is already created????
                 this -> return_owned_resources();
                 this -> kernel -> release_resource_for(Resource_Type::USER_INPUT, jg -> get_unique_id(), this -> buffer);
@@ -133,7 +139,7 @@ Process_State Read_From_Interface_Process::execute(){
                 // jg -> vm_input -> set_buffer(this -> buffer);
                 // this -> kernel -> release_resource(jg -> vm_input);
             }
-            return Process_State::READY; 
+            return Process_State::READY;
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_SYSTEM_COMMAND:
             this -> kernel -> release_resource(Resource_Type::SYSTEM_COMMAND, this -> buffer);
             this -> return_owned_resources();
@@ -142,7 +148,7 @@ Process_State Read_From_Interface_Process::execute(){
                 RELEASE HARD DISK
                 and others?
             */
-            
+
             return Process_State::READY;
         default:
             break;

@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iostream>
 
-Loader_Process::Loader_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
+Loader_Process::Loader_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::LOADER_PRIORITY){
     this -> name = LOADER_NAME;
     this -> step = Loader_Process_Steps::LOADER_PROCESS_BLOCKED_WAITING_FOR_LOADER_PACKAGE_RESOURCE;
@@ -15,12 +15,14 @@ Loader_Process::~Loader_Process(){
 }
 
 Process_State Loader_Process::execute(){
+    //std::cout << "LOADER::ID: " << this -> get_unique_id() << "Step: " << (uint16_t)this -> step << std::endl;
+
     switch (this -> step){
         case Loader_Process_Steps::LOADER_PROCESS_BLOCKED_WAITING_FOR_LOADER_PACKAGE_RESOURCE: {
             if(this -> owns_resource(Resource_Type::LOADER_PACKAGE)) {
                 Resource* resc = this -> get_owned_resource(Resource_Type::LOADER_PACKAGE);
                 std::string buffer = resc -> get_buffer();
-                
+
                 std::stringstream ss(buffer);
                 // program len is always the size of supervisor
                 ss >> this -> u_id_buffer >> this -> current_program_len >> this -> saved_registers.ptr;
@@ -45,7 +47,7 @@ Process_State Loader_Process::execute(){
             CPU* cpu = this -> kernel -> get_cpu();
             cpu -> ptr = this -> saved_registers.ptr;
             Memory* mem = this -> kernel -> get_memory();
-            
+
             for(uint32_t i = 0; i < MEM_SUPERVISOR_PAGE_COUNT; ++i) {
                 uint16_t r_page = translate_to_real_address(mem, i * MEM_PAGE_BYTE_COUNT) / (MEM_PAGE_BYTE_COUNT);
                 ch_dev -> dt = USER_MEM;
@@ -57,7 +59,7 @@ Process_State Loader_Process::execute(){
                 ch_dev -> sa = PROGRAM_MARKER_SIZE;
                 xchg(ch_dev);
 
-                this -> current_program_len -=  ch_dev -> cb;		
+                this -> current_program_len -=  ch_dev -> cb;
 
                 if(this -> current_program_len == 0) {
                     break;

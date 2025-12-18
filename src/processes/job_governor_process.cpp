@@ -2,6 +2,7 @@
 #include "../../include/virtual_machine.h"
 #include "../../include/kernel.h"
 #include "../../include/processes/virtual_machine_process.h"
+#include <cstdint>
 #include <sstream>
 #include <iostream>
 #include <string>
@@ -12,7 +13,7 @@ Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_proce
     this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE;
     //std::cout << "Dobze dobze..." << std::endl;
     io_interrupt = false;
-    std::cout << JB_CREATION_MSG << this -> unique_id << std::endl;
+    //std::cout << JB_CREATION_MSG << this -> unique_id << std::endl;
 }
 
 Job_Governor_Process::~Job_Governor_Process(){
@@ -20,6 +21,7 @@ Job_Governor_Process::~Job_Governor_Process(){
 }
 
 Process_State Job_Governor_Process::execute(){
+    //std::cout << "JOB_GOVERNOR::ID: " << this -> u_id_buffer << "Step: " << (uint16_t)this -> step << std::endl;
     switch (this -> step){
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE:
             if(this -> owns_resource(Resource_Type::USER_MEMORY)) {
@@ -29,6 +31,13 @@ Process_State Job_Governor_Process::execute(){
 
             this -> kernel -> request_resource(this, Resource_Type::USER_MEMORY);
             return Process_State::BLOCKED;
+        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_VIRTUAL_MACHINE:
+            // create the virtual machine
+            this -> _vm_holder = (Virtual_Machine*)malloc(sizeof(Virtual_Machine));
+            init_virtual_machine(this -> _vm_holder, this -> kernel -> get_cpu(), this -> kernel -> get_memory());
+            this -> saved_registers.ptr = this -> kernel -> get_cpu() -> ptr;
+            this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
+            return Process_State::READY;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE: {
             std::stringstream ss;
             // program length is always the length of the supervisor memory size
@@ -46,13 +55,7 @@ Process_State Job_Governor_Process::execute(){
 
             this -> kernel -> request_resource(this, Resource_Type::FROM_LOADER);
             return Process_State::BLOCKED;
-        case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_VIRTUAL_MACHINE:
-            // create the virtual machine
-            this -> _vm_holder = (Virtual_Machine*)malloc(sizeof(Virtual_Machine));
-            init_virtual_machine(this -> _vm_holder, this -> kernel -> get_cpu(), this -> kernel -> get_memory());
-            this -> saved_registers.ptr = this -> kernel -> get_cpu() -> ptr;
-            this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_LOADER_PACKAGE_RESOURCE;
-            return Process_State::READY;
+
 
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE: {
             this -> u_id_buffer =  this -> kernel -> create_process<Virtual_Machine_Process>(this, {},  SYSTEM_USERNAME);

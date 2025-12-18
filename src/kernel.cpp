@@ -131,12 +131,14 @@ void Kernel::run() {
         }
 
         Process* curr_p = this -> ready_queue.top();
-        this -> print_running_proc(curr_p);
+        // this -> print_running_proc(curr_p);
         this -> ready_queue.pop();
 
         curr_p -> set_state(Process_State::EXECUTING);
 
         Process_State result = curr_p -> execute();
+
+
 
         switch(result) {
             case Process_State::READY:
@@ -144,6 +146,7 @@ void Kernel::run() {
                 break;
 
             case Process_State::BLOCKED: {
+                //std::cout << "ID: " << curr_p -> get_p_name() << std::endl;
                 bool found = false;
                 for(Resource* resc : this -> resources) {
                     if(resc -> get_resource_type() == curr_p -> get_waiting_resource_type()) {

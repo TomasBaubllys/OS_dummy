@@ -5,7 +5,7 @@
 
 Printer_Process::Printer_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
 	Process(kernel, parent_process, friend_processes, username, Process_Priorities::PRINTER_PRIORITY)
-{	
+{
 	this -> name = PRINTER_NAME;
 	this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE;
 }
@@ -15,6 +15,8 @@ Printer_Process::~Printer_Process() {
 }
 
 Process_State Printer_Process::execute() {
+    //std::cout << "PRINTER::ID: " << this->get_unique_id() << "Step: " << (uint16_t)this -> step << std::endl;
+
 	switch(this -> step){
 		case Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE:
 			if(this -> owns_resource(Resource_Type::STRING_IN_MEMORY)) {
@@ -37,20 +39,20 @@ Process_State Printer_Process::execute() {
 			Channel_Device* ch_dev = this -> kernel -> get_channel_device();
 			ch_dev -> st = MSG_IN_MEMORY;
 			ch_dev -> dt = IO_STREAM;
-			
+
 			Resource* resc_str_mem = this -> get_owned_resource(Resource_Type::STRING_IN_MEMORY);
 			std::string buffer = resc_str_mem -> get_buffer();
-			
+
 			ch_dev -> _sa_ptr = buffer.data();
 			ch_dev -> cb = buffer.size();
-			ch_dev -> of = 0;  
+			ch_dev -> of = 0;
 			xchg(ch_dev);
-			this -> step = Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE; 
+			this -> step = Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE;
 			return Process_State::READY;
 		}
 		case Printer_Process_Steps::PRINTER_PROCESS_FREE_CHANNEL_DEVICE_RESOURCE:
 			// remove from ownder resources...
-			this -> release_owned_resource(Resource_Type::CHANNEL_DEVICE);	
+			this -> release_owned_resource(Resource_Type::CHANNEL_DEVICE);
 			// return all the other processes to owners to avoid looping
 			this -> return_owned_resources();
 			this -> step = Printer_Process_Steps::PRINTER_PROCESS_BLOCKED_WAITING_FOR_STRING_IN_MEMORY_RESOURCE;
@@ -59,6 +61,6 @@ Process_State Printer_Process::execute() {
 			// throw exception
 			return Process_State::BLOCKED_STOPPED;
 	}
-	
+
 	return Process_State::BLOCKED_STOPPED;
 }
