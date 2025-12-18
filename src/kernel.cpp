@@ -30,6 +30,59 @@ void Kernel::request_resource(Process* process, Resource_Type resource_type) {
     process -> set_state(Process_State::BLOCKED);
 }
 
+void Kernel::release_resource_id(uint32_t resc_id, std::string updated_buffer) {
+	Resource* res = nullptr;
+	for(auto temp_res : this -> resources) {
+		if(temp_res -> get_uid() == resc_id) {
+			res = temp_res;
+			break;
+		}
+	}
+    //std::cout << (int)resource_type << std::endl;
+
+    if (!res) return;
+
+    res -> free_resource();
+    res -> set_buffer(updated_buffer);
+
+    std::vector<Process*> temp_container;
+    bool found = false;
+
+
+    while (!this -> blocked_queue.empty()) {
+        Process* proc = this -> blocked_queue.top();
+        this -> blocked_queue.pop();
+
+
+        if(proc -> get_p_name() == MAIN_PROCESS_NAME && res -> get_resource_type() == Resource_Type::PIE_IN_THE_OVEN) {
+            proc -> add_owned_resource(res);
+            found = true;
+        }
+
+        //std::cout << proc -> get_unique_id() << ": " << (int)(proc -> get_waiting_resource_type()) << " <--- " << (int)resource_type << std::endl;
+
+        if (!found && proc -> get_waiting_resource_type() == res -> get_resource_type()) {
+            //std::cout << "Resource " << (int)resource_type << " FOUND for " << proc -> get_p_name() << std::endl;
+            //std::cout << "given to process: " << proc->get_unique_id() << std::endl;
+            proc -> add_owned_resource(res);
+
+            proc -> set_state(Process_State::READY);
+            proc -> set_waiting_resource_type(Resource_Type::NONE); // Clear wait reason
+
+            this -> ready_queue.push(proc);
+            found = true;
+        }
+        else {
+            temp_container.push_back(proc);
+        }
+    }
+
+    for (Process* p : temp_container) {
+        this -> blocked_queue.push(p);
+    }
+}
+
+
 void Kernel::release_resource(Resource_Type resource_type, std::string updated_buffer) {
     Resource* res = this -> get_resource_by_type(resource_type);
 
@@ -153,6 +206,7 @@ void Kernel::run() {
                         if(resc -> is_free()) {
                             curr_p -> add_owned_resource(resc);
                             found = true;
+                            break;
                         }
                     }
 
@@ -385,6 +439,9 @@ void Kernel::request_to_kill(uint32_t pid) {
     if (!victim) {
         return;
     }
+
+    victim -> release_owned_resources();
+    victim -> return_owned_resources();
 
     auto remove_from_pqueue = [&](auto& q) {
         std::vector<Process*> temp;

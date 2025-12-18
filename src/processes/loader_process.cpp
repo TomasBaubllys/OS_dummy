@@ -15,8 +15,6 @@ Loader_Process::~Loader_Process(){
 }
 
 Process_State Loader_Process::execute(){
-    //std::cout << "LOADER::ID: " << this -> get_unique_id() << "Step: " << (uint16_t)this -> step << std::endl;
-
     switch (this -> step){
         case Loader_Process_Steps::LOADER_PROCESS_BLOCKED_WAITING_FOR_LOADER_PACKAGE_RESOURCE: {
             if(this -> owns_resource(Resource_Type::LOADER_PACKAGE)) {

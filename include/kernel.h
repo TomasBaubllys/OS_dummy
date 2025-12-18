@@ -1,6 +1,7 @@
 #ifndef KERNEL_H_INCLUDED
 #define KERNEL_H_INCLUDED
 
+#include <cstdint>
 #include <stdint.h>
 #include "real_machine.h"
 #include <unordered_map>
@@ -22,7 +23,7 @@
 
 #define SYSTEM_USERNAME "system"
 #define RMI_SHUTDOWN_COMMAND "$SHUTDOWN"
-#define RMI_FILE_INPUT "F$" 
+#define RMI_FILE_INPUT "F$"
 #define RMI_SYS_COMMAND "$"
 #define RMI_KILL_COMMAND "$KILL"
 #define STR_MEM_UNKNOWN_SYS_COM_ERR_MSG "Unknown system command!\n"
@@ -57,13 +58,13 @@ class Kernel {
 		std::priority_queue<Process*, std::vector<Process*>, Process_Comparator> blocked_stopped_queue;
 		// std::vector<Process*> running;
 		std::vector<Process*> all_processes;
-		std::list<Resource*> resources; 
+		std::list<Resource*> resources;
 
 	public:
 		Job_Governor_Process* current_console_holder;
 
 		Kernel(Real_Machine* real_machine);
-		
+
 		// for system resources
 		void request_resource(Process* process, Resource_Type resource_type);
 
@@ -78,7 +79,8 @@ class Kernel {
 
 		// used for system resources
 		void release_resource(Resource_Type resource_type, std::string updated_buffer = "");
-		
+		void release_resource_id(uint32_t resc_id, std::string updated_buffer = "");
+
 		// used for dynamic resources, like "from loader" or "from interrupt"
 		void release_resource_for(uint32_t resc_id, uint32_t for_pid, std::string updated_buffer = "");
 
@@ -108,7 +110,7 @@ class Kernel {
 		Hard_Disk* get_hard_disk();
 		CPU* get_cpu();
 		Memory* get_memory();
-		
+
 		// returns the process id of the created process
 		template<typename T>
 		uint32_t create_process(Process* parent_process, std::vector<Process*> friend_processes, std::string username) {

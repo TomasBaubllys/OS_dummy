@@ -1,10 +1,13 @@
 #include "../../include/processes/process.h"
 #include "../../include/kernel.h"
+#include <cstdint>
+#include <iostream>
 
 uint32_t process_id_pool = 0;
 
 Process::Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username, uint8_t priority) :
     unique_id(process_id_pool++),
+    u_id_buffer(UINT32_MAX),
     process_state(Process_State::READY),
     kernel(kernel),
     parent_process(parent_process),
@@ -19,15 +22,15 @@ Process::Process(Kernel* kernel, Process* parent_process, std::vector<Process*> 
 }
 
 Process::~Process() {
-    this -> created_resources.clear(); 
+    this -> created_resources.clear();
     this -> owned_resources.clear();
 }
 
 Process_State Process::execute() {
-    // 4. Must return something. 
-    // Usually this is virtual and implemented by children, 
+    // 4. Must return something.
+    // Usually this is virtual and implemented by children,
     // but if not abstract, return a default state.
-    return Process_State::EXECUTING; 
+    return Process_State::EXECUTING;
 }
 
 uint32_t Process::get_unique_id() {
@@ -109,7 +112,7 @@ void Process::release_owned_resources() {
     }
 
     this -> owned_resources.clear();
-    
+
 }
 
 void Process::return_owned_resources() {
@@ -121,11 +124,11 @@ void Process::return_owned_resources() {
 }
 
 void Process::release_owned_resource(Resource_Type resource_type, std::string buffer) {
-    this -> kernel -> release_resource(resource_type, buffer);
-
     for(auto it = this -> owned_resources.begin(); it != this -> owned_resources.end(); ++it) {
         if ((*it) -> get_resource_type() == resource_type) {
+        	uint32_t resc_id = (*it) -> get_uid();
             this -> owned_resources.erase(it);
+            this -> kernel -> release_resource_id(resc_id, buffer);
             break;
         }
     }
@@ -150,7 +153,7 @@ void Process::assign_vm(Virtual_Machine* vm) {
 }
 
 Saved_Registers& Process::ref_sregs() {
-   return this -> saved_registers; 
+   return this -> saved_registers;
 }
 
 uint64_t Process::get_runtime() const {

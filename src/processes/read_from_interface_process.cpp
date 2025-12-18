@@ -112,6 +112,7 @@ Process_State Read_From_Interface_Process::execute(){
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_TASK_IN_SUPERVISOR:
             this -> kernel -> release_resource(Resource_Type::TASK_IN_SUPERVISOR);
             this -> release_owned_resource(Resource_Type::CHANNEL_DEVICE);
+            // std::cout << "here" << std::endl;
             this -> release_owned_resource(Resource_Type::HARD_DISK);
             this -> return_owned_resources();
             this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;

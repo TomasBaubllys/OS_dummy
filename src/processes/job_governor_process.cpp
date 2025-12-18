@@ -66,7 +66,7 @@ Process_State Job_Governor_Process::execute(){
             Saved_Registers& vm_regs = proc -> ref_sregs();
             vm_regs.ptr = this -> saved_registers.ptr;
 
-            this -> release_owned_resource(Resource_Type::USER_MEMORY);
+            // this -> release_owned_resource(Resource_Type::USER_MEMORY);
             // delete from loader???
 
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_FROM_INTERRUPT_RESOURCE;
@@ -299,7 +299,8 @@ Process_State Job_Governor_Process::execute(){
             return Process_State::READY;
             break;
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_USER_MEMORY_RESOURCE:
-            this -> kernel -> release_resource(Resource_Type::USER_MEMORY);
+            this -> release_owned_resource(Resource_Type::USER_MEMORY);
+            // std::cout << "here" << std::endl;
 
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_FREE_PIE_IN_THE_OVEN_RESOURCE;
             return Process_State::READY;

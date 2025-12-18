@@ -7,7 +7,7 @@
 #include "../../include/kernel.h"
 #include <iostream>
 
-Start_Stop_Process::Start_Stop_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
+Start_Stop_Process::Start_Stop_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::START_STOP_PRIORITY), step(Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_RESOURCES)
 {
     this -> saved_registers = {};
@@ -29,8 +29,15 @@ Process_State Start_Stop_Process::execute() {
             this -> kernel -> init_resource(Resource_Type::HARD_DISK, this);
             this -> kernel -> release_resource(Resource_Type::HARD_DISK);
 
-            this -> kernel -> init_resource(Resource_Type::USER_MEMORY, this);
-            this -> kernel -> release_resource(Resource_Type::USER_MEMORY);
+            // create 3 user memory resources
+            uint32_t user_mem1 = this -> kernel -> init_resource(Resource_Type::USER_MEMORY, this);
+            this -> kernel -> release_resource_id(user_mem1);
+
+            uint32_t user_mem2 = this -> kernel -> init_resource(Resource_Type::USER_MEMORY, this);
+            this -> kernel -> release_resource_id(user_mem2);
+
+            uint32_t user_mem3 = this -> kernel -> init_resource(Resource_Type::USER_MEMORY, this);
+            this -> kernel -> release_resource_id(user_mem3);
 
             this -> kernel -> init_resource(Resource_Type::SUPERVISOR_MEMORY, this);
             this -> kernel -> release_resource(Resource_Type::SUPERVISOR_MEMORY);
@@ -41,7 +48,7 @@ Process_State Start_Stop_Process::execute() {
             this -> kernel -> release_resource(Resource_Type::CONSOLE);
 
             this -> kernel -> init_resource(Resource_Type::NON_EXISTANT, this);
-            
+
             this -> kernel -> init_resource(Resource_Type::CHANNEL_DEVICE, this);
             this -> kernel -> release_resource(Resource_Type::CHANNEL_DEVICE);
 
@@ -88,7 +95,7 @@ Process_State Start_Stop_Process::execute() {
             this -> kernel -> destroy_resources();
             return Process_State::READY_STOPPED;
         }
-    
+
         default: {
             break;
         }
