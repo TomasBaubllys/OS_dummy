@@ -13,7 +13,7 @@ Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_proce
     this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE;
     //std::cout << "Dobze dobze..." << std::endl;
     io_interrupt = false;
-    //std::cout << JB_CREATION_MSG << this -> unique_id << std::endl;
+    std::cout << JB_CREATION_MSG << this -> unique_id << std::endl;
 }
 
 Job_Governor_Process::~Job_Governor_Process(){

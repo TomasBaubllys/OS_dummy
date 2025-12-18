@@ -184,7 +184,7 @@ void Kernel::run() {
         }
 
         Process* curr_p = this -> ready_queue.top();
-        // this -> print_running_proc(curr_p);
+        this -> print_running_proc(curr_p);
         this -> ready_queue.pop();
 
         curr_p -> set_state(Process_State::EXECUTING);
