@@ -6,25 +6,17 @@
 #include <iostream>
 #include <string>
 
-/**
- *
- *
- *
- *
- *
- *  call the interrupt here, just lock the resources.... GEDA/PUTA etc... -> interrupt(this -> kernel -> cpu)
- */
-
 Job_Governor_Process::Job_Governor_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username):
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::JOB_GOVERNOR_PRIORITY){
     this -> name = JG_NAME;
     this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE;
     //std::cout << "Dobze dobze..." << std::endl;
     io_interrupt = false;
+    std::cout << JB_CREATION_MSG << this -> unique_id << std::endl;
 }
 
 Job_Governor_Process::~Job_Governor_Process(){
-
+	this -> kernel -> request_to_kill(this -> u_id_buffer);
 }
 
 Process_State Job_Governor_Process::execute(){

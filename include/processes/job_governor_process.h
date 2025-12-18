@@ -5,8 +5,9 @@
 #include "../../include/virtual_machine.h"
 
 #define JOB_GOVERNOR_PROCESS_MSG_IO_LIMIT_REACHED "Input limit reached \n"
-#define JOB_GOVERNOR_PROCESS_MSG_PLACEHOLDER "Job governor placeholder \n" 
+#define JOB_GOVERNOR_PROCESS_MSG_PLACEHOLDER "Job governor placeholder \n"
 #define JG_NAME "Job_Governor_Process"
+constexpr const char* JB_CREATION_MSG = "Job governor created pid: ";
 
 enum class Job_Governor_Process_Steps{
     JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE,

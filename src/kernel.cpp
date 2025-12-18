@@ -60,13 +60,13 @@ void Kernel::release_resource(Resource_Type resource_type, std::string updated_b
             //std::cout << "Resource " << (int)resource_type << " FOUND for " << proc -> get_p_name() << std::endl;
             //std::cout << "given to process: " << proc->get_unique_id() << std::endl;
             proc -> add_owned_resource(res);
-            
+
             proc -> set_state(Process_State::READY);
             proc -> set_waiting_resource_type(Resource_Type::NONE); // Clear wait reason
 
             this -> ready_queue.push(proc);
             found = true;
-        } 
+        }
         else {
             temp_container.push_back(proc);
         }
@@ -99,7 +99,7 @@ Resource* Kernel::get_resource_by_type(Resource_Type resource_type) {
 
 uint32_t Kernel::init_resource(Resource_Type resource_type, Process* owner) {
     // Using resources.size() as a simple unique ID generator since resource_id_pool isn't in header
-    uint32_t new_id = (uint32_t)this -> resources.size(); 
+    uint32_t new_id = (uint32_t)this -> resources.size();
     Resource* new_resc = new Resource(new_id, resource_type, owner);
     this -> resources.push_back(new_resc);
     return new_resc -> get_uid();
@@ -131,18 +131,18 @@ void Kernel::run() {
         }
 
         Process* curr_p = this -> ready_queue.top();
-        // this -> print_running_proc(curr_p);
+        this -> print_running_proc(curr_p);
         this -> ready_queue.pop();
-        
+
         curr_p -> set_state(Process_State::EXECUTING);
-        
+
         Process_State result = curr_p -> execute();
-        
+
         switch(result) {
             case Process_State::READY:
                 this -> ready_queue.push(curr_p);
                 break;
-                
+
             case Process_State::BLOCKED: {
                 bool found = false;
                 for(Resource* resc : this -> resources) {
@@ -156,7 +156,7 @@ void Kernel::run() {
                 }
 
                 if(!found) {
-                    this -> blocked_queue.push(curr_p); 
+                    this -> blocked_queue.push(curr_p);
                 }
                 else {
                     this -> ready_queue.push(curr_p);
@@ -166,11 +166,11 @@ void Kernel::run() {
             case Process_State::READY_STOPPED:
                 this -> ready_stopped_queue.push(curr_p);
                 break;
-                
+
             case Process_State::BLOCKED_STOPPED:
                 this -> blocked_stopped_queue.push(curr_p);
                 break;
-                
+
             case Process_State::EXECUTING:
                 curr_p -> set_state(Process_State::READY);
                 this -> ready_queue.push(curr_p);
@@ -222,7 +222,7 @@ void Kernel::kill_processes_except(Process* survivor) {
     }
 
     this -> all_processes.erase(
-        std::remove(this -> all_processes.begin(), this -> all_processes.end(), nullptr), 
+        std::remove(this -> all_processes.begin(), this -> all_processes.end(), nullptr),
         this -> all_processes.end()
     );
 }
@@ -236,7 +236,7 @@ void Kernel::destroy_resources() {
 
 uint32_t Kernel::init_resource(Resource_Type resource_type, Process* owner, std::string buffer) {
     // Using resources.size() as a simple unique ID generator since resource_id_pool isn't in header
-    uint32_t new_id = (uint32_t)this -> resources.size(); 
+    uint32_t new_id = (uint32_t)this -> resources.size();
     Resource* new_resc = new Resource(new_id, resource_type);
     this -> resources.push_back(new_resc);
     return new_resc -> get_uid();
@@ -271,7 +271,7 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
     if(!resc) {
         return;
     }
-    
+
     resc -> set_buffer(updated_buffer);
 
 
@@ -299,7 +299,7 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
 
             this -> ready_queue.push(proc);
             found = true;
-        } 
+        }
         else {
             temp_container.push_back(bproc);
         }
@@ -322,8 +322,8 @@ void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid,
     for(auto it = this -> resources.begin(); it != this -> resources.end(); ++it) {
         if((*it) -> get_resource_type() == resource_type) {
             resc = (*it);
-        } 
-    }    
+        }
+    }
 
     // if resc not found quit lol
     if(!resc) {
@@ -358,7 +358,7 @@ void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid,
 
             this -> ready_queue.push(proc);
             found = true;
-        } 
+        }
         else {
             temp_container.push_back(bproc);
         }
@@ -380,7 +380,7 @@ void Kernel::request_to_kill(uint32_t pid) {
     }
 
     if (!victim) {
-        return; 
+        return;
     }
 
     auto remove_from_pqueue = [&](auto& q) {
@@ -465,7 +465,7 @@ void Kernel::unstop_ready(uint32_t pid) {
 
             this -> ready_queue.push(rsproc);
             found = true;
-        } 
+        }
         else {
             temp_container.push_back(rsproc);
         }
@@ -481,7 +481,7 @@ void Kernel::lower_priority(uint32_t pid) {
         if((*it) -> get_unique_id() == pid) {
             uint8_t curr_priot = (*it) -> get_priority();
             curr_priot == 9? curr_priot = VM_PRIORITY : --curr_priot;
-            (*it) -> set_priority(curr_priot); 
+            (*it) -> set_priority(curr_priot);
             return;
         }
     }

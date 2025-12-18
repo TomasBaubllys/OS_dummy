@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-Main_Process_Process::Main_Process_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) : 
+Main_Process_Process::Main_Process_Process(Kernel* kernel, Process* parent_process, std::vector<Process*> friend_processes, std::string username) :
     Process(kernel, parent_process, friend_processes, username, Process_Priorities::MAIN_PROCESS_PRIORITY){
     this -> name = MAIN_PROCESS_NAME;
     this -> kernel -> request_resource(this, Resource_Type::PIE_IN_THE_OVEN);
@@ -20,9 +20,9 @@ Process_State Main_Process_Process::execute(){
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND:
             if(this -> owns_resource(Resource_Type::SYSTEM_COMMAND)) {
                 this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_IF_PIE_IN_THE_OVEN_FREE;
-                return Process_State::READY; 
+                return Process_State::READY;
             }
-            
+
             this -> kernel -> request_resource(this, Resource_Type::SYSTEM_COMMAND);
             return Process_State::BLOCKED;
 
@@ -33,8 +33,8 @@ Process_State Main_Process_Process::execute(){
                 this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_RUNTIME_0;
                 return Process_State::READY;
             }
-            
-            this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_IF_ITS_SHUT_DOWN; 
+
+            this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_IF_ITS_SHUT_DOWN;
             return Process_State::READY;
 
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_CHECK_IF_ITS_SHUT_DOWN: {
@@ -71,7 +71,7 @@ Process_State Main_Process_Process::execute(){
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_REMOVE_PROCESS_JOB_GOVERNOR_1: {
             // figure out the id
             std::string command = this -> get_owned_resource(Resource_Type::SYSTEM_COMMAND) -> get_buffer();
-            
+
             // request the kernel to kill it
             size_t pos = std::string(RMI_KILL_COMMAND).size();
             uint32_t id;
@@ -81,14 +81,11 @@ Process_State Main_Process_Process::execute(){
             catch(const std::exception &e) {
                 // idk release the resource and signal that incorrect sdadsafa
 
-            } 
+            }
 
             this -> kernel -> request_to_kill(id);
-            
-            /**
-             *  GET RID OF THE OWNED RESOURCE!!!!!
-             * 
-             */
+
+            this -> return_owned_resource(Resource_Type::SYSTEM_COMMAND);
 
             this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND;
             return Process_State::READY;
@@ -117,7 +114,7 @@ Process_State Main_Process_Process::execute(){
                 return Process_State::READY;
             }
 
-            
+
             /*
                 IDK WHAT TO DO
             */
@@ -133,13 +130,13 @@ Process_State Main_Process_Process::execute(){
             return Process_State::READY;
         }
         case Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_REMOVE_PROCESS_JOB_GOVERNER_2:{
-            
+
                 Resource* resc = this -> get_owned_resource(Resource_Type::PIE_IN_THE_OVEN);
                 std::stringstream ss(resc -> get_buffer());
                 uint32_t temp_id;
                 ss >> temp_id;
                 this -> kernel -> request_to_kill(temp_id);
-            
+
             /*
                 COME HERE ONLY IF YOU FIGURE OUT WHAT TO DO WITH THE IF TIME NOT 0 command....
             */
@@ -151,7 +148,7 @@ Process_State Main_Process_Process::execute(){
             this -> step = Main_Process_Process_Steps::MAIN_PROCESS_PROCESS_BLOCKED_WAITING_FOR_SYSTEM_COMMAND;
             return Process_State::READY;
         }
-            
+
         default:
             break;
     }
