@@ -66,4 +66,8 @@ $(OBJ_DIR):
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
 
+run: $(TARGET)
+	clear
+	./$(TARGET) $(ARGS)
+
 .PHONY: all clean
