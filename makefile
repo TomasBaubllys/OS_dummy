@@ -66,7 +66,7 @@ $(OBJ_DIR):
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
 
-run: $(TARGET)
+run: clean all
 	clear
 	./$(TARGET) $(ARGS)
 
