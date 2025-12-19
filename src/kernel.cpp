@@ -249,8 +249,11 @@ Channel_Device* Kernel::get_channel_device() {
 void Kernel::kill_processes_except(Process* survivor) {
     for(Process*& proc : this -> all_processes) {
         if(proc != survivor) {
-            delete proc;
-            proc = nullptr;
+        	if(proc) {
+         		// std::cout << proc << std::endl;
+            	delete proc;
+             	proc = nullptr;
+         	}
         }
     }
 
@@ -432,6 +435,7 @@ void Kernel::request_to_kill(uint32_t pid) {
     for (Process*& proc : this->all_processes) {
         if (proc && proc->get_unique_id() == pid) {
             victim = proc;
+            proc = nullptr;
             break;
         }
     }
@@ -463,8 +467,6 @@ void Kernel::request_to_kill(uint32_t pid) {
     remove_from_pqueue(this->blocked_queue);
     remove_from_pqueue(this->blocked_stopped_queue);
 
-    delete victim;
-
     this->all_processes.erase(
         std::remove_if(
             this->all_processes.begin(),
@@ -475,6 +477,9 @@ void Kernel::request_to_kill(uint32_t pid) {
         ),
         this->all_processes.end()
     );
+
+    delete victim;
+    victim = nullptr;
 }
 
 void Kernel::assign_vm(uint32_t vm_pid, Virtual_Machine* vm) {
