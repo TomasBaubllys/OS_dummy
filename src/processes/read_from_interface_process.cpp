@@ -14,6 +14,7 @@ Read_From_Interface_Process::~Read_From_Interface_Process() {
 }
 
 Process_State Read_From_Interface_Process::execute(){
+	// std::cout << (uint16_t)this -> step << std::endl;
     //std::cout << "READ_FROM_INTERFACE::ID: " << this -> get_unique_id() << "Step: " << (uint16_t)this -> step << std::endl;
     switch (this -> step) {
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE: {
@@ -71,6 +72,7 @@ Process_State Read_From_Interface_Process::execute(){
                 // FREE CURRENT RESOURCES
                 this -> release_owned_resource(Resource_Type::CHANNEL_DEVICE);
                 this -> release_owned_resource(Resource_Type::HARD_DISK);
+                this -> release_owned_resource(Resource_Type::SUPERVISOR_MEMORY);
                 this -> kernel -> release_resource(Resource_Type::STRING_IN_MEMORY, FILE_NOT_FOUND_ERR_MSG);
                 this -> return_owned_resources();
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
