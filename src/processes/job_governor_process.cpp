@@ -21,7 +21,7 @@ Job_Governor_Process::~Job_Governor_Process(){
 }
 
 Process_State Job_Governor_Process::execute(){
-    //std::cout << "JOB_GOVERNOR::ID: " << this -> u_id_buffer << "Step: " << (uint16_t)this -> step << std::endl;
+    // std::cout << "JOB_GOVERNOR::ID: " << this -> unique_id << " Step: " << (uint16_t)this -> step << std::endl;
     switch (this -> step){
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_MEMORY_RESOURCE:
             if(this -> owns_resource(Resource_Type::USER_MEMORY)) {
@@ -43,7 +43,10 @@ Process_State Job_Governor_Process::execute(){
             // program length is always the length of the supervisor memory size
             ss << this -> unique_id  << " " << MEM_SUPERVISOR_MEMORY_SIZE * MEM_WORD_SIZE << " " << this -> saved_registers.ptr;
             // this is not good, we must release the resources in some dynamic way... or maybe not???
-            this -> kernel -> release_resource(Resource_Type::LOADER_PACKAGE, ss.str());
+
+            uint32_t uid = this -> kernel -> get_first_free_loader_p_resc();
+
+            this -> kernel -> release_resource_id(uid, ss.str());
             this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE;
             return Process_State::READY;
         }

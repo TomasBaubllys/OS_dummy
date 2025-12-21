@@ -106,6 +106,10 @@ class Resource {
 		uint32_t get_uid();
 
 		void return_to_owner();
+
+		Process* get_owner();
+
+		Process* get_user();
 };
 
 #endif // RESOURCE_H_INCLUDED

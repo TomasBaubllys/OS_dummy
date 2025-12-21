@@ -183,7 +183,7 @@ void Kernel::run() {
         }
 
         Process* curr_p = this -> ready_queue.top();
-        this -> print_running_proc(curr_p);
+        // this -> print_running_proc(curr_p);
         this -> ready_queue.pop();
 
         curr_p -> set_state(Process_State::EXECUTING);
@@ -298,6 +298,7 @@ uint32_t Kernel::init_resource(Resource_Type resource_type, Process* owner, std:
     uint32_t new_id = (uint32_t)this -> resources.size();
     Resource* new_resc = new Resource(new_id, resource_type);
     this -> resources.push_back(new_resc);
+    owner -> add_owned_resource(new_resc);
     return new_resc -> get_uid();
 }
 
@@ -558,4 +559,16 @@ Process* Kernel::get_proc_by_id(uint32_t pid) {
         }
     }
     return nullptr;
+}
+
+uint32_t Kernel::get_first_free_loader_p_resc() {
+	for(Resource* resc : this -> resources) {
+		if(resc -> get_resource_type() == Resource_Type::LOADER_PACKAGE && resc -> get_user() -> get_p_name() == JCL_NAME && !resc -> is_free()) {
+			resc -> free_resource();
+			// jei matote sita teksta, geriau nusisukite, cia yra baisu (bet veikia!)
+			return resc -> get_uid();
+		}
+	}
+
+	return -1;
 }

@@ -126,6 +126,7 @@ void Process::return_owned_resources() {
 void Process::release_owned_resource(Resource_Type resource_type, std::string buffer) {
     for(auto it = this -> owned_resources.begin(); it != this -> owned_resources.end(); ++it) {
         if ((*it) -> get_resource_type() == resource_type) {
+        	// std::cout << "HERE " << (uint16_t)resource_type << std::endl;
         	uint32_t resc_id = (*it) -> get_uid();
             this -> owned_resources.erase(it);
             this -> kernel -> release_resource_id(resc_id, buffer);

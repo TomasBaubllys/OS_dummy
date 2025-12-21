@@ -28,7 +28,7 @@
 #define RMI_KILL_COMMAND "$KILL"
 #define STR_MEM_UNKNOWN_SYS_COM_ERR_MSG "Unknown system command!\n"
 
-#define KERNEL_DELAY 100
+#define KERNEL_DELAY 200
 
 class Job_Governor_Process;
 
@@ -128,6 +128,8 @@ class Kernel {
 		void lower_priority(uint32_t pid);
 
 		Process* get_proc_by_id(uint32_t pid);
+
+		uint32_t get_first_free_loader_p_resc();
 };
 
 

@@ -61,3 +61,11 @@ uint32_t Resource::get_uid() {
 void Resource::return_to_owner() {
     this -> user = this -> owner;
 }
+
+Process* Resource::get_owner() {
+	return this -> owner;
+}
+
+Process* Resource::get_user() {
+	return this -> user;
+}
