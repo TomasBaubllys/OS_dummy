@@ -57,7 +57,7 @@ Process_State Start_Stop_Process::execute() {
 
             this -> kernel -> init_resource(Resource_Type::USER_INPUT, this);
             this -> kernel -> init_resource(Resource_Type::INTERRUPT, this);
-            this -> kernel -> init_resource(Resource_Type::FROM_USER_INTERFACE, this);
+            // this -> kernel -> init_resource(Resource_Type::FROM_USER_INTERFACE, this);
             this -> step = Start_Stop_Process_Steps::START_STOP_PROCESS_INITIALIZE_SYSTEM_PROCESSES;
 
             return Process_State::READY;

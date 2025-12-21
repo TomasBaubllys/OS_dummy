@@ -62,6 +62,8 @@ class Kernel {
 	public:
 		std::queue<Job_Governor_Process*> console_holder_q;
 
+		bool line_consumed;
+
 		Kernel(Real_Machine* real_machine);
 
 		// for system resources
@@ -130,6 +132,8 @@ class Kernel {
 		Process* get_proc_by_id(uint32_t pid);
 
 		uint32_t get_first_free_loader_p_resc();
+
+		void delete_resource(Resource* resc);
 };
 
 

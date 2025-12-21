@@ -11,7 +11,7 @@
 #include <cstdio>
 #include <unistd.h>
 
-Kernel::Kernel(Real_Machine* real_machine) : real_machine(real_machine) {
+Kernel::Kernel(Real_Machine* real_machine) : real_machine(real_machine), line_consumed(true) {
     init_real_machine(real_machine);
 
     Process* start_stop = new Start_Stop_Process(this, nullptr, {}, SYSTEM_USERNAME);
@@ -173,8 +173,10 @@ void Kernel::request_resource(Process* process, Resource* resource) {
 
 void Kernel::run() {
     while(true) {
-        if(line_ready()) {
-            this -> release_resource(Resource_Type::FROM_USER_INTERFACE);
+        if(line_ready() && line_consumed) {
+       		line_consumed = false;
+        	uint32_t temp_id = this -> init_resource(Resource_Type::FROM_USER_INTERFACE, nullptr);
+            this -> release_resource_id(temp_id);
         }
 
         if(this -> ready_queue.empty()) {
@@ -186,11 +188,10 @@ void Kernel::run() {
         this -> print_running_proc(curr_p);
         this -> ready_queue.pop();
 
+        // std::cout << curr_p->get_p_name() << std::endl;
         curr_p -> set_state(Process_State::EXECUTING);
 
         Process_State result = curr_p -> execute();
-
-
 
         switch(result) {
             case Process_State::READY:
@@ -288,7 +289,7 @@ void Kernel::kill_processes_except(Process* survivor) {
 
 void Kernel::destroy_resources() {
     for (Resource* res : this -> resources) {
-        delete res;
+    	if(res) delete res;
     }
     this -> resources.clear();
 }
@@ -298,7 +299,9 @@ uint32_t Kernel::init_resource(Resource_Type resource_type, Process* owner, std:
     uint32_t new_id = (uint32_t)this -> resources.size();
     Resource* new_resc = new Resource(new_id, resource_type);
     this -> resources.push_back(new_resc);
-    owner -> add_owned_resource(new_resc);
+   	if(owner) {
+    	owner -> add_owned_resource(new_resc);
+    }
     return new_resc -> get_uid();
 }
 
@@ -322,7 +325,7 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
     // check if the resource exists... if not throw?
     Resource* resc = nullptr;
     for(auto it = this -> resources.begin(); it != this -> resources.end(); ++it) {
-        if((*it) -> get_uid() == resc_id) {
+        if((*it) && (*it) -> get_uid() == resc_id) {
             resc = (*it);
         }
     }
@@ -338,7 +341,7 @@ void Kernel::release_resource_for(uint32_t resc_id, uint32_t for_pid, std::strin
     Process* proc = nullptr;
     // locate the process thats waiting
     for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
-        if((*it) -> get_unique_id() == for_pid) {
+        if((*it) && (*it) -> get_unique_id() == for_pid) {
             (*it) -> add_owned_resource(resc);
             proc = (*it);
 
@@ -380,7 +383,7 @@ void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid,
     Process* proc = nullptr;
 
     for(auto it = this -> resources.begin(); it != this -> resources.end(); ++it) {
-        if((*it) -> get_resource_type() == resource_type) {
+        if((*it) && (*it) -> get_resource_type() == resource_type) {
             resc = (*it);
         }
     }
@@ -395,7 +398,7 @@ void Kernel::release_resource_for(Resource_Type resource_type, uint32_t for_pid,
     // locate the process thats waiting
     for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
         //std::cout << (*it) -> get_p_name() << " " << (*it) -> get_unique_id() <<  "       " << for_pid << std::endl;
-        if((*it) -> get_unique_id() == for_pid) {
+        if((*it) && (*it) -> get_unique_id() == for_pid) {
             (*it) -> add_owned_resource(resc);
             proc = (*it);
         }
@@ -472,7 +475,7 @@ void Kernel::request_to_kill(uint32_t pid) {
             this->all_processes.begin(),
             this->all_processes.end(),
             [&](Process* proc) {
-                return !proc || proc->get_unique_id() == pid;
+                return proc && proc->get_unique_id() == pid;
             }
         ),
         this->all_processes.end()
@@ -484,7 +487,7 @@ void Kernel::request_to_kill(uint32_t pid) {
 
 void Kernel::assign_vm(uint32_t vm_pid, Virtual_Machine* vm) {
     for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
-        if((*it) -> get_unique_id() == vm_pid) {
+        if((*it) && (*it) -> get_unique_id() == vm_pid) {
             (*it) -> assign_vm(vm);
             break;
         }
@@ -554,7 +557,7 @@ void Kernel::lower_priority(uint32_t pid) {
 
 Process* Kernel::get_proc_by_id(uint32_t pid) {
     for(auto it = this -> all_processes.begin(); it != this -> all_processes.end(); ++it) {
-        if((*it) -> get_unique_id() == pid) {
+        if((*it) && (*it) -> get_unique_id() == pid) {
             return (*it);
         }
     }
@@ -571,4 +574,15 @@ uint32_t Kernel::get_first_free_loader_p_resc() {
 	}
 
 	return -1;
+}
+
+void Kernel::delete_resource(Resource* resc) {
+	for(auto it = this -> resources.begin(); it != this -> resources.end(); ++it) {
+		if((*it) == resc) {
+			delete (*it);
+			(*it) = nullptr;
+			this -> resources.erase(it);
+			break;
+		}
+	}
 }

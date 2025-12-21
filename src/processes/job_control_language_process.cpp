@@ -142,7 +142,7 @@ Process_State Job_Control_Language_Process::execute(){
 
             this -> return_owned_resource(Resource_Type::TASK_IN_SUPERVISOR);
 
-                this -> cur_page_index = MEM_SUPERVISOR_PAGE_BEGIN * MEM_PAGE_SIZE;
+            this -> cur_page_index = MEM_SUPERVISOR_PAGE_BEGIN * MEM_PAGE_SIZE;
 
 
             this -> step = Job_Control_Language_Process_Steps::JOB_CONTROL_LANGUAGE_PROCESS_BLOCKED_WAIT_FOR_TASK_IN_SUPERVISOR;

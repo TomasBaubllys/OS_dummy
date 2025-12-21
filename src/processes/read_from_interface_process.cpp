@@ -21,6 +21,7 @@ Process_State Read_From_Interface_Process::execute(){
             if(this -> owns_resource(Resource_Type::FROM_USER_INTERFACE)) {
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_CHECK_IF_INPUT_STARTS_WITH_F$;
                 std::getline(std::cin, this -> buffer);
+                this -> kernel -> line_consumed = true;
                 return Process_State::READY;
             }
 
@@ -70,6 +71,7 @@ Process_State Read_From_Interface_Process::execute(){
             if(ch_dev -> sa == 0) {
                 // match not found
                 // FREE CURRENT RESOURCES
+                this -> delete_owned_resc(Resource_Type::FROM_USER_INTERFACE);
                 this -> release_owned_resource(Resource_Type::CHANNEL_DEVICE);
                 this -> release_owned_resource(Resource_Type::HARD_DISK);
                 this -> release_owned_resource(Resource_Type::SUPERVISOR_MEMORY);
@@ -112,6 +114,7 @@ Process_State Read_From_Interface_Process::execute(){
             return Process_State::READY;
         }
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_TASK_IN_SUPERVISOR:
+        	this -> delete_owned_resc(Resource_Type::FROM_USER_INTERFACE);
             this -> kernel -> release_resource(Resource_Type::TASK_IN_SUPERVISOR);
             this -> release_owned_resource(Resource_Type::CHANNEL_DEVICE);
             // std::cout << "here" << std::endl;
@@ -132,6 +135,7 @@ Process_State Read_From_Interface_Process::execute(){
                 }
                 // if current console holder is null, ignore the buffer
                 if(jg == nullptr) {
+               		this -> delete_owned_resc(Resource_Type::FROM_USER_INTERFACE);
                     this -> return_owned_resources();
                     this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
                     // RELEASE THE OWNED RESOURCES
@@ -140,6 +144,7 @@ Process_State Read_From_Interface_Process::execute(){
                 }
 
                 // are you sure that that process is already created????
+               	this -> delete_owned_resc(Resource_Type::FROM_USER_INTERFACE);
                 this -> return_owned_resources();
                 this -> kernel -> release_resource_for(Resource_Type::USER_INPUT, jg -> get_unique_id(), this -> buffer);
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;
@@ -148,6 +153,7 @@ Process_State Read_From_Interface_Process::execute(){
             }
             return Process_State::READY;
         case Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_SYSTEM_COMMAND:
+        	this -> delete_owned_resc(Resource_Type::FROM_USER_INTERFACE);
             this -> kernel -> release_resource(Resource_Type::SYSTEM_COMMAND, this -> buffer);
             this -> return_owned_resources();
             this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_BLOCKED_WAITING_FOR_FROM_USER_INTERFACE;

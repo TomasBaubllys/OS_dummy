@@ -1,5 +1,6 @@
 #include "../include/resource.h"
 #include "../include/processes/process.h"
+#include <cstdint>
 
 Resource::Resource(uint32_t unique_id, Resource_Type type, Process* owner) :
     unique_id(unique_id),
@@ -51,6 +52,10 @@ void Resource::set_dedicated(uint32_t pid) {
 }
 
 uint32_t Resource::get_owner_id() {
+	if(!this -> owner) {
+		return UINT32_MAX;
+	}
+
     return this -> owner -> get_unique_id();
 }
 

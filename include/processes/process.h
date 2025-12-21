@@ -108,6 +108,8 @@ class Process {
         Saved_Registers& ref_sregs();
 
         uint64_t get_runtime() const;
+
+        void delete_owned_resc(Resource_Type resc_type);
 };
 
 #endif // PROCESS_H_INCLUDED

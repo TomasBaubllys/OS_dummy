@@ -53,6 +53,7 @@ Process_State Job_Governor_Process::execute(){
         case Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FROM_LOADER_RESOURCE:
             if(this -> owns_resource(Resource_Type::FROM_LOADER)) {
                 this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_CREATE_PROCESS_VIRTUAL_MACHINE;
+                this -> kernel -> release_resource(Resource_Type::SUPERVISOR_MEMORY);
                 return Process_State::READY;
             }
 

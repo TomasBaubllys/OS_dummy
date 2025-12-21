@@ -160,3 +160,13 @@ Saved_Registers& Process::ref_sregs() {
 uint64_t Process::get_runtime() const {
     return this -> runtime;
 }
+
+void Process::delete_owned_resc(Resource_Type resc_type) {
+	for(auto it = this -> owned_resources.begin(); it != this -> owned_resources.end(); ++it) {
+		if((*it) -> get_resource_type() == resc_type) {
+			this -> kernel -> delete_resource(*it);
+			this -> owned_resources.erase(it);
+			break;
+		}
+	}
+}

@@ -76,7 +76,7 @@ Process_State Loader_Process::execute(){
             return Process_State::READY;
 
         case Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_SUPERVISOR_MEMORY:
-            this -> kernel -> release_resource(Resource_Type::SUPERVISOR_MEMORY);
+            // this -> kernel -> release_resource(Resource_Type::SUPERVISOR_MEMORY);
             this -> step = Loader_Process_Steps::LOADER_PROCESS_FREE_RESOURCE_FROM_LOADER_FOR_JOB_GOVERNER;
             return Process_State::READY;
 
