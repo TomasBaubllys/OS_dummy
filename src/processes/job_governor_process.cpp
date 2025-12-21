@@ -106,7 +106,7 @@ Process_State Job_Governor_Process::execute(){
             switch(vm_regs.si){
 
                 case Cpu_Si_Type::CPU_SI_GEDA: {
-                    this -> kernel -> current_console_holder = this;
+                    this -> kernel -> console_holder_q.push(this);
                     this -> step = Job_Governor_Process_Steps::JOB_GOVERNOR_PROCESS_BLOCKED_WAITING_FOR_USER_INPUT_RESOURCE;
                     this -> kernel -> get_cpu() -> si = 0;
                     vm_regs.si = 0;

@@ -125,7 +125,11 @@ Process_State Read_From_Interface_Process::execute(){
                 this -> step = Read_From_Interface_Process_Steps::READ_FROM_INTERFACE_RELEASE_SYSTEM_COMMAND;
             }
             else {
-                Job_Governor_Process* jg = this -> kernel -> current_console_holder;
+                Job_Governor_Process* jg = nullptr;
+                if(!kernel -> console_holder_q.empty()) {
+                	jg = kernel -> console_holder_q.front();
+                	kernel -> console_holder_q.pop();
+                }
                 // if current console holder is null, ignore the buffer
                 if(jg == nullptr) {
                     this -> return_owned_resources();
