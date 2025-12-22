@@ -140,7 +140,7 @@ Process_State Job_Governor_Process::execute(){
                 return Process_State::READY;
             }
 //            else if(this -> kernel -> get_cpu() -> si + this -> kernel -> get_cpu() -> pi > 0){
-            else if(vm_regs.pi + vm_regs.si > 0 && vm_regs.pi != 2){
+            else if(vm_regs.pi + vm_regs.si > 0){
 
                 // std::cout << "SI: " << this -> kernel -> get_cpu() -> si << std::endl;
                 // std::cout << "PI: " << vm_regs.pi << " VM ID = " << this -> u_id_buffer << std::endl;
@@ -149,6 +149,8 @@ Process_State Job_Governor_Process::execute(){
                 // std::cout << "not io " << std::endl;
                 // this -> kernel -> get_cpu() -> si = 0;
                 // this -> kernel -> get_cpu() -> pi = 0;
+                uint32_t id = this -> kernel -> init_resource(Resource_Type::STRING_IN_MEMORY, this);
+                this -> kernel -> release_resource_id(id, "UNKNOWN COMMAND");
                 vm_regs.pi = 0;
                 vm_regs.si = 0;
                 // std::cout << "KILLED" << std::endl;
